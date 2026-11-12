@@ -163,43 +163,49 @@ test('Footer contains multi-column sections with requested categories', () => {
   assert(html.includes('&copy; 2026 MediBook+ Healthcare Systems Inc. All rights reserved.'));
 });
 
-console.log('\n[8. JAVASCRIPT CONTROLLER BEHAVIOR SIMULATION]');
-// Test symptom matcher logic simulation
-const mockSessionStorage = {};
-global.sessionStorage = {
-  setItem: (k, v) => { mockSessionStorage[k] = v; },
-  getItem: (k) => mockSessionStorage[k],
-  removeItem: (k) => { delete mockSessionStorage[k]; }
+console.log('\n[8. DIRECT DOCTOR MATCHING & CONSULTATION FEE TESTS]');
+// Load landing page controller logic in testing context
+const landingJs = fs.readFileSync(path.join(__dirname, '..', 'assets', 'js', 'pages', 'landing.js'), 'utf8');
+const demoDataJs = fs.readFileSync(path.join(__dirname, '..', 'assets', 'js', 'data', 'demo-data.js'), 'utf8');
+
+global.window = {};
+global.document = {
+  addEventListener: () => {},
+  getElementById: () => null,
+  querySelectorAll: () => []
 };
+eval(demoDataJs.replace('const MEDIBOOK_DATA', 'global.MEDIBOOK_DATA = window.MEDIBOOK_DATA'));
+eval(landingJs);
 
-let chatbotOpened = false;
-let messageReceived = null;
-global.window = {
-  MediBookChat: {
-    toggleChat: (state) => { chatbotOpened = state; },
-    handleUserMessage: (msg) => { messageReceived = msg; }
-  }
-};
-
-// Simulate query submission
-const query = 'Sharp pain in my knee after running';
-sessionStorage.setItem('medibook_pending_query', query);
-assert.strictEqual(sessionStorage.getItem('medibook_pending_query'), query);
-
-window.MediBookChat.toggleChat(true);
-window.MediBookChat.handleUserMessage(query);
-sessionStorage.removeItem('medibook_pending_query');
-
-test('Symptom search opens chatbot', () => {
-  assert.strictEqual(chatbotOpened, true);
+test('Smart Matcher finds Orthopedics doctor with price for knee pain', () => {
+  const res = window.findMatchingDoctors('Sharp pain in my knee after running');
+  assert(res.doctors.length > 0);
+  assert(res.doctors.some(d => d.specialization === 'Orthopedics'));
+  const orthoDoc = res.doctors.find(d => d.specialization === 'Orthopedics');
+  assert.strictEqual(orthoDoc.consultationFee, 150);
 });
 
-test('Symptom query passed to chatbot handleUserMessage', () => {
-  assert.strictEqual(messageReceived, query);
+test('Smart Matcher finds Neurology & General Medicine doctors with fees for headache', () => {
+  const res = window.findMatchingDoctors('I have frequent headaches');
+  assert(res.doctors.length >= 2);
+  const neuroDoc = res.doctors.find(d => d.specialization === 'Neurology');
+  const genDoc = res.doctors.find(d => d.specialization === 'General Medicine');
+  assert(neuroDoc && neuroDoc.consultationFee === 140);
+  assert(genDoc && genDoc.consultationFee === 90);
 });
 
-test('Pending query removed from sessionStorage after submission', () => {
-  assert.strictEqual(sessionStorage.getItem('medibook_pending_query'), undefined);
+test('Smart Matcher finds Dermatology doctor with price for rash', () => {
+  const res = window.findMatchingDoctors('Red itchy skin rash on arm');
+  assert(res.doctors.length > 0);
+  const dermDoc = res.doctors.find(d => d.specialization === 'Dermatology');
+  assert(dermDoc && dermDoc.consultationFee === 110);
+});
+
+test('Direct search results section and price grid exist in HTML markup', () => {
+  assert(html.includes('id="search-results-section"'));
+  assert(html.includes('id="search-results-grid"'));
+  assert(html.includes('id="clear-search-results-btn"'));
+  assert(html.includes('id="results-heading"'));
 });
 
 console.log('\n[9. RESPONSIVE DESIGN & MOBILE COMPATIBILITY TESTS]');

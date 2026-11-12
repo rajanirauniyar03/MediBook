@@ -379,6 +379,155 @@
 }
 
 /* ==========================================================================
+   Instant Search Results Section (Direct Doctor Matches & Fees)
+   ========================================================================== */
+.search-results-section {
+  padding: 3.5rem 0 4rem;
+  background: #ffffff;
+  border-bottom: 2px solid var(--slate-200);
+  scroll-margin-top: 80px;
+  position: relative;
+}
+
+.search-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--slate-100);
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.results-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  background: var(--coral-50);
+  border: 1px solid var(--coral-200);
+  color: var(--coral-700);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.65rem;
+}
+
+.results-badge i {
+  width: 14px;
+  height: 14px;
+  color: var(--coral-500);
+}
+
+.results-heading {
+  font-size: clamp(1.55rem, 3vw + 0.5rem, 2.15rem);
+  font-weight: 800;
+  color: var(--slate-900);
+  margin-bottom: 0.35rem;
+  line-height: 1.2;
+}
+
+.results-subtext {
+  font-size: 0.975rem;
+  color: var(--slate-600);
+  margin: 0;
+}
+
+.search-results-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.doctor-card-matched {
+  position: relative;
+  border: 1.5px solid var(--primary-300);
+  box-shadow: 0 8px 24px -4px rgba(37, 99, 235, 0.1);
+  transition: all var(--transition-normal);
+}
+
+.doctor-card-matched:hover {
+  border-color: var(--coral-500);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 32px -4px rgba(255, 127, 80, 0.2);
+}
+
+.doctor-match-ribbon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--coral-500);
+  color: #ffffff;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.725rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 2px 8px rgba(255, 127, 80, 0.35);
+  z-index: 2;
+}
+
+.doctor-match-ribbon i {
+  width: 12px;
+  height: 12px;
+}
+
+.doctor-price-highlight {
+  display: flex;
+  flex-direction: column;
+}
+
+.doctor-price-highlight .price-label {
+  font-size: 0.725rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--slate-400);
+  letter-spacing: 0.04em;
+}
+
+.doctor-price-highlight .price-value {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--primary-700);
+  line-height: 1.1;
+}
+
+.results-emergency-notice {
+  background: var(--danger-50);
+  border: 1.5px solid var(--danger-500);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  color: var(--danger-700);
+  font-size: 0.925rem;
+  line-height: 1.55;
+}
+
+.results-emergency-notice .emergency-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--danger-500);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.results-emergency-notice .emergency-icon-wrap i {
+  width: 16px;
+  height: 16px;
+}
+
+/* ==========================================================================
    Configurable Statistics Section (Clearly Labelled Demo Mode)
    ========================================================================== */
 .stats-section {

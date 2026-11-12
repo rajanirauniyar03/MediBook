@@ -415,14 +415,64 @@
 
         let list = [...(window.MEDIBOOK_DATA ? window.MEDIBOOK_DATA.doctors : [])];
 
-        // 1. Search by Name / Subspecialty / Bio
+        // 1. Search by Name / Subspecialty / Bio / Symptom Matcher
         if (query) {
+          const symptomMap = {
+            'headache': ['Neurology', 'General Medicine'],
+            'migraine': ['Neurology'],
+            'knee': ['Orthopedics'],
+            'joint': ['Orthopedics'],
+            'back': ['Orthopedics'],
+            'spine': ['Orthopedics'],
+            'bone': ['Orthopedics'],
+            'fracture': ['Orthopedics'],
+            'running': ['Orthopedics'],
+            'stomach': ['General Medicine'],
+            'belly': ['General Medicine'],
+            'abdominal': ['General Medicine'],
+            'digestion': ['General Medicine'],
+            'skin': ['Dermatology'],
+            'rash': ['Dermatology'],
+            'acne': ['Dermatology'],
+            'mole': ['Dermatology'],
+            'eczema': ['Dermatology'],
+            'tooth': ['Dentistry'],
+            'teeth': ['Dentistry'],
+            'toothache': ['Dentistry'],
+            'dentist': ['Dentistry'],
+            'child': ['Pediatrics'],
+            'kid': ['Pediatrics'],
+            'baby': ['Pediatrics'],
+            'infant': ['Pediatrics'],
+            'heart': ['Cardiology'],
+            'cardio': ['Cardiology'],
+            'cardiologist': ['Cardiology'],
+            'chest': ['Cardiology'],
+            'blood pressure': ['Cardiology'],
+            'hypertension': ['Cardiology'],
+            'women': ['Gynecology'],
+            'pregnancy': ['Gynecology'],
+            'fever': ['General Medicine', 'Pediatrics'],
+            'cough': ['General Medicine']
+          };
+
+          let matchedDepts = [];
+          for (const [kw, depts] of Object.entries(symptomMap)) {
+            if (query.includes(kw)) {
+              matchedDepts.push(...depts);
+            }
+          }
+
           list = list.filter(d => 
             d.name.toLowerCase().includes(query) ||
             (d.specialization && d.specialization.toLowerCase().includes(query)) ||
             (d.department && d.department.toLowerCase().includes(query)) ||
             (d.subspecialty && d.subspecialty.toLowerCase().includes(query)) ||
-            (d.qualification && d.qualification.toLowerCase().includes(query))
+            (d.qualification && d.qualification.toLowerCase().includes(query)) ||
+            (matchedDepts.length > 0 && matchedDepts.some(dept => 
+              (d.specialization && d.specialization.toLowerCase() === dept.toLowerCase()) || 
+              (d.department && d.department.toLowerCase() === dept.toLowerCase())
+            ))
           );
         }
 

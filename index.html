@@ -223,6 +223,48 @@
     </section>
 
     <!-- ========================================================================
+         Instant Search Results Section (Direct Doctor Matches & Fees)
+         Appears immediately when user searches symptoms or doctor names
+         ======================================================================== -->
+    <section class="search-results-section" id="search-results-section" style="display: none;" aria-live="polite">
+      <div class="container">
+        <div class="search-results-header">
+          <div class="search-results-title-col">
+            <div class="results-badge" id="results-badge">
+              <i data-lucide="check-circle-2"></i>
+              <span id="results-count-text">Matched Specialists</span>
+            </div>
+            <h2 class="results-heading" id="results-heading">Doctors Available for Your Care</h2>
+            <p class="results-subtext" id="results-subtext">Compare consultation fees, ratings, and book an immediate appointment.</p>
+          </div>
+          <div class="search-results-actions">
+            <button type="button" class="btn btn-outline btn-sm" id="clear-search-results-btn">
+              <i data-lucide="x"></i>
+              <span>Clear Search</span>
+            </button>
+            <a href="find-doctors.html" class="btn btn-primary btn-sm" id="view-all-directory-btn">
+              <span>View All Directory</span>
+              <i data-lucide="arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Emergency Alert Notice (for critical symptoms) -->
+        <div id="results-emergency-notice" class="results-emergency-notice" style="display: none;">
+          <div class="emergency-icon-wrap"><i data-lucide="alert-triangle"></i></div>
+          <div>
+            <strong>Emergency Clinical Notice:</strong> If you or someone you know is experiencing severe chest pain, shortness of breath, or sudden weakness, please dial <strong>911</strong> or visit the nearest emergency room immediately.
+          </div>
+        </div>
+
+        <!-- Doctors Cards Grid with Fees Highlighted -->
+        <div class="grid grid-cols-3 md:grid-cols-1 gap-6" id="search-results-grid">
+          <!-- Populated dynamically via landing.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
          Platform Statistics Section (Clearly Labelled Sample Figures in Demo Mode)
          ======================================================================== -->
     <section class="stats-section">

@@ -1,7 +1,7 @@
 /**
  * MediBook+ Landing Page Controller
- * Powers the Smart Symptom Matcher, Medical Specialties, Featured Doctors with Skeletons,
- * Platform Statistics, and AI Chatbot Bridge.
+ * Powers Direct Symptom-to-Doctor Matching with Consultation Fees,
+ * Medical Specialties, Featured Doctors with Skeletons, and Platform Statistics.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,58 +18,64 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 1. Smart Symptom Matcher (AI Assistant Bridge)
- * Validates natural language query, bridges to MediBook AI Chatbot,
- * opens chat widget, and triggers instant clinical triage/doctor matching.
+ * 1. Smart Symptom Matcher & Direct Doctor Discovery
+ * Directly evaluates patient symptoms or doctor queries, extracts matching specialists,
+ * and immediately renders the doctors list with consultation prices directly on page.
  */
 function setupSymptomMatcher() {
   const form = document.getElementById('symptom-matcher-form');
   const input = document.getElementById('hero-symptom-input');
   const aiGuideLink = document.getElementById('ai-assistant-guide-link');
   const chips = document.querySelectorAll('.symptom-chip');
+  const clearBtn = document.getElementById('clear-search-results-btn');
 
-  const executeSymptomSearch = (rawQuery) => {
+  const executeDirectSearch = (rawQuery) => {
     const query = (rawQuery || (input ? input.value : '')).trim();
     if (!query) {
       if (input) input.focus();
       return;
     }
 
-    // Step 1: Temporarily store query in sessionStorage per specification
-    sessionStorage.setItem('medibook_pending_query', query);
-
-    // Step 2: Open Chatbot widget and trigger submission
-    const submitToChat = () => {
-      if (window.MediBookChat) {
-        window.MediBookChat.toggleChat(true);
-        window.MediBookChat.handleUserMessage(query);
-        sessionStorage.removeItem('medibook_pending_query');
-        if (input) input.value = '';
-      } else {
-        // If chatbot is still initializing, retry briefly
-        setTimeout(() => {
-          if (window.MediBookChat) {
-            window.MediBookChat.toggleChat(true);
-            window.MediBookChat.handleUserMessage(query);
-            sessionStorage.removeItem('medibook_pending_query');
-            if (input) input.value = '';
-          }
-        }, 300);
-      }
-    };
-
-    submitToChat();
+    renderDirectSearchResults(query);
   };
 
-  // Form submit event
+  // Form submit event (direct results, no chatbot redirect)
   if (form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      executeSymptomSearch();
+      executeDirectSearch();
+    });
+  }
+
+  // Quick symptom chips (1-click direct doctor list with prices)
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const symptomText = chip.getAttribute('data-symptom') || chip.textContent.trim();
+      if (input) input.value = symptomText;
+      executeDirectSearch(symptomText);
+    });
+  });
+
+  // Clear search results button
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      const resultsSection = document.getElementById('search-results-section');
+      if (resultsSection) {
+        resultsSection.style.display = 'none';
+      }
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      const hero = document.querySelector('.hero-section');
+      if (hero) {
+        hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
   }
 
   // "Not sure where to start? Our AI assistant will guide you →" Link
+  // Explicitly opens the conversational chatbot for patients desiring dialogue
   if (aiGuideLink) {
     aiGuideLink.addEventListener('click', (e) => {
       e.preventDefault();
@@ -82,15 +88,262 @@ function setupSymptomMatcher() {
       }
     });
   }
+}
 
-  // Quick symptom chips (1-click search)
-  chips.forEach(chip => {
-    chip.addEventListener('click', () => {
-      const symptomText = chip.getAttribute('data-symptom') || chip.textContent.trim();
-      if (input) input.value = symptomText;
-      executeSymptomSearch(symptomText);
-    });
+/**
+ * Intelligent Symptom, Specialty, and Doctor Matcher
+ */
+function findMatchingDoctors(rawQuery) {
+  const q = (rawQuery || '').toLowerCase().trim();
+  if (!q) return { doctors: [], matchedDept: null, isEmergency: false };
+
+  // Emergency Safety Keywords
+  const emergencyKeywords = ['chest pain', 'heart attack', 'cannot breathe', 'difficulty breathing', 'severe bleeding', 'unconscious', 'stroke', 'choking'];
+  const isEmergency = emergencyKeywords.some(kw => q.includes(kw));
+
+  // Roster source: AdminService or demo data
+  let allDocs = [];
+  if (window.AdminService) {
+    allDocs = window.AdminService.getDoctors();
+  }
+  if (!allDocs || allDocs.length === 0) {
+    allDocs = (window.MEDIBOOK_DATA && window.MEDIBOOK_DATA.doctors) ? window.MEDIBOOK_DATA.doctors : [];
+  }
+  const activeDocs = allDocs.filter(d => d.status === 'Active' || !d.status);
+
+  // Symptom to Department classification map
+  const symptomDeptMap = [
+    {
+      dept: 'Neurology',
+      secondaryDept: 'General Medicine',
+      keywords: ['headache', 'migraine', 'head pain', 'dizziness', 'vertigo', 'seizure', 'memory', 'numbness', 'brain', 'nerve']
+    },
+    {
+      dept: 'Orthopedics',
+      secondaryDept: 'General Medicine',
+      keywords: ['knee', 'joint', 'back', 'spine', 'bone', 'fracture', 'shoulder', 'hip', 'ankle', 'wrist', 'sprain', 'running', 'arthritis', 'muscle']
+    },
+    {
+      dept: 'Dermatology',
+      secondaryDept: null,
+      keywords: ['skin', 'rash', 'acne', 'itch', 'itchy', 'mole', 'eczema', 'psoriasis', 'hair', 'scalp', 'nail', 'dermal', 'red spot']
+    },
+    {
+      dept: 'Dentistry',
+      secondaryDept: null,
+      keywords: ['tooth', 'teeth', 'dental', 'cavity', 'gum', 'dentist', 'oral', 'toothache', 'jaw', 'molar', 'bleeding gum']
+    },
+    {
+      dept: 'Pediatrics',
+      secondaryDept: 'General Medicine',
+      keywords: ['child', 'kid', 'baby', 'infant', 'toddler', 'pediatric', 'pediatrician', 'vaccine', 'immunization', 'colic']
+    },
+    {
+      dept: 'Cardiology',
+      secondaryDept: 'General Medicine',
+      keywords: ['heart', 'cardio', 'cardiologist', 'chest', 'palpitation', 'blood pressure', 'hypertension', 'cholesterol', 'ecg', 'cardiovascular']
+    },
+    {
+      dept: 'Gynecology',
+      secondaryDept: null,
+      keywords: ['women', 'pregnancy', 'pregnant', 'period', 'menstrual', 'gynec', 'gynecologist', 'ovary', 'prenatal', 'fertility', 'cramp']
+    },
+    {
+      dept: 'General Medicine',
+      secondaryDept: null,
+      keywords: ['stomach', 'belly', 'abdomen', 'abdominal', 'digestion', 'acid', 'nausea', 'vomit', 'diarrhea', 'cramp', 'fever', 'cough', 'cold', 'flu', 'weakness', 'fatigue', 'infection', 'general', 'checkup', 'physical', 'throat']
+    }
+  ];
+
+  // 1. Direct doctor name match
+  let matched = activeDocs.filter(doc => doc.name.toLowerCase().includes(q));
+  if (matched.length > 0) {
+    return { doctors: matched, matchedDept: matched[0].specialization, isEmergency };
+  }
+
+  // 2. Direct department / specialization match
+  matched = activeDocs.filter(doc => 
+    (doc.specialization && doc.specialization.toLowerCase().includes(q)) ||
+    (doc.department && doc.department.toLowerCase().includes(q))
+  );
+  if (matched.length > 0) {
+    return { doctors: matched, matchedDept: matched[0].specialization, isEmergency };
+  }
+
+  // 3. Symptom keyword matching
+  let matchedEntry = symptomDeptMap.find(entry => 
+    entry.keywords.some(kw => q.includes(kw))
+  );
+
+  if (matchedEntry) {
+    let deptDocs = activeDocs.filter(d => 
+      (d.specialization && d.specialization.toLowerCase() === matchedEntry.dept.toLowerCase()) ||
+      (d.department && d.department.toLowerCase() === matchedEntry.dept.toLowerCase())
+    );
+
+    if (matchedEntry.secondaryDept) {
+      const secondaryDocs = activeDocs.filter(d => 
+        (d.specialization && d.specialization.toLowerCase() === matchedEntry.secondaryDept.toLowerCase()) ||
+        (d.department && d.department.toLowerCase() === matchedEntry.secondaryDept.toLowerCase())
+      );
+      deptDocs = [...deptDocs, ...secondaryDocs];
+    }
+
+    if (deptDocs.length > 0) {
+      return { doctors: deptDocs, matchedDept: matchedEntry.dept, isEmergency };
+    }
+  }
+
+  // 4. Subspecialty / About keyword fallback
+  matched = activeDocs.filter(doc => {
+    const text = `${doc.subspecialty || ''} ${doc.about || ''} ${doc.hospital || ''} ${doc.qualification || ''}`.toLowerCase();
+    return text.includes(q);
   });
+
+  if (matched.length > 0) {
+    return { doctors: matched, matchedDept: matched[0].specialization, isEmergency };
+  }
+
+  // 5. Default fallback: return top doctors
+  return { doctors: activeDocs.slice(0, 3), matchedDept: 'All Specializations', isEmergency };
+}
+
+// Export for other scripts and tests
+window.findMatchingDoctors = findMatchingDoctors;
+
+/**
+ * Direct Doctor Search Results Renderer
+ * Displays matched doctors with prominent prices, ratings, and instant booking buttons
+ */
+function renderDirectSearchResults(query) {
+  const resultsSection = document.getElementById('search-results-section');
+  const grid = document.getElementById('search-results-grid');
+  const countText = document.getElementById('results-count-text');
+  const heading = document.getElementById('results-heading');
+  const subtext = document.getElementById('results-subtext');
+  const emergencyNotice = document.getElementById('results-emergency-notice');
+  const viewAllBtn = document.getElementById('view-all-directory-btn');
+
+  if (!resultsSection || !grid) return;
+
+  const matchData = findMatchingDoctors(query);
+  const doctors = matchData.doctors;
+
+  // 1. Update Header Information
+  if (countText) {
+    countText.textContent = `${doctors.length} Specialist${doctors.length === 1 ? '' : 's'} Matched for "${query}"`;
+  }
+  if (heading) {
+    heading.textContent = matchData.matchedDept && matchData.matchedDept !== 'All Specializations'
+      ? `Doctors Available for ${matchData.matchedDept}`
+      : `Doctors Available for Your Care`;
+  }
+  if (subtext) {
+    const minFee = doctors.length > 0 ? Math.min(...doctors.map(d => d.consultationFee || d.fee || 90)) : 85;
+    const maxFee = doctors.length > 0 ? Math.max(...doctors.map(d => d.consultationFee || d.fee || 120)) : 150;
+    subtext.textContent = `Consultation fees: $${minFee} - $${maxFee}. Choose a verified specialist and book your visit instantly.`;
+  }
+
+  // 2. Emergency Alert Visibility
+  if (emergencyNotice) {
+    emergencyNotice.style.display = matchData.isEmergency ? 'flex' : 'none';
+  }
+
+  // 3. View All Link update
+  if (viewAllBtn) {
+    viewAllBtn.href = `find-doctors.html?q=${encodeURIComponent(query)}`;
+  }
+
+  // 4. Render Matched Doctor Cards with Fees & Direct Book Buttons
+  if (doctors.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: var(--slate-50); border-radius: var(--radius-xl); border: 1px dashed var(--slate-300);">
+        <i data-lucide="user-search" style="width: 48px; height: 48px; color: var(--slate-400); margin: 0 auto 1rem;"></i>
+        <h3 style="font-size: 1.25rem; color: var(--slate-800); margin-bottom: 0.5rem;">No exact doctor match found for "${query}"</h3>
+        <p style="color: var(--slate-600); margin-bottom: 1.5rem;">Try searching another symptom, a doctor name, or browse our full clinical roster.</p>
+        <a href="find-doctors.html" class="btn btn-primary">Browse All Specialists</a>
+      </div>
+    `;
+  } else {
+    grid.innerHTML = doctors.map((doc, idx) => {
+      const fee = doc.consultationFee || doc.fee || 100;
+      const daysText = doc.availableDaysText || (Array.isArray(doc.availableDays) ? doc.availableDays.slice(0, 3).map(d => d.slice(0, 3)).join(', ') : 'Mon, Wed, Fri');
+      const experienceText = doc.experienceYears ? `${doc.experienceYears}+ years experience` : (doc.experience || 'Experienced Specialist');
+      const bookUrl = `portal/patient/book-appointment.html?doc=${encodeURIComponent(doc.id)}`;
+      const profileUrl = `doctor-profile.html?id=${encodeURIComponent(doc.id)}`;
+
+      return `
+        <div class="doctor-card-rich doctor-card-matched">
+          ${idx === 0 ? `<div class="doctor-match-ribbon"><i data-lucide="sparkles"></i> Best Match</div>` : ''}
+          <div class="doctor-card-body">
+            <div class="doctor-card-top">
+              <div class="doctor-avatar-box">
+                <img src="${doc.avatar || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&auto=format&fit=crop&q=80'}" alt="${doc.name}" loading="lazy" />
+                <div class="doctor-verified-check" title="Board-Certified Specialist">
+                  <i data-lucide="check"></i>
+                </div>
+              </div>
+              <div class="doctor-info-col">
+                <h3 class="doctor-card-name">
+                  <a href="${profileUrl}" style="color: inherit; text-decoration: none;">
+                    ${doc.name}
+                  </a>
+                </h3>
+                <div class="doctor-card-qualification">${doc.qualification || doc.title || 'MD'}</div>
+                <span class="doctor-spec-pill">${doc.specialization || doc.department || 'General Medicine'}</span>
+                <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.825rem; color: var(--slate-600);">
+                  <i data-lucide="star" style="width: 14px; height: 14px; color: #f59e0b; fill: #f59e0b;"></i>
+                  <strong>${doc.rating || 4.9}</strong>
+                  <span class="text-muted">(${doc.reviewCount || doc.reviews || 80} reviews)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="doctor-specs-list">
+              <div class="doctor-spec-item">
+                <i data-lucide="building-2"></i>
+                <span>${doc.hospital || 'Metropolitan Central Hospital'}</span>
+              </div>
+              <div class="doctor-spec-item">
+                <i data-lucide="award"></i>
+                <span>${experienceText}</span>
+              </div>
+              <div class="doctor-spec-item">
+                <i data-lucide="calendar"></i>
+                <span style="color: var(--primary-700); font-weight: 600;">Available: ${daysText}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="doctor-card-bottom">
+            <div class="doctor-price-highlight">
+              <span class="price-label">Consultation Fee</span>
+              <span class="price-value">$${fee}</span>
+            </div>
+            <div class="doctor-actions-row">
+              <a href="${profileUrl}" class="btn btn-outline btn-sm">
+                <span>Profile</span>
+              </a>
+              <a href="${bookUrl}" class="btn btn-coral btn-sm">
+                <i data-lucide="calendar-plus"></i>
+                <span>Book Visit</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // 5. Reveal section and smooth scroll
+  resultsSection.style.display = 'block';
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+
+  setTimeout(() => {
+    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 }
 
 /**
@@ -153,7 +406,6 @@ function renderSpecializations() {
 
   const rawDepts = window.MEDIBOOK_DATA.departments || [];
 
-  // Order to match specification: Cardiology, Dermatology, Orthopedics, Neurology, Pediatrics, Dentistry, Gynecology, General Medicine
   const preferredOrder = [
     'Cardiology',
     'Dermatology',
@@ -202,7 +454,6 @@ function renderFeaturedDoctors() {
   const container = document.getElementById('featured-doctors-grid');
   if (!container) return;
 
-  // Show loading skeleton placeholders first
   container.innerHTML = `
     <div class="doctor-card-skeleton">
       <div style="display:flex; gap:1.15rem; align-items:center;">
@@ -218,7 +469,6 @@ function renderFeaturedDoctors() {
     </div>
   `.repeat(3);
 
-  // Load verified doctors asynchronously from AdminService / Firestore / Demo data
   setTimeout(() => {
     let doctors = [];
     if (window.AdminService) {
@@ -228,7 +478,6 @@ function renderFeaturedDoctors() {
       doctors = (window.MEDIBOOK_DATA && window.MEDIBOOK_DATA.doctors) ? window.MEDIBOOK_DATA.doctors : [];
     }
 
-    // Filter active and approved doctors
     const activeDoctors = doctors.filter(d => d.status === 'Active' || !d.status);
     const featured = activeDoctors.slice(0, 3);
 
