@@ -796,5 +796,11 @@
   .medibook-chat-launcher {
     bottom: 16px;
     right: 16px;
+    padding: 0.65rem;
+    border-radius: var(--radius-full);
+  }
+
+  .medibook-chat-launcher .launcher-label {
+    display: none;
   }
 }

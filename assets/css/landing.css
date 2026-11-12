@@ -1203,14 +1203,95 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* Responsive */
+/* ==========================================================================
+   Call To Action Banner (CTA)
+   ========================================================================== */
+.cta-section-wrap {
+  margin-top: 4.5rem;
+  margin-bottom: 5.5rem;
+}
+
+.cta-banner {
+  position: relative;
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 55%, #0d9488 100%);
+  border-radius: var(--radius-2xl);
+  padding: 4.5rem 3rem;
+  color: #ffffff;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 20px 45px -10px rgba(37, 99, 235, 0.35);
+}
+
+.cta-banner-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.cta-title {
+  color: #ffffff;
+  font-size: clamp(1.85rem, 3.5vw + 0.5rem, 2.75rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.cta-desc {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2.25rem;
+}
+
+.cta-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Comprehensive Responsive System (Mobile, Tablet, Desktop)
+   ========================================================================== */
+
+/* 1. Laptops & Small Desktops (1024px to 1200px) */
+@media (max-width: 1200px) {
+  .hero-grid {
+    gap: 2.5rem;
+  }
+  .hero-img {
+    height: 400px;
+  }
+  .why-grid-4 {
+    gap: 1.25rem;
+  }
+}
+
+/* 2. Tablets & Small Laptops (768px to 1024px) */
 @media (max-width: 1024px) {
+  .hero-section {
+    padding: 3.5rem 0 4.5rem;
+  }
   .hero-grid {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 2.5rem;
   }
   .hero-content {
     margin: 0 auto;
+    max-width: 720px;
   }
   .hero-trust-indicators {
     justify-content: center;
@@ -1229,40 +1310,292 @@
   }
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
   }
-  .why-choose-grid {
-    grid-template-columns: 1fr 1fr;
+  #featured-doctors-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem;
   }
   .why-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  .why-choose-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   .how-it-works-grid {
     grid-template-columns: 1fr;
+    max-width: 540px;
+    margin: 0 auto;
+    gap: 1.5rem;
+  }
+  .how-it-works-grid::before {
+    display: none !important;
+  }
+  #testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
   }
 }
 
-@media (max-width: 680px) {
-  .hero-search-form {
-    grid-template-columns: 1fr;
+/* 3. Small Tablets & Large Phones (580px to 767px) */
+@media (max-width: 767px) {
+  .section-padding {
+    padding: 3.5rem 0;
   }
-  .hero-symptom-search-bar {
-    border-radius: var(--radius-xl);
+  .section-header {
+    margin-bottom: 2.25rem;
+  }
+  .section-title {
+    font-size: clamp(1.65rem, 5vw, 2.2rem);
+  }
+  .section-subtitle {
+    font-size: 0.95rem;
+  }
+  .hero-title {
+    font-size: clamp(2rem, 6.5vw, 2.75rem);
+    line-height: 1.2;
+  }
+  .hero-subtitle {
+    font-size: 1.025rem;
+    margin-bottom: 1.5rem;
+  }
+  .desktop-only {
+    display: none;
+  }
+  .cta-section-wrap {
+    margin-top: 2.75rem;
+    margin-bottom: 3.75rem;
+  }
+  .cta-banner {
+    padding: 3rem 1.75rem;
+  }
+  .cta-title {
+    font-size: 1.85rem;
+  }
+  .cta-desc {
+    font-size: 0.95rem;
+    margin-bottom: 1.75rem;
+  }
+  .cta-buttons {
     flex-direction: column;
-    align-items: stretch;
-    padding: 1rem;
-    gap: 0.85rem;
+    max-width: 320px;
+    margin: 0 auto;
+    gap: 0.75rem;
+  }
+  .cta-buttons .btn {
+    width: 100%;
+  }
+}
+
+/* 4. Mobile Phones (320px to 579px) */
+@media (max-width: 579px) {
+  .hero-section {
+    padding: 2.25rem 0 3rem;
+  }
+  .hero-badge-pill {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    margin-bottom: 1rem;
+    width: auto;
+  }
+  .hero-title {
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.85rem;
+  }
+  .hero-subtitle {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin-bottom: 1.35rem;
+  }
+
+  /* Smart Symptom Matcher 2-row layout */
+  .hero-symptom-search-bar {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    border-radius: var(--radius-xl);
+    padding: 0.75rem 0.85rem;
+    gap: 0.65rem 0.5rem;
+    align-items: center;
+  }
+  .hero-symptom-search-bar .search-icon {
+    grid-column: 1;
+    grid-row: 1;
+    color: var(--primary-600);
+  }
+  .hero-symptom-input {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    font-size: 0.925rem;
+    padding: 0.35rem 0;
+  }
+  .hero-symptom-input::placeholder {
+    font-size: 0.85rem;
   }
   .hero-symptom-btn {
-    justify-content: center;
+    grid-column: 1 / -1;
+    grid-row: 2;
     width: 100%;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    font-size: 0.925rem;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Helper link */
+  .hero-ai-guide-row {
+    margin-top: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .hero-ai-link {
+    font-size: 0.825rem;
+    text-align: center;
+  }
+
+  /* Symptom chips */
+  .hero-symptom-chips {
+    gap: 0.4rem;
+    margin-bottom: 1.35rem;
+  }
+  .symptom-chip-label {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.25rem;
+    margin-right: 0;
+  }
+  .symptom-chip {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+    min-height: 34px;
+  }
+
+  /* Trust badges */
+  .hero-trust-indicators {
+    flex-direction: column;
+    gap: 0.65rem;
+    align-items: center;
+  }
+  .trust-item {
+    font-size: 0.8rem;
+  }
+
+  /* Stats section */
+  .stats-section {
+    padding: 2.25rem 0;
   }
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
-  .why-choose-grid {
-    grid-template-columns: 1fr;
+  .stat-card {
+    padding: 1.25rem 1rem;
   }
+  .stat-value {
+    font-size: 1.85rem;
+  }
+
+  /* Specialty cards */
+  .specialty-card-full {
+    padding: 1.35rem 1.15rem;
+  }
+  .specialty-card-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.85rem;
+  }
+  .specialty-card-icon i {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Featured Doctors */
+  #featured-doctors-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem;
+  }
+  .doctor-card-body {
+    padding: 1.25rem 1rem;
+  }
+  .doctor-card-top {
+    gap: 0.75rem;
+  }
+  .doctor-avatar-box {
+    width: 60px;
+    height: 60px;
+  }
+  .doctor-card-name {
+    font-size: 1.05rem;
+  }
+  .doctor-card-bottom {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .doctor-price-tag {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .doctor-actions-row {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .doctor-actions-row .btn {
+    flex: 1;
+    justify-content: center;
+    padding: 0.65rem 0.4rem;
+    font-size: 0.825rem;
+  }
+
+  /* Why Choose */
   .why-grid-4 {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .why-card-modern {
+    padding: 1.5rem 1.25rem;
+  }
+
+  /* How It Works */
+  .step-card-modern {
+    padding: 1.75rem 1.25rem;
+  }
+
+  /* Testimonials */
+  #testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .testimonial-card-rich {
+    padding: 1.5rem 1.25rem;
+  }
+
+  /* CTA */
+  .cta-banner {
+    padding: 2.25rem 1.25rem;
+    border-radius: var(--radius-lg);
+  }
+  .cta-title {
+    font-size: 1.55rem;
+  }
+  .cta-desc {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* 5. Extra-small devices (< 360px) */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.55rem;
+  }
+  .btn-coral {
+    font-size: 0.85rem;
+    padding: 0.65rem 0.75rem;
   }
 }

@@ -202,6 +202,57 @@ test('Pending query removed from sessionStorage after submission', () => {
   assert.strictEqual(sessionStorage.getItem('medibook_pending_query'), undefined);
 });
 
+console.log('\n[9. RESPONSIVE DESIGN & MOBILE COMPATIBILITY TESTS]');
+const landingCss = fs.readFileSync(path.join(__dirname, '..', 'assets', 'css', 'landing.css'), 'utf8');
+const layoutCss = fs.readFileSync(path.join(__dirname, '..', 'assets', 'css', 'layout.css'), 'utf8');
+const chatbotCss = fs.readFileSync(path.join(__dirname, '..', 'assets', 'css', 'chatbot.css'), 'utf8');
+
+test('Viewport meta tag properly configured for mobile devices', () => {
+  assert(html.includes('<meta name="viewport" content="width=device-width, initial-scale=1.0">'));
+});
+
+test('Mobile navigation hamburger toggle and drawer markup present', () => {
+  assert(html.includes('id="mobile-nav-toggle"'));
+  assert(html.includes('id="mobile-drawer"'));
+  assert(html.includes('class="mobile-drawer-content"'));
+});
+
+test('Landing CSS includes 1024px tablet breakpoint rules', () => {
+  assert(landingCss.includes('@media (max-width: 1024px)'));
+  assert(landingCss.includes('.hero-visual {\n    display: none;\n  }'));
+});
+
+test('Landing CSS includes 767px small tablet / phablet breakpoint rules', () => {
+  assert(landingCss.includes('@media (max-width: 767px)'));
+  assert(landingCss.includes('.desktop-only {\n    display: none;\n  }'));
+});
+
+test('Landing CSS includes 579px mobile phone breakpoint rules', () => {
+  assert(landingCss.includes('@media (max-width: 579px)'));
+  assert(landingCss.includes('grid-template-columns: auto 1fr;'));
+});
+
+test('Landing CSS includes 360px extra-small mobile breakpoint rules', () => {
+  assert(landingCss.includes('@media (max-width: 360px)'));
+});
+
+test('Doctor card bottom actions stack and become full-width on mobile', () => {
+  assert(landingCss.includes('.doctor-card-bottom {\n    padding: 1rem;\n    flex-direction: column;\n    align-items: stretch;'));
+});
+
+test('CTA buttons stack vertically into full-width tap targets on mobile', () => {
+  assert(landingCss.includes('.cta-buttons {\n    flex-direction: column;'));
+});
+
+test('Header logo and actions scale gracefully on small screens (<480px)', () => {
+  assert(layoutCss.includes('@media (max-width: 480px)'));
+  assert(layoutCss.includes('.header-container {\n    height: 64px;\n  }'));
+});
+
+test('Chatbot launcher collapses to compact touch icon on mobile (<640px)', () => {
+  assert(chatbotCss.includes('.medibook-chat-launcher .launcher-label {\n    display: none;\n  }'));
+});
+
 console.log('\n' + '='.repeat(80));
 console.log(`ALL HOMEPAGE TESTS PASSED: ${passCount} / ${passCount} assertions verified!`);
 console.log('='.repeat(80));
