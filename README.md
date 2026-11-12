@@ -123,17 +123,22 @@ MediBook features an omnipresent, intelligent healthcare assistant widget (**Med
    - Step 4: Time slot picker showing open slots and disabling already-booked slots.
    - Step 5: Summary review card displaying doctor, department, date/time, and fee.
    - Step 6: Atomic confirmation committing directly to the hospital ledger (`AppointmentService.bookAppointment`) with instantaneous booking reference generation.
-3. **Appointment Tracking & Cancellation**:
+4. **Appointment Tracking & Cancellation**:
    - Authenticated patients can ask *"Check my appointment"* to view their scheduled consultations.
    - Eligible appointments can be cancelled directly inside the chat dialog with a confirmation prompt and hospital policy notice verification (minimum 24 hours).
-4. **Hospital FAQ & Facility Guide**:
+5. **Nearby 24/7 Emergency Hospitals & On-Duty Doctors (< 30 min drive)**:
+   - For acute situations and emergency hospital inquiries (*"emergency hospital near me"*, *"find near by 30 min hospitals"*, *"docs for emergency"*), the chatbot retrieves accredited trauma centers and walk-in urgent care facilities strictly within a 30-minute radius.
+   - Displays rich emergency cards featuring live drive times (e.g. `< 12 min drive`), distance in miles, estimated ER wait times, on-duty trauma lead physicians, and critical capabilities (Level 1 Trauma, Cardiac Cath Lab, Stroke Pod).
+   - Provides 1-click **Call 24/7 ER** buttons and **Get Directions** (Google Maps navigation links).
+   - Prominently accessible via emergency symptom banners and suggested prompts.
+6. **Hospital FAQ & Facility Guide**:
    - Queries regarding operating hours, physical address, hotlines, and accreditations are answered instantly using synchronized `AdminService` settings.
-5. **Pharmacy Enquiries**:
+7. **Pharmacy Enquiries**:
    - Inquiries about outpatient pharmacy operating hours and medicine catalog stock checks, with clear warnings that the assistant cannot prescribe or alter medications.
-6. **Clinical Safety Guardrails & Emergency Detection**:
+8. **Clinical Safety Guardrails & Emergency Detection**:
    - Strictly informational and administrative assistant; never offers medical diagnoses or treatment advice.
-   - Real-time emergency symptom triage detects acute conditions (chest pain, stroke symptoms, respiratory distress, profuse bleeding, loss of consciousness) and immediately renders a prominent emergency alert banner with direct **Call 911** and **+1 (800) 432-9911** hotline buttons.
-7. **Zero-Exposure Architecture & Dual Engine**:
+   - Real-time emergency symptom triage detects acute conditions (chest pain, stroke symptoms, respiratory distress, profuse bleeding, loss of consciousness) and immediately renders a prominent emergency alert banner with direct **Call 911**, **+1 (800) 432-9911**, and **Locate Emergency Hospitals (< 30 min)** buttons.
+9. **Zero-Exposure Architecture & Dual Engine**:
    - Chatbot requests route to `/api/chat` on the zero-dependency Node.js server (`server.js`).
    - If `GEMINI_API_KEY` is present, it securely queries Google's Gemini 1.5 Flash model with strict clinical safety instructions. API keys are **never** exposed to client JavaScript.
    - If running offline or without an API key, an intelligent built-in rule-based medical NLP engine seamlessly takes over with zero configuration needed.

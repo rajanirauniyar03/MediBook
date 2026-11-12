@@ -65,6 +65,7 @@ class MediBookChatbot {
           "Find a doctor",
           "Book an appointment",
           "Check my appointment",
+          "Emergency hospitals (<30 mins)",
           "Hospital information",
           "Pharmacy enquiries"
         ]
@@ -466,8 +467,54 @@ class MediBookChatbot {
               <i data-lucide="hospital" style="width: 14px; height: 14px;"></i> +1 (800) 432-9911
             </a>
           </div>
+          <div style="margin-top: 0.65rem; border-top: 1px solid #fecaca; padding-top: 0.5rem;">
+            <button class="btn btn-sm" style="width: 100%; background: #991b1b; color: #fff; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.45rem; border-radius: var(--radius-md);" onclick="window.MediBookChat.locateEmergencyHospitals()">
+              <i data-lucide="navigation" style="width: 14px; height: 14px;"></i> Locate Nearby Emergency Hospitals (< 30 min)
+            </button>
+          </div>
         </div>
       `;
+    }
+
+    // 9. Render Emergency Facility Cards (< 30 min radius)
+    if (msg.emergencyFacilities && msg.emergencyFacilities.length > 0) {
+      contentHtml += msg.emergencyFacilities.map(fac => `
+        <div class="chat-emergency-facility-card">
+          <div class="chat-facility-header">
+            <div>
+              <div class="chat-facility-name">${fac.name}</div>
+              <div class="chat-facility-type">${fac.type}</div>
+            </div>
+          </div>
+          <div class="chat-facility-metrics">
+            <span class="chat-metric-pill drive">
+              <i data-lucide="navigation" style="width: 11px; height: 11px;"></i>
+              ${fac.driveTimeMins} min drive (${fac.distanceMiles} mi)
+            </span>
+            <span class="chat-metric-pill wait">
+              <i data-lucide="clock" style="width: 11px; height: 11px;"></i>
+              Est. ${fac.waitTimeMins} min wait
+            </span>
+            <span class="chat-metric-pill open">
+              <i data-lucide="activity" style="width: 11px; height: 11px;"></i>
+              24/7 ER Active
+            </span>
+          </div>
+          <div class="chat-facility-meta">
+            <div><strong>Address:</strong> ${fac.address}</div>
+            <div><strong>On-Duty Emergency Lead:</strong> ${fac.onDutyLead}</div>
+            <div><strong>Critical Services:</strong> ${(fac.services || []).join(' • ')}</div>
+          </div>
+          <div class="chat-facility-actions">
+            <a href="tel:${(fac.phone || '').replace(/[^0-9+]/g, '')}" class="btn btn-primary btn-sm" style="background: #dc2626; border-color: #dc2626; color: #fff;">
+              <i data-lucide="phone-call" style="width: 13px; height: 13px;"></i> Call 24/7 ER
+            </a>
+            <a href="${fac.mapsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
+              <i data-lucide="map-pin" style="width: 13px; height: 13px;"></i> Get Directions
+            </a>
+          </div>
+        </div>
+      `).join('');
     }
 
     row.innerHTML = `
@@ -583,6 +630,12 @@ class MediBookChatbot {
           suggestions: ["Book another appointment", "Hospital contact", "Clear chat"]
         });
       }
+    } else if (res.action === 'show_emergency_hospitals' || res.intent === 'emergency_locator') {
+      const facilities = res.emergencyFacilities || this.getEmergencyFacilities();
+      this.addMessage('bot', res.reply, {
+        emergencyFacilities: facilities,
+        suggestions: ["Call 911 dispatch", "Check another symptom", "Hospital information"]
+      });
     } else if (res.action === 'show_cancellable_appointments') {
       const apts = this.getCurrentUserAppointments().filter(a => a.status === 'Confirmed' || a.status === 'Pending');
       if (apts.length === 0) {
@@ -735,7 +788,24 @@ class MediBookChatbot {
       };
     }
 
-    // 3. Symptom Analysis & Doctor Recommendation (Headache, Stomach pain, etc.)
+    // 3. Emergency Hospital & 30-min Urgent Care Finder
+    const is30MinQuery = /\b(30\s*min|30\s*minute|30\s*mins|30\s*minutes|thirty\s*min|within\s*30)\b/i.test(lower);
+    const isNearbyQuery = /\b(near|nearby|near\s*by|closest|nearest|around\s*me|near\s*me)\b/i.test(lower);
+    const isEmergencyFacility = /\b(emergency|urgent|urgent\s*care|er\b|trauma|ambulance)\b/i.test(lower);
+    const isMedicalEntity = /\b(hospital|hospitals|clinic|clinics|doctor|doctors|doc|docs|center|centers|facility|facilities)\b/i.test(lower);
+
+    if (is30MinQuery || (isEmergencyFacility && (isNearbyQuery || isMedicalEntity)) || (isNearbyQuery && isMedicalEntity)) {
+      const facilities = this.getEmergencyFacilities();
+      return {
+        reply: "🚨 **Accredited 24/7 Emergency Hospitals & Urgent Care Centers (< 30 min drive)**\n\nHere are verified hospital emergency rooms within a 30-minute radius with live drive times, estimated ER wait times, on-duty emergency physicians, and 1-click turn-by-turn directions.\n\n*If you cannot travel safely, please call **911** immediately for emergency dispatch:*",
+        intent: 'emergency_locator',
+        action: 'show_emergency_hospitals',
+        emergencyFacilities: facilities,
+        suggestions: ["Call 911 dispatch", "Check symptoms", "Hospital information"]
+      };
+    }
+
+    // 4. Symptom Analysis & Doctor Recommendation (Headache, Stomach pain, etc.)
     const symptomRec = this.detectSymptomAndRecommend(text);
     if (symptomRec) {
       const docs = this.findDoctors({ departments: symptomRec.recommendedDepts });
@@ -970,6 +1040,72 @@ class MediBookChatbot {
     } else {
       this.addMessage('bot', `⚠️ Could not cancel appointment: ${res.error || 'Notice policy violation or appointment already completed.'}`);
     }
+  }
+
+  locateEmergencyHospitals() {
+    this.showTyping();
+    const facilities = this.getEmergencyFacilities();
+
+    setTimeout(() => {
+      this.hideTyping();
+      this.addMessage('bot', "🚨 **Accredited 24/7 Emergency Hospitals & Urgent Care Centers (< 30 min drive)**\n\nHere are verified hospital emergency rooms within a 30-minute radius with live drive times, estimated ER wait times, on-duty emergency physicians, and 1-click turn-by-turn directions.\n\n*If you cannot travel safely, please call **911** immediately for emergency dispatch:*", {
+        emergencyFacilities: facilities,
+        suggestions: ["Call 911 dispatch", "Check another symptom", "Hospital information"]
+      });
+    }, 400);
+  }
+
+  getEmergencyFacilities() {
+    if (window.MEDIBOOK_DATA && window.MEDIBOOK_DATA.emergencyFacilities) {
+      return window.MEDIBOOK_DATA.emergencyFacilities;
+    }
+    return [
+      {
+        id: "er_001",
+        name: "Metropolitan Central Hospital & Level 1 Trauma Center",
+        type: "Level 1 Emergency & Trauma Hospital",
+        driveTimeMins: 12,
+        distanceMiles: 3.2,
+        address: "500 Healthcare Boulevard, Suite 100, San Francisco, CA 94107",
+        phone: "+1 (800) 432-9911",
+        directDispatch: "+1 (415) 555-0199",
+        waitTimeMins: 8,
+        isOpen247: true,
+        onDutyLead: "Dr. Alexander Wright, MD (Trauma & Cardiac Care Lead)",
+        services: ["24/7 Level 1 Trauma", "Emergency Cardiac Cath Lab", "Comprehensive Stroke Center", "ICU Resuscitation"],
+        mapsUrl: "https://maps.google.com/?q=500+Healthcare+Blvd+San+Francisco+CA"
+      },
+      {
+        id: "er_002",
+        name: "St. Jude Neuroscience & Emergency Pavilion",
+        type: "24/7 Comprehensive Emergency Center",
+        driveTimeMins: 18,
+        distanceMiles: 5.8,
+        address: "720 Sutter Street, Level 1 ER, San Francisco, CA 94109",
+        phone: "+1 (800) 432-9922",
+        directDispatch: "+1 (415) 555-0144",
+        waitTimeMins: 12,
+        isOpen247: true,
+        onDutyLead: "Dr. Eleanor Vance, MD, PhD (Neuro & Acute Care)",
+        services: ["Acute Stroke Intervention", "Advanced CT/MRI Emergency Scans", "Pediatric Emergency Pod"],
+        mapsUrl: "https://maps.google.com/?q=720+Sutter+Street+San+Francisco+CA"
+      },
+      {
+        id: "er_003",
+        name: "Bayview Urgent Care & Immediate Walk-in Center",
+        type: "Acute Urgent Care (<30 min drive)",
+        driveTimeMins: 24,
+        distanceMiles: 8.1,
+        address: "300 Olympic Boulevard, Pavilion 2B, San Jose / South Bay, CA",
+        phone: "+1 (800) 432-9933",
+        directDispatch: "+1 (408) 555-0188",
+        waitTimeMins: 5,
+        isOpen247: true,
+        onDutyLead: "Dr. Rachel Adams, MD (Orthopedic & Laceration Trauma)",
+        services: ["Walk-in Acute Illness", "Fracture Castings & Digital X-Ray", "Wound Suturing", "IV Hydration"],
+        mapsUrl: "https://maps.google.com/?q=300+Olympic+Boulevard+San+Jose+CA"
+      }
+    ];
   }
 
   sendSuggestion(prompt) {

@@ -198,6 +198,21 @@ async function runTests() {
   assert(emergencyReply.text.includes("911"), "Directs patient to call emergency services (911)");
   assert(emergencyReply.text.includes("not authorized to evaluate emergency medical conditions"), "Enforces clinical disclaimer prohibiting unverified triage");
 
+  // Test 2.1 Nearby Emergency Facility Locator Method
+  const erFacilities = bot.getEmergencyFacilities();
+  assert(Array.isArray(erFacilities) && erFacilities.length === 3, "Returns 3 verified 24/7 emergency facilities");
+  assert(erFacilities.every(f => f.driveTimeMins <= 30), "All facilities are strictly within a 30-minute drive time");
+  assert(erFacilities[0].name.includes("Metropolitan Central Hospital"), "Includes Level 1 Trauma Center");
+  assert(erFacilities[0].driveTimeMins === 12, "Metropolitan Central Hospital is 12 min drive");
+  assert(erFacilities[0].waitTimeMins === 8, "Displays estimated ER wait time (8 mins)");
+
+  // Test 2.2 locateEmergencyHospitals() execution
+  bot.locateEmergencyHospitals();
+  await new Promise(r => setTimeout(r, 600));
+  const erLocateMsg = bot.messages[bot.messages.length - 1];
+  assert(erLocateMsg.emergencyFacilities && erLocateMsg.emergencyFacilities.length === 3, "Attaches emergency facility cards to message");
+  assert(erLocateMsg.text.includes("< 30 min"), "States 30-minute radius in response message");
+
   // =========================================================================
   // 3. DOCTOR DISCOVERY VIA CONVERSATIONAL NLP
   // =========================================================================
@@ -259,6 +274,27 @@ async function runTests() {
   const nlpPedia = bot.localNLPEngine("my 3 year old baby has a fever and cough", null);
   assert(nlpPedia.reply.includes("Pediatrics"), "Recommends Pediatrics for infant/child symptoms");
   assert(nlpPedia.reply.includes("Dr. Marcus Chen") && nlpPedia.reply.includes("$95"), "Lists Dr. Marcus Chen with $95 fee");
+
+  // =========================================================================
+  // 3.6 EMERGENCY HOSPITALS & ON-DUTY DOCS (<30 MIN RADIUS) TESTS
+  // =========================================================================
+  console.log("\n[3.6 EMERGENCY 30-MIN HOSPITALS & DOCS LOCATOR TESTS]");
+
+  // 3.6.1 "find near by 30 min hospitals"
+  const nlpNear30 = bot.localNLPEngine("find near by 30 min hospitals", null);
+  assert(nlpNear30.intent === 'emergency_locator', "Identifies emergency_locator intent for 30 min hospitals");
+  assert(nlpNear30.action === 'show_emergency_hospitals', "Sets action to show_emergency_hospitals");
+  assert(nlpNear30.emergencyFacilities.length === 3, "Returns 3 emergency hospital facilities");
+  assert(nlpNear30.emergencyFacilities[0].name.includes("Metropolitan Central Hospital"), "Includes Metropolitan Level 1 Trauma");
+
+  // 3.6.2 "emergency hospital near me"
+  const nlpNearMe = bot.localNLPEngine("emergency hospital near me", null);
+  assert(nlpNearMe.intent === 'emergency_locator', "Identifies emergency hospital near me query");
+
+  // 3.6.3 "docs for emergency situation within 30 min"
+  const nlpDocEmerg = bot.localNLPEngine("docs for emergency situation within 30 minutes", null);
+  assert(nlpDocEmerg.intent === 'emergency_locator', "Identifies docs for emergency situation within 30 minutes");
+  assert(nlpDocEmerg.emergencyFacilities.some(f => f.onDutyLead.includes("Dr. Alexander Wright")), "Includes on-duty trauma lead doctor");
 
   // =========================================================================
   // 4. MULTI-STEP CONVERSATIONAL APPOINTMENT BOOKING WIZARD
@@ -429,6 +465,14 @@ async function runTests() {
   assert(resHeadache.status === 200, "POST /api/chat handles headache symptom");
   assert(resHeadache.data.reply.includes("Neurology"), "/api/chat recommends Neurology for headache");
   assert(resHeadache.data.reply.includes("$140"), "/api/chat includes Dr. Eleanor Vance $140 fee");
+
+  // Test 7.6 Nearby Emergency Facilities via /api/chat
+  const resEmergNear = await invokeChatAPI({ message: "find near by 30 min hospitals or docs for emergency" });
+  assert(resEmergNear.status === 200, "POST /api/chat handles nearby emergency hospital request");
+  assert(resEmergNear.data.intent === 'emergency_locator', "/api/chat returns emergency_locator intent");
+  assert(resEmergNear.data.action === 'show_emergency_hospitals', "/api/chat returns show_emergency_hospitals action");
+  assert(resEmergNear.data.emergencyFacilities.length === 3, "/api/chat provides 3 emergency hospital facilities");
+  assert(resEmergNear.data.reply.includes("Metropolitan Central Hospital"), "/api/chat mentions Metropolitan Central Hospital in reply");
 
   console.log(`\n===============================================================================`);
   console.log(`ALL TESTS PASSED: ${passedTests} / ${totalTests} assertions verified!`);

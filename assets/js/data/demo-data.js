@@ -454,6 +454,55 @@ const MEDIBOOK_DATA = {
       date: "November 2026",
       avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
     }
+  ],
+
+  // Accredited 24/7 Emergency Hospitals & Urgent Care Centers (< 30 min radius)
+  emergencyFacilities: [
+    {
+      id: "er_001",
+      name: "Metropolitan Central Hospital & Level 1 Trauma Center",
+      type: "Level 1 Emergency & Trauma Hospital",
+      driveTimeMins: 12,
+      distanceMiles: 3.2,
+      address: "500 Healthcare Boulevard, Suite 100, San Francisco, CA 94107",
+      phone: "+1 (800) 432-9911",
+      directDispatch: "+1 (415) 555-0199",
+      waitTimeMins: 8,
+      isOpen247: true,
+      onDutyLead: "Dr. Alexander Wright, MD (Trauma & Cardiac Care Lead)",
+      services: ["24/7 Level 1 Trauma", "Emergency Cardiac Cath Lab", "Comprehensive Stroke Center", "ICU Resuscitation"],
+      mapsUrl: "https://maps.google.com/?q=500+Healthcare+Blvd+San+Francisco+CA"
+    },
+    {
+      id: "er_002",
+      name: "St. Jude Neuroscience & Emergency Pavilion",
+      type: "24/7 Comprehensive Emergency Center",
+      driveTimeMins: 18,
+      distanceMiles: 5.8,
+      address: "720 Sutter Street, Level 1 ER, San Francisco, CA 94109",
+      phone: "+1 (800) 432-9922",
+      directDispatch: "+1 (415) 555-0144",
+      waitTimeMins: 12,
+      isOpen247: true,
+      onDutyLead: "Dr. Eleanor Vance, MD, PhD (Neuro & Acute Care)",
+      services: ["Acute Stroke Intervention", "Advanced CT/MRI Emergency Scans", "Pediatric Emergency Pod"],
+      mapsUrl: "https://maps.google.com/?q=720+Sutter+Street+San+Francisco+CA"
+    },
+    {
+      id: "er_003",
+      name: "Bayview Urgent Care & Immediate Walk-in Center",
+      type: "Acute Urgent Care (<30 min drive)",
+      driveTimeMins: 24,
+      distanceMiles: 8.1,
+      address: "300 Olympic Boulevard, Pavilion 2B, San Jose / South Bay, CA",
+      phone: "+1 (800) 432-9933",
+      directDispatch: "+1 (408) 555-0188",
+      waitTimeMins: 5,
+      isOpen247: true,
+      onDutyLead: "Dr. Rachel Adams, MD (Orthopedic & Laceration Trauma)",
+      services: ["Walk-in Acute Illness", "Fracture Castings & Digital X-Ray", "Wound Suturing", "IV Hydration"],
+      mapsUrl: "https://maps.google.com/?q=300+Olympic+Boulevard+San+Jose+CA"
+    }
   ]
 };
 
