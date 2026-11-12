@@ -14,13 +14,14 @@
 1. [Key Features & Capabilities](#-key-features--capabilities)
 2. [Technology Stack](#-technology-stack)
 3. [Multi-Role Architecture & Demo Credentials](#-multi-role-architecture--demo-credentials)
-4. [Complete Project Folder Structure](#-complete-project-folder-structure)
-5. [Database Architecture & Firestore Collection Schemas](#-database-architecture--firestore-collection-schemas)
-6. [Security Architecture & Cloud Rules](#-security-architecture--cloud-rules)
-7. [Installation & Local Deployment Guide](#-installation--local-deployment-guide)
-8. [Firebase Production Deployment Guide](#-firebase-production-deployment-guide)
-9. [Automated Testing & Verification Checklist](#-automated-testing--verification-checklist)
-10. [HIPAA, Privacy & Regulatory Compliance](#-hipaa-privacy--regulatory-compliance)
+4. [AI Healthcare Assistant Chatbot](#-ai-healthcare-assistant-chatbot)
+5. [Complete Project Folder Structure](#-complete-project-folder-structure)
+6. [Database Architecture & Firestore Collection Schemas](#-database-architecture--firestore-collection-schemas)
+7. [Security Architecture & Cloud Rules](#-security-architecture--cloud-rules)
+8. [Installation & Local Deployment Guide](#-installation--local-deployment-guide)
+9. [Firebase Production Deployment Guide](#-firebase-production-deployment-guide)
+10. [Automated Testing & Verification Checklist](#-automated-testing--verification-checklist)
+11. [HIPAA, Privacy & Regulatory Compliance](#-hipaa-privacy--regulatory-compliance)
 
 ---
 
@@ -58,6 +59,15 @@
 - **Stock Adjustment Auditing**: Complete audit log recording timestamp, staff name, quantity change, and adjustment reason.
 - **Medicine Availability Inquiries**: Patient questions routed directly to pharmacy dispensary staff for fast response.
 
+### 6. MediBook AI Healthcare Assistant Chatbot
+- **Omnipresent Floating Widget**: Available on all public website pages and the patient portal with smooth opening animations and unread pulse badges.
+- **Conversational Multi-Step Booking**: End-to-end appointment scheduling inside chat (Department → Doctor selection → Available dates → Time slot picker → Summary review → Direct booking in Firestore).
+- **Intelligent Doctor Discovery**: Search doctors using natural language (e.g. *"Find a dermatologist under $120"* or *"Show me pediatricians"*); renders interactive doctor cards with avatars, ratings, experience, and 1-click booking.
+- **Patient Appointment Tracking & Cancellation**: Authenticated patients can view upcoming appointments and cancel confirmed visits directly within chat, respecting hospital cancellation policy.
+- **Hospital Facility Guide & Pharmacy Enquiries**: Instant answers on hospital operating hours, hotlines, address, services, and pharmacy stock enquiries.
+- **Clinical Safety Guardrails & Emergency Detection**: Immediate high-visibility emergency alert banner for acute symptoms (chest pain, stroke, breathing distress) with 911 / hotline links. Strict non-diagnostic disclaimers.
+- **Zero-Exposure Hybrid Backend**: `/api/chat` proxy with Google Gemini API integration; falls back automatically to zero-config local medical NLP engine for offline or standalone operation.
+
 ---
 
 ## 🛠️ Technology Stack
@@ -67,6 +77,7 @@
 | **Frontend Markup** | Semantic HTML5, WAI-ARIA Accessible Roles |
 | **Styling & Design System** | Pure CSS3 (Custom Variables, Flexbox, CSS Grid, Media Queries, Zero Frameworks) |
 | **Client-Side Scripting** | Vanilla JavaScript (ES6+ Modules, Async/Await, Native Web APIs) |
+| **AI / Assistant Layer** | Google Generative AI (Gemini 1.5 Flash) via secure backend proxy + Built-in Clinical NLP Engine |
 | **Authentication** | Firebase Authentication (Email/Password) with automatic offline/demo simulation fallback |
 | **Cloud Database** | Cloud Firestore with ACID Transactions and Security Rules |
 | **Cloud Storage** | Firebase Storage for prescription documents and profile imagery |
@@ -92,6 +103,38 @@ MediBook includes pre-configured, instantly evaluable demo accounts for all 4 ro
 
 ---
 
+## 🤖 AI Healthcare Assistant Chatbot
+
+MediBook features an omnipresent, intelligent healthcare assistant widget (**MediBook Assistant**) available across all public website pages and the patient portal:
+
+### Core Capabilities:
+1. **Interactive Doctor Discovery**:
+   - Natural language queries like *"Find a cardiologist"*, *"Show me dermatologists under $150"*, or *"Which pediatricians are available?"*.
+   - Renders interactive doctor cards directly in the chat with verified profile pictures, consultation fees, experience, ratings, and 1-click **Book** or **Profile** actions.
+2. **Conversational Multi-Step Booking Flow**:
+   - Step 1: Medical Department selection via interactive option pills.
+   - Step 2: Doctor selection displaying accredited physicians in that department.
+   - Step 3: Real-time date picker showing only the doctor's active clinical working days.
+   - Step 4: Time slot picker showing open slots and disabling already-booked slots.
+   - Step 5: Summary review card displaying doctor, department, date/time, and fee.
+   - Step 6: Atomic confirmation committing directly to the hospital ledger (`AppointmentService.bookAppointment`) with instantaneous booking reference generation.
+3. **Appointment Tracking & Cancellation**:
+   - Authenticated patients can ask *"Check my appointment"* to view their scheduled consultations.
+   - Eligible appointments can be cancelled directly inside the chat dialog with a confirmation prompt and hospital policy notice verification (minimum 24 hours).
+4. **Hospital FAQ & Facility Guide**:
+   - Queries regarding operating hours, physical address, hotlines, and accreditations are answered instantly using synchronized `AdminService` settings.
+5. **Pharmacy Enquiries**:
+   - Inquiries about outpatient pharmacy operating hours and medicine catalog stock checks, with clear warnings that the assistant cannot prescribe or alter medications.
+6. **Clinical Safety Guardrails & Emergency Detection**:
+   - Strictly informational and administrative assistant; never offers medical diagnoses or treatment advice.
+   - Real-time emergency symptom triage detects acute conditions (chest pain, stroke symptoms, respiratory distress, profuse bleeding, loss of consciousness) and immediately renders a prominent emergency alert banner with direct **Call 911** and **+1 (800) 432-9911** hotline buttons.
+7. **Zero-Exposure Architecture & Dual Engine**:
+   - Chatbot requests route to `/api/chat` on the zero-dependency Node.js server (`server.js`).
+   - If `GEMINI_API_KEY` is present, it securely queries Google's Gemini 1.5 Flash model with strict clinical safety instructions. API keys are **never** exposed to client JavaScript.
+   - If running offline or without an API key, an intelligent built-in rule-based medical NLP engine seamlessly takes over with zero configuration needed.
+
+---
+
 ## 📁 Complete Project Folder Structure
 
 ```
@@ -103,6 +146,7 @@ MediBook/
 ├── pharmacy.html                        # Public Pharmacy Catalogue & Prescription Upload
 ├── about.html                           # About Us, Quality Standards & Hospital Accreditations
 ├── contact.html                         # Contact Directory & Emergency Hotlines
+├── server.js                            # Production Node.js Server & Secure AI Proxy (/api/chat)
 ├── firestore.rules                      # Cloud Firestore Role-Based Security Rules
 ├── storage.rules                        # Firebase Storage Access Control Rules
 ├── firestore.indexes.json               # Firestore Composite Query Indexes
@@ -117,7 +161,7 @@ MediBook/
 ├── portal/
 │   ├── patient/
 │   │   ├── dashboard.html               # Patient KPI Metrics, Upcoming Visits & Quick Links
-│   │   ├── book-appointment.html         # 6-Step Multi-Step Appointment Booking Flow
+│   │   ├── book-appointment.html        # 6-Step Multi-Step Appointment Booking Flow
 │   │   ├── appointments.html           # My Appointments Ledger & Policy-Enforced Cancellation
 │   │   └── profile.html                 # Patient Contact, Blood Group & Emergency Profile
 │   │
@@ -146,7 +190,8 @@ MediBook/
     │   ├── auth.css                     # Auth Split Screen, Role Tabs, Strength Meter
     │   ├── portal.css                   # Sidebar, Topbar, KPI Stats, Multi-Step Wizard
     │   ├── dashboard.css                # Doctor Schedule, Calendar Grids, Leave Modals
-    │   └── pharmacy.css                 # Pharmacy Stock Tables, Low Stock Badges, Rx Modals
+    │   ├── pharmacy.css                 # Pharmacy Stock Tables, Low Stock Badges, Rx Modals
+    │   └── chatbot.css                  # AI Assistant Widget, Header, Chat Bubbles, Clinical Cards
     │
     └── js/
         ├── config/
@@ -158,7 +203,8 @@ MediBook/
         │   └── formatters.js            # Currency, Date/Time, Reference & Status Badges
         ├── components/
         │   ├── toast.js                 # Floating Toast Notification System
-        │   └── navbar.js                # Sticky Nav, Active Links, Session Dropdowns
+        │   ├── navbar.js                # Sticky Nav, Active Links, Session Dropdowns
+        │   └── chatbot.js               # AI Healthcare Assistant Widget & Conversational Flow Controller
         ├── services/
         │   ├── auth-service.js          # Auth, Role Guards, Session Sync, Password Reset
         │   ├── appointment-service.js   # Atomic Booking, Slot Locks, Notice Rules, Filtering
@@ -312,21 +358,28 @@ cd MediBook
 ```
 
 ### Step 2: Launch Local Web Server
-You can serve the directory with any static server:
+You can serve the directory with any static server. Running the included native Node.js server also activates the secure `/api/chat` AI proxy:
 
-#### Option A: Using Python (Pre-installed on macOS/Windows/Linux)
+#### Option A: Using Included Node.js Server (Recommended – Enables AI Assistant Proxy)
+```bash
+node server.js
+```
+Visit `http://localhost:3000` in your browser. This serves all pages and powers the secure `/api/chat` AI endpoint.
+
+#### Option B: Using Python (Pre-installed on macOS/Windows/Linux)
 ```bash
 python -m http.server 3000
 ```
-Visit `http://localhost:3000` in your browser.
+Visit `http://localhost:3000`. The chatbot will automatically operate using its built-in client-side NLP engine.
 
-#### Option B: Using Node.js `npx serve`
+#### Option C: Using Node.js `npx serve`
 ```bash
 npx serve . -p 3000
 ```
 
-#### Option C: Using VS Code Live Server
+#### Option D: Using VS Code Live Server
 1. Open the `MediBook` folder in VS Code.
+2. Right-click on `index.html` and select **"Open with Live Server"**.
 2. Right-click on `index.html` and select **"Open with Live Server"**.
 
 ---
