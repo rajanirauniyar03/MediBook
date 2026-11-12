@@ -394,6 +394,18 @@
   border: 1px solid var(--slate-100);
 }
 
+.chat-doctor-fee-badge {
+  font-weight: 800;
+  color: var(--primary-700);
+  background: var(--primary-50);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary-200);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .chat-doctor-actions {
   display: flex;
   gap: 0.45rem;

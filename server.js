@@ -59,6 +59,12 @@ CRITICAL HEALTHCARE SAFETY RULES:
    - You MUST immediately advise calling 911 or the hospital emergency hotline (+1 800 432-9911).
    - Advise them to proceed to the nearest emergency department immediately.
 5. If answering about doctors, fees, departments, hospital hours, or pharmacy stock, rely strictly on verified hospital data. Do not invent doctor names or hospital policies.
+6. SYMPTOM-TO-SPECIALIST RECOMMENDATION:
+   When a user describes symptoms (such as headache, stomach pain, back pain, knee pain, rash, toothache, child fever, palpitations, period cramps):
+   - Analyze the symptom and identify the best-suited medical department/specialty (e.g. Headache -> Neurology or General Medicine; Stomach pain -> General Medicine; Back/Knee pain -> Orthopedics; Rash -> Dermatology; Toothache -> Dentistry; Child symptoms -> Pediatrics; Period/Pelvic pain -> Gynecology; Fever/Cold -> General Medicine).
+   - In your response, clearly state which specialist department is recommended and explain why in 1-2 empathetic sentences.
+   - List the relevant verified doctors and their consultation fees (e.g. Dr. Eleanor Vance - $140 / visit, Dr. Claire Sterling - $90 / visit) so the patient can compare fees and make an informed decision.
+   - Always include a brief disclaimer that this is clinical scheduling guidance, not a medical diagnosis.
 `;
 
 /**
@@ -154,6 +160,105 @@ async function handleChatAPI(req, res) {
 }
 
 /**
+ * Symptom Analysis & Clinical Specialty Recommendation
+ */
+function detectSymptomAndRecommend(text) {
+  const lower = text.toLowerCase();
+
+  // 1. Headache / Migraine / Neurological
+  if (/\b(headache|headaches|head\s*ache|head\s*aches|migraine|migraines|head\s*pain|throbbing\s*head|dizziness|vertigo|nerve\s*pain|numbness|tingling|seizure|seizures|brain\s*fog|concussion)\b/i.test(lower)) {
+    return {
+      symptom: "Headache / Neurological Discomfort",
+      recommendedDepts: ["Neurology", "General Medicine"],
+      rationale: "Headaches and chronic migraines are best evaluated by our **Neurology** faculty to examine neurovascular causes and pain management. For primary screening or tension headaches, a **General Medicine** physician can also conduct an initial assessment."
+    };
+  }
+
+  // 2. Stomach / Abdominal / Digestive
+  if (/\b(stomach|stomac|abdomen|abdominal|belly|tummy|gut)\s*(pain|ache|hurt|hurts|cramp|cramps|upset|burning|discomfort)?\b|\b(gastric|gastritis|acidity|acid\s*reflux|heartburn|indigestion|bloating|nausea|vomiting|vomit|diarrhea|diarrhoea|loose\s*motion|constipation|food\s*poisoning)\b/i.test(lower)) {
+    return {
+      symptom: "Stomach Pain / Digestive & Abdominal Discomfort",
+      recommendedDepts: ["General Medicine"],
+      rationale: "For stomach pain, gastritis, acid reflux, or abdominal distress, our **General Medicine** (Internal Medicine) specialists are best equipped to perform clinical abdominal exams, run digestive diagnostics, and prescribe targeted medical care."
+    };
+  }
+
+  // 3. Skin / Hair / Dermatology
+  if (/\b(skin\s*rash|rash|rashes|acne|pimple|pimples|eczema|psoriasis|itching|itchy|hives|skin\s*allergy|mole|moles|hair\s*fall|hair\s*loss|dandruff|scalp|dermatitis|skin\s*infection|dry\s*skin)\b/i.test(lower)) {
+    return {
+      symptom: "Skin Eruptions / Dermatological Symptoms",
+      recommendedDepts: ["Dermatology"],
+      rationale: "For skin rashes, acne, eczema, or scalp conditions, our board-certified **Dermatology** faculty provides clinical dermoscopy, allergy assessments, and tailored dermatological therapies."
+    };
+  }
+
+  // 4. Bones / Joints / Musculoskeletal (Orthopedics)
+  if (/\b(back\s*pain|lower\s*back|spine\s*pain|neck\s*pain|knee\s*pain|joint\s*pain|shoulder\s*pain|hip\s*pain|ankle\s*pain|wrist\s*pain|arthritis|sprain|strain|fracture|broken\s*bone|bone\s*pain|swollen\s*joint|swollen\s*knee|ligament|muscle\s*tear|sports\s*injury)\b/i.test(lower)) {
+    return {
+      symptom: "Joint, Spine & Musculoskeletal Pain",
+      recommendedDepts: ["Orthopedics"],
+      rationale: "For back pain, knee issues, joint stiffness, or sports injuries, our **Orthopedics & Sports Medicine** specialists evaluate joint mobility, review musculoskeletal imaging, and formulate rehabilitation plans."
+    };
+  }
+
+  // 5. Non-Emergency Cardiac / Heart
+  if (/\b(palpitations|heart\s*racing|racing\s*pulse|rapid\s*heart|high\s*blood\s*pressure|hypertension|high\s*cholesterol|irregular\s*heartbeat|fluttering\s*heart)\b/i.test(lower)) {
+    return {
+      symptom: "Cardiovascular & Heart Rhythm Symptoms",
+      recommendedDepts: ["Cardiology"],
+      rationale: "For heart palpitations, blood pressure irregularities, or cardiac risk reviews, consultation with a **Cardiologist** is recommended for ECG, echocardiograms, and preventative heart care."
+    };
+  }
+
+  // 6. Dental / Teeth
+  if (/\b(toothache|tooth\s*ache|tooth\s*pain|teeth\s*pain|cavity|cavities|gum\s*bleed|bleeding\s*gums|swollen\s*gum|wisdom\s*tooth|broken\s*tooth|jaw\s*pain|dental\s*pain|sensitive\s*teeth|teeth\s*cleaning)\b/i.test(lower)) {
+    return {
+      symptom: "Dental Pain & Oral Health",
+      recommendedDepts: ["Dentistry"],
+      rationale: "For toothaches, gum inflammation, or oral pain, our **Dentistry** faculty offers comprehensive restorative care, digital dental imaging, and pain-relief procedures."
+    };
+  }
+
+  // 7. Pediatrics / Child Illness
+  if (/\b(child|baby|infant|toddler|kid|newborn)\b.*\b(fever|sick|cough|cold|vomit|pain|rash|unwell|vaccination|checkup)\b|\b(pediatric|pediatrician)\b/i.test(lower)) {
+    return {
+      symptom: "Pediatric & Child Health Concern",
+      recommendedDepts: ["Pediatrics"],
+      rationale: "For illnesses, infections, or developmental concerns affecting infants and children, our **Pediatrics** department offers gentle, specialized clinical care."
+    };
+  }
+
+  // 8. Women's Health / Gynecology
+  if (/\b(period\s*pain|menstrual\s*cramps|missed\s*period|irregular\s*period|pregnancy|pregnant|prenatal|pcos|pelvic\s*pain|vaginal|yeast\s*infection|hot\s*flashes|menopause|fertility)\b/i.test(lower)) {
+    return {
+      symptom: "Women's Health & Gynecological Symptoms",
+      recommendedDepts: ["Gynecology"],
+      rationale: "For menstrual irregularities, pelvic pain, or prenatal health, consultation with a board-certified **Gynecologist & Obstetrician (OB/GYN)** is recommended."
+    };
+  }
+
+  // 9. General Fever / Cold / Infection
+  if (/\b(fever|high\s*fever|cold|cough|flu|sore\s*throat|throat\s*pain|runny\s*nose|fatigue|body\s*ache|weakness|chills|infection|feeling\s*sick|unwell)\b/i.test(lower)) {
+    return {
+      symptom: "Fever, Cold / Flu & General Malaise",
+      recommendedDepts: ["General Medicine"],
+      rationale: "For fever, coughs, viral infections, or general body fatigue, our **General Medicine** physicians conduct clinical examinations, order lab diagnostics, and prescribe recovery treatment."
+    };
+  }
+
+  // 10. Eye / Vision
+  if (/\b(eye\s*pain|blurred\s*vision|blurry\s*vision|red\s*eye|pink\s*eye|eye\s*irritation)\b/i.test(lower)) {
+    return {
+      symptom: "Eye & Vision Discomfort",
+      recommendedDepts: ["General Medicine"],
+      rationale: "For acute eye discomfort or visual changes, an initial evaluation with a **General Medicine** clinician is recommended for primary screening and ophthalmology referral."
+    };
+  }
+
+  return null;
+}
+
+/**
  * Intelligent Healthcare NLP Engine
  * Understands intents: doctor_search, book_appointment, check_appointment,
  * cancel_appointment, hospital_info, pharmacy_enquiry, greeting, medical_disclaimer
@@ -193,7 +298,35 @@ function processNLPFallback(msg, history, context, user) {
     };
   }
 
-  // 3. Booking Intent
+  // 3. Symptom Analysis & Doctor Recommendation
+  const symptomRec = detectSymptomAndRecommend(msg);
+  if (symptomRec) {
+    const demoDocs = [
+      { name: "Dr. Alexander Wright", department: "Cardiology", fee: 120, exp: 16 },
+      { name: "Dr. Eleanor Vance", department: "Neurology", fee: 140, exp: 12 },
+      { name: "Dr. Marcus Chen", department: "Pediatrics", fee: 95, exp: 14 },
+      { name: "Dr. Rachel Adams", department: "Orthopedics", fee: 150, exp: 18 },
+      { name: "Dr. Sanjay Patel", department: "Dermatology", fee: 110, exp: 10 },
+      { name: "Dr. Sophia Thorne", department: "Gynecology", fee: 130, exp: 15 },
+      { name: "Dr. Laura Bennett", department: "Dentistry", fee: 85, exp: 11 },
+      { name: "Dr. Claire Sterling", department: "General Medicine", fee: 90, exp: 17 },
+      { name: "Dr. Jonathan Ross", department: "Cardiology", fee: 135, exp: 13 }
+    ];
+
+    const matched = demoDocs.filter(d => symptomRec.recommendedDepts.includes(d.department));
+    const feeText = matched.map(d => `• **${d.name}** (${d.department}, ${d.exp} yrs exp) – **$${d.fee} / visit**`).join('\n');
+    const deptsDisplay = symptomRec.recommendedDepts.join(' or ');
+
+    return {
+      reply: `Based on your described symptoms (**${symptomRec.symptom}**), our AI clinical navigator recommends consulting a specialist in **${deptsDisplay}**.\n\n${symptomRec.rationale}\n\nHere are our accredited physicians along with their consultation fees so you can compare and decide:\n${feeText}\n\n*Review their profiles or select **Book** on any card below to schedule your consultation:*`,
+      intent: 'symptom_recommendation',
+      action: 'show_doctors',
+      filter: { departments: symptomRec.recommendedDepts },
+      symptom: symptomRec.symptom
+    };
+  }
+
+  // 4. Booking Intent
   if (lower.includes('book') || lower.includes('schedule') || lower.includes('make an appointment') || lower.includes('see a doctor') || lower.includes('reserve')) {
     return {
       reply: "I'd be glad to help you schedule a consultation! To get started, please select which medical department you require:",

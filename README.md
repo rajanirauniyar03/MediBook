@@ -111,7 +111,12 @@ MediBook features an omnipresent, intelligent healthcare assistant widget (**Med
 1. **Interactive Doctor Discovery**:
    - Natural language queries like *"Find a cardiologist"*, *"Show me dermatologists under $150"*, or *"Which pediatricians are available?"*.
    - Renders interactive doctor cards directly in the chat with verified profile pictures, consultation fees, experience, ratings, and 1-click **Book** or **Profile** actions.
-2. **Conversational Multi-Step Booking Flow**:
+2. **Symptom-to-Specialist & Fee Comparison Engine**:
+   - Patients can describe everyday symptoms in natural conversational language (e.g., *"I have a headache"*, *"stomac pain and acidity"*, *"knee and lower back hurt"*, *"skin rash and acne"*, *"bad toothache"*, *"my child has a fever"*).
+   - Intelligently analyzes the symptom, explains which medical department is best suited (e.g. Headache → Neurology or General Medicine; Stomach pain → General Medicine; Knee/Back pain → Orthopedics; Rash → Dermatology; Toothache → Dentistry; Child symptoms → Pediatrics; Period pain → Gynecology).
+   - Renders the recommended accredited physicians along with their prominent consultation fees (e.g. Dr. Eleanor Vance – `$140 / visit`, Dr. Claire Sterling – `$90 / visit`) so patients can evaluate qualifications and compare fees before deciding.
+   - Includes 1-click **Book** buttons to jump straight into date and slot scheduling.
+3. **Conversational Multi-Step Booking Flow**:
    - Step 1: Medical Department selection via interactive option pills.
    - Step 2: Doctor selection displaying accredited physicians in that department.
    - Step 3: Real-time date picker showing only the doctor's active clinical working days.

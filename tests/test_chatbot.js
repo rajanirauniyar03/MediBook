@@ -220,6 +220,47 @@ async function runTests() {
   assert(feeDocs.every(d => (d.consultationFee || d.fee || 100) <= 120), "All returned physicians are within budget");
 
   // =========================================================================
+  // 3.5 SYMPTOM INTELLIGENCE & DOCTOR RECOMMENDATION TESTS
+  // =========================================================================
+  console.log("\n[3.5 SYMPTOM-TO-SPECIALIST RECOMMENDATION TESTS]");
+
+  // 3.5.1 Headache / Migraine
+  const nlpHeadache = bot.localNLPEngine("i have a severe headache and migraine", null);
+  assert(nlpHeadache.intent === 'symptom_recommendation', "Headache query triggers symptom_recommendation intent");
+  assert(nlpHeadache.action === 'show_doctors', "Headache query sets action to show_doctors");
+  assert(nlpHeadache.symptom === 'Headache / Neurological Discomfort', "Identifies headache symptom category");
+  assert(nlpHeadache.reply.includes("Neurology"), "Recommends Neurology department for headache");
+  assert(nlpHeadache.reply.includes("Dr. Eleanor Vance") && nlpHeadache.reply.includes("$140"), "Lists Dr. Eleanor Vance with $140 fee");
+  assert(nlpHeadache.reply.includes("Dr. Claire Sterling") && nlpHeadache.reply.includes("$90"), "Lists Dr. Claire Sterling with $90 fee");
+
+  // 3.5.2 Stomach Pain (with typo "stomac pain")
+  const nlpStomach = bot.localNLPEngine("i have stomac pain and gastric trouble", null);
+  assert(nlpStomach.intent === 'symptom_recommendation', "Stomach query with typo triggers symptom_recommendation intent");
+  assert(nlpStomach.reply.includes("General Medicine"), "Recommends General Medicine for stomach pain");
+  assert(nlpStomach.reply.includes("Dr. Claire Sterling") && nlpStomach.reply.includes("$90"), "Lists Dr. Claire Sterling with $90 consultation fee");
+
+  // 3.5.3 Musculoskeletal / Knee & Back Pain
+  const nlpOrtho = bot.localNLPEngine("my knee and lower back hurt", null);
+  assert(nlpOrtho.intent === 'symptom_recommendation', "Joint/Back query triggers symptom_recommendation");
+  assert(nlpOrtho.reply.includes("Orthopedics"), "Recommends Orthopedics for knee/back pain");
+  assert(nlpOrtho.reply.includes("Dr. Rachel Adams") && nlpOrtho.reply.includes("$150"), "Lists Dr. Rachel Adams with $150 fee");
+
+  // 3.5.4 Skin Rash / Dermatological
+  const nlpSkin = bot.localNLPEngine("I developed a skin rash and itchy pimples", null);
+  assert(nlpSkin.reply.includes("Dermatology"), "Recommends Dermatology for skin rash");
+  assert(nlpSkin.reply.includes("Dr. Sanjay Patel") && nlpSkin.reply.includes("$110"), "Lists Dr. Sanjay Patel with $110 fee");
+
+  // 3.5.5 Toothache / Dental
+  const nlpDental = bot.localNLPEngine("I have a painful toothache and cavity", null);
+  assert(nlpDental.reply.includes("Dentistry"), "Recommends Dentistry for toothache");
+  assert(nlpDental.reply.includes("Dr. Laura Bennett") && nlpDental.reply.includes("$85"), "Lists Dr. Laura Bennett with $85 fee");
+
+  // 3.5.6 Pediatric Child Illness
+  const nlpPedia = bot.localNLPEngine("my 3 year old baby has a fever and cough", null);
+  assert(nlpPedia.reply.includes("Pediatrics"), "Recommends Pediatrics for infant/child symptoms");
+  assert(nlpPedia.reply.includes("Dr. Marcus Chen") && nlpPedia.reply.includes("$95"), "Lists Dr. Marcus Chen with $95 fee");
+
+  // =========================================================================
   // 4. MULTI-STEP CONVERSATIONAL APPOINTMENT BOOKING WIZARD
   // =========================================================================
   console.log("\n[4. MULTI-STEP CONVERSATIONAL BOOKING FLOW TESTS]");
@@ -374,6 +415,20 @@ async function runTests() {
   const resHospital = await invokeChatAPI({ message: "Where is the hospital located?" });
   assert(resHospital.status === 200, "POST /api/chat handles hospital information query");
   assert(resHospital.data.intent === 'hospital_faq', "/api/chat returns hospital_faq intent");
+
+  // Test 7.4 Symptom-to-Doctor Recommendation via /api/chat
+  const resStomach = await invokeChatAPI({ message: "i have stomac pain and indigestion" });
+  assert(resStomach.status === 200, "POST /api/chat handles stomach pain symptom");
+  assert(resStomach.data.intent === 'symptom_recommendation', "/api/chat classifies symptom_recommendation intent");
+  assert(resStomach.data.action === 'show_doctors', "/api/chat triggers show_doctors action");
+  assert(resStomach.data.reply.includes("General Medicine"), "/api/chat recommends General Medicine for stomach pain");
+  assert(resStomach.data.reply.includes("$90"), "/api/chat includes $90 consultation fee in response");
+
+  // Test 7.5 Headache Recommendation via /api/chat
+  const resHeadache = await invokeChatAPI({ message: "i have headache and migraine" });
+  assert(resHeadache.status === 200, "POST /api/chat handles headache symptom");
+  assert(resHeadache.data.reply.includes("Neurology"), "/api/chat recommends Neurology for headache");
+  assert(resHeadache.data.reply.includes("$140"), "/api/chat includes Dr. Eleanor Vance $140 fee");
 
   console.log(`\n===============================================================================`);
   console.log(`ALL TESTS PASSED: ${passedTests} / ${totalTests} assertions verified!`);

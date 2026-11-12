@@ -320,7 +320,10 @@ class MediBookChatbot {
             </div>
           </div>
           <div class="chat-doctor-details">
-            <span><strong>$${doc.consultationFee || doc.fee || 100}</strong> / visit</span>
+            <span class="chat-doctor-fee-badge">
+              <i data-lucide="tag" style="width: 12px; height: 12px;"></i>
+              <strong>$${doc.consultationFee || doc.fee || 100}</strong> / visit
+            </span>
             <span>${doc.experienceYears || 5}+ yrs exp</span>
             <span style="color: #f59e0b; font-weight: 700;">★ ${doc.rating || 4.9}</span>
           </div>
@@ -504,6 +507,21 @@ class MediBookChatbot {
       return;
     }
 
+    // Check if user specifically requested a doctor by name (e.g. "Book Dr. Eleanor Vance")
+    const lowerText = userText.toLowerCase();
+    const allDoctors = this.findDoctors();
+    const matchedDoc = allDoctors.find(d => {
+      const bareName = d.name.toLowerCase().replace(/^dr\.?\s+/i, '');
+      return lowerText.includes(d.name.toLowerCase()) || lowerText.includes(bareName);
+    });
+    if (matchedDoc && (lowerText.includes('book') || lowerText.includes('select') || lowerText.includes('choose'))) {
+      setTimeout(() => {
+        this.hideTyping();
+        this.startDoctorBooking(matchedDoc.id, encodeURIComponent(matchedDoc.name), matchedDoc.department, matchedDoc.consultationFee || matchedDoc.fee || 100);
+      }, 350);
+      return;
+    }
+
     // 3. Delegate to /api/chat Backend (with Local NLP Fallback)
     const currentUser = window.AuthService ? window.AuthService.getCurrentUser() : null;
     let responseData = null;
@@ -582,6 +600,105 @@ class MediBookChatbot {
   }
 
   // =========================================================================
+  // Symptom Analysis & Clinical Specialty Recommendation Engine
+  // =========================================================================
+  detectSymptomAndRecommend(text) {
+    const lower = text.toLowerCase();
+
+    // 1. Headache / Migraine / Neurological
+    if (/\b(headache|headaches|head\s*ache|head\s*aches|migraine|migraines|head\s*pain|throbbing\s*head|dizziness|vertigo|nerve\s*pain|numbness|tingling|seizure|seizures|brain\s*fog|concussion)\b/i.test(lower)) {
+      return {
+        symptom: "Headache / Neurological Discomfort",
+        recommendedDepts: ["Neurology", "General Medicine"],
+        rationale: "Headaches and chronic migraines are best evaluated by our **Neurology** faculty to examine neurovascular causes and pain management. For primary screening or tension headaches, a **General Medicine** physician can also conduct an initial assessment."
+      };
+    }
+
+    // 2. Stomach / Abdominal / Digestive
+    if (/\b(stomach|stomac|abdomen|abdominal|belly|tummy|gut)\s*(pain|ache|hurt|hurts|cramp|cramps|upset|burning|discomfort)?\b|\b(gastric|gastritis|acidity|acid\s*reflux|heartburn|indigestion|bloating|nausea|vomiting|vomit|diarrhea|diarrhoea|loose\s*motion|constipation|food\s*poisoning)\b/i.test(lower)) {
+      return {
+        symptom: "Stomach Pain / Digestive & Abdominal Discomfort",
+        recommendedDepts: ["General Medicine"],
+        rationale: "For stomach pain, gastritis, acid reflux, or abdominal distress, our **General Medicine** (Internal Medicine) specialists are best equipped to perform clinical abdominal exams, run digestive diagnostics, and prescribe targeted medical care."
+      };
+    }
+
+    // 3. Skin / Hair / Dermatology
+    if (/\b(skin\s*rash|rash|rashes|acne|pimple|pimples|eczema|psoriasis|itching|itchy|hives|skin\s*allergy|mole|moles|hair\s*fall|hair\s*loss|dandruff|scalp|dermatitis|skin\s*infection|dry\s*skin)\b/i.test(lower)) {
+      return {
+        symptom: "Skin Eruptions / Dermatological Symptoms",
+        recommendedDepts: ["Dermatology"],
+        rationale: "For skin rashes, acne, eczema, or scalp conditions, our board-certified **Dermatology** faculty provides clinical dermoscopy, allergy assessments, and tailored dermatological therapies."
+      };
+    }
+
+    // 4. Bones / Joints / Musculoskeletal (Orthopedics)
+    if (/\b(back\s*pain|lower\s*back|spine\s*pain|neck\s*pain|knee\s*pain|joint\s*pain|shoulder\s*pain|hip\s*pain|ankle\s*pain|wrist\s*pain|arthritis|sprain|strain|fracture|broken\s*bone|bone\s*pain|swollen\s*joint|swollen\s*knee|ligament|muscle\s*tear|sports\s*injury)\b/i.test(lower)) {
+      return {
+        symptom: "Joint, Spine & Musculoskeletal Pain",
+        recommendedDepts: ["Orthopedics"],
+        rationale: "For back pain, knee issues, joint stiffness, or sports injuries, our **Orthopedics & Sports Medicine** specialists evaluate joint mobility, review musculoskeletal imaging, and formulate rehabilitation plans."
+      };
+    }
+
+    // 5. Non-Emergency Cardiac / Heart
+    if (/\b(palpitations|heart\s*racing|racing\s*pulse|rapid\s*heart|high\s*blood\s*pressure|hypertension|high\s*cholesterol|irregular\s*heartbeat|fluttering\s*heart)\b/i.test(lower)) {
+      return {
+        symptom: "Cardiovascular & Heart Rhythm Symptoms",
+        recommendedDepts: ["Cardiology"],
+        rationale: "For heart palpitations, blood pressure irregularities, or cardiac risk reviews, consultation with a **Cardiologist** is recommended for ECG, echocardiograms, and preventative heart care."
+      };
+    }
+
+    // 6. Dental / Teeth
+    if (/\b(toothache|tooth\s*ache|tooth\s*pain|teeth\s*pain|cavity|cavities|gum\s*bleed|bleeding\s*gums|swollen\s*gum|wisdom\s*tooth|broken\s*tooth|jaw\s*pain|dental\s*pain|sensitive\s*teeth|teeth\s*cleaning)\b/i.test(lower)) {
+      return {
+        symptom: "Dental Pain & Oral Health",
+        recommendedDepts: ["Dentistry"],
+        rationale: "For toothaches, gum inflammation, or oral pain, our **Dentistry** faculty offers comprehensive restorative care, digital dental imaging, and pain-relief procedures."
+      };
+    }
+
+    // 7. Pediatrics / Child Illness
+    if (/\b(child|baby|infant|toddler|kid|newborn)\b.*\b(fever|sick|cough|cold|vomit|pain|rash|unwell|vaccination|checkup)\b|\b(pediatric|pediatrician)\b/i.test(lower)) {
+      return {
+        symptom: "Pediatric & Child Health Concern",
+        recommendedDepts: ["Pediatrics"],
+        rationale: "For illnesses, infections, or developmental concerns affecting infants and children, our **Pediatrics** department offers gentle, specialized clinical care."
+      };
+    }
+
+    // 8. Women's Health / Gynecology
+    if (/\b(period\s*pain|menstrual\s*cramps|missed\s*period|irregular\s*period|pregnancy|pregnant|prenatal|pcos|pelvic\s*pain|vaginal|yeast\s*infection|hot\s*flashes|menopause|fertility)\b/i.test(lower)) {
+      return {
+        symptom: "Women's Health & Gynecological Symptoms",
+        recommendedDepts: ["Gynecology"],
+        rationale: "For menstrual irregularities, pelvic pain, or prenatal health, consultation with a board-certified **Gynecologist & Obstetrician (OB/GYN)** is recommended."
+      };
+    }
+
+    // 9. General Fever / Cold / Infection
+    if (/\b(fever|high\s*fever|cold|cough|flu|sore\s*throat|throat\s*pain|runny\s*nose|fatigue|body\s*ache|weakness|chills|infection|feeling\s*sick|unwell)\b/i.test(lower)) {
+      return {
+        symptom: "Fever, Cold / Flu & General Malaise",
+        recommendedDepts: ["General Medicine"],
+        rationale: "For fever, coughs, viral infections, or general body fatigue, our **General Medicine** physicians conduct clinical examinations, order lab diagnostics, and prescribe recovery treatment."
+      };
+    }
+
+    // 10. Eye / Vision
+    if (/\b(eye\s*pain|blurred\s*vision|blurry\s*vision|red\s*eye|pink\s*eye|eye\s*irritation)\b/i.test(lower)) {
+      return {
+        symptom: "Eye & Vision Discomfort",
+        recommendedDepts: ["General Medicine"],
+        rationale: "For acute eye discomfort or visual changes, an initial evaluation with a **General Medicine** clinician is recommended for primary screening and ophthalmology referral."
+      };
+    }
+
+    return null;
+  }
+
+  // =========================================================================
   // Client-Side Intelligent NLP Engine (When backend proxy is unreachable)
   // =========================================================================
   localNLPEngine(text, user) {
@@ -618,7 +735,24 @@ class MediBookChatbot {
       };
     }
 
-    // 3. Booking flow
+    // 3. Symptom Analysis & Doctor Recommendation (Headache, Stomach pain, etc.)
+    const symptomRec = this.detectSymptomAndRecommend(text);
+    if (symptomRec) {
+      const docs = this.findDoctors({ departments: symptomRec.recommendedDepts });
+      const feeListText = docs.map(d => `• **${d.name}** (${d.department}, ${d.experienceYears || 5} yrs exp) – **$${d.consultationFee || d.fee || 100} / visit**`).join('\n');
+      const deptsDisplay = symptomRec.recommendedDepts.join(' or ');
+
+      return {
+        reply: `Based on your described symptoms (**${symptomRec.symptom}**), our AI clinical navigator recommends consulting a specialist in **${deptsDisplay}**.\n\n${symptomRec.rationale}\n\nHere are the best matching doctors along with their consultation fees so you can compare and decide:\n${feeListText}\n\n*Review their profiles or select **Book** on any card below to schedule your consultation:*`,
+        intent: 'symptom_recommendation',
+        action: 'show_doctors',
+        filter: { departments: symptomRec.recommendedDepts },
+        symptom: symptomRec.symptom,
+        suggestions: docs.slice(0, 2).map(d => `Book ${d.name}`).concat(["Check other symptoms", "Hospital information"])
+      };
+    }
+
+    // 4. Booking flow
     if (lower.includes('book') || lower.includes('schedule') || lower.includes('make an appointment') || lower.includes('reserve')) {
       return {
         reply: "I'd be delighted to help you schedule a consultation! To get started, please select which medical department you require:",
@@ -857,7 +991,12 @@ class MediBookChatbot {
 
     return docs.filter(d => {
       const active = d.status === 'Active' || !d.status;
-      const deptMatch = !filters.department || d.department.toLowerCase() === filters.department.toLowerCase();
+      let deptMatch = true;
+      if (filters.departments && Array.isArray(filters.departments)) {
+        deptMatch = filters.departments.some(dept => dept.toLowerCase() === (d.department || '').toLowerCase());
+      } else if (filters.department) {
+        deptMatch = (d.department || '').toLowerCase() === filters.department.toLowerCase();
+      }
       const fee = d.consultationFee || d.fee || 100;
       const feeMatch = !filters.maxFee || fee <= filters.maxFee;
       return active && deptMatch && feeMatch;
