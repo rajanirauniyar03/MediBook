@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account – MediBook Healthcare Platform</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/auth.css">
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <!-- Left Branding & Trust Showcase -->
+    <div class="auth-branding-panel">
+      <div class="auth-panel-top">
+        <a href="../index.html" class="auth-panel-logo">
+          <span class="brand-icon-wrap">
+            <i data-lucide="cross"></i>
+          </span>
+          <span>Medi<span style="color: var(--primary-300);">Book</span></span>
+        </a>
+      </div>
+
+      <div class="auth-panel-middle">
+        <div class="eyebrow-badge" style="background: rgba(255,255,255,0.12); color: #ffffff; border-color: rgba(255,255,255,0.25);">
+          <i data-lucide="sparkles"></i>
+          <span>Simple Onboarding</span>
+        </div>
+        <h1 class="auth-panel-headline">
+          Join the Future of <br>
+          <span>Intelligent Healthcare.</span>
+        </h1>
+        <p class="auth-panel-text">
+          Whether you are a patient seeking top specialists or a doctor managing high-volume consultations, MediBook provides the tools for clinical excellence.
+        </p>
+
+        <div class="auth-testimonial-box">
+          <p class="auth-testimonial-quote">
+            "Setting up our clinical schedules and onboarding patients took less than a day. The platform feels like a true enterprise solution."
+          </p>
+          <div class="auth-testimonial-author">
+            <img src="https://images.unsplash.com/photo-1594824813511-1335b2e979d4?w=100&auto=format&fit=crop&q=80" alt="Dr. Eleanor Vance" class="auth-testimonial-avatar">
+            <div class="auth-testimonial-info">
+              <h5>Dr. Eleanor Vance</h5>
+              <p>MD, PhD - Neurosciences Director</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-panel-bottom">
+        <div>&copy; 2026 MediBook Health Systems</div>
+        <div class="auth-security-badges">
+          <span class="auth-badge-item"><i data-lucide="lock"></i> 256-bit AES</span>
+          <span class="auth-badge-item"><i data-lucide="shield"></i> HIPAA</span>
+          <span class="auth-badge-item"><i data-lucide="check"></i> JCI Certified</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Register Form -->
+    <div class="auth-form-panel">
+      <div class="auth-form-container">
+        
+        <!-- Navigation Back -->
+        <div style="margin-bottom: 1.5rem;">
+          <a href="../index.html" class="btn btn-ghost btn-sm" style="padding-left: 0;">
+            <i data-lucide="arrow-left"></i>
+            <span>Return to MediBook Home</span>
+          </a>
+        </div>
+
+        <div class="auth-form-header">
+          <h2 class="auth-form-title">Create Your MediBook Account</h2>
+          <p class="auth-form-desc">
+            Registering as a <strong id="current-role-label" style="color: var(--primary-600);">Patient</strong>. Select account type below.
+          </p>
+        </div>
+
+        <!-- Role Selector Tabs -->
+        <div class="role-selector-tabs" role="tablist">
+          <button type="button" class="role-tab active" data-role="patient" role="tab">
+            <i data-lucide="user"></i>
+            <span>Patient</span>
+          </button>
+          <button type="button" class="role-tab" data-role="doctor" role="tab">
+            <i data-lucide="stethoscope"></i>
+            <span>Doctor</span>
+          </button>
+          <button type="button" class="role-tab" data-role="admin" role="tab">
+            <i data-lucide="shield-alert"></i>
+            <span>Admin</span>
+          </button>
+        </div>
+
+        <!-- Register Form -->
+        <form id="medibook-register-form" novalidate>
+          <input type="hidden" id="auth-role-input" value="patient">
+
+          <!-- Full Name -->
+          <div class="form-group">
+            <label for="reg-fullname" class="form-label">Full Legal Name <span class="required">*</span></label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="user"></i></span>
+              <input type="text" id="reg-fullname" class="form-control" placeholder="e.g. Sarah Jenkins" required>
+            </div>
+          </div>
+
+          <!-- Email Address -->
+          <div class="form-group">
+            <label for="reg-email" class="form-label">Email Address <span class="required">*</span></label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="mail"></i></span>
+              <input type="email" id="reg-email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-group">
+            <label for="reg-phone" class="form-label">Phone Number (for SMS appointment alerts)</label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="phone"></i></span>
+              <input type="tel" id="reg-phone" class="form-control" placeholder="+1 (555) 000-0000" autocomplete="tel">
+            </div>
+          </div>
+
+          <!-- Doctor Specific Fields -->
+          <div id="doctor-specific-fields" style="display: none; background: var(--slate-50); padding: 1.15rem; border-radius: var(--radius-md); border: 1px solid var(--slate-200); margin-bottom: 1.25rem;">
+            <div class="form-group">
+              <label for="doc-license" class="form-label">Medical License Number <span class="required">*</span></label>
+              <div class="input-icon-wrapper">
+                <span class="input-icon-left"><i data-lucide="award"></i></span>
+                <input type="text" id="doc-license" class="form-control" placeholder="e.g. MED-CA-884920">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="doc-department" class="form-label">Primary Medical Department <span class="required">*</span></label>
+              <select id="doc-department" class="form-control">
+                <option value="Cardiology">Cardiology & Vascular</option>
+                <option value="Neurology">Neurology & Brain Care</option>
+                <option value="Pediatrics">Pediatrics & Child Care</option>
+                <option value="Orthopedics">Orthopedics & Joint Care</option>
+                <option value="Dermatology">Dermatology & Skin</option>
+                <option value="Gynecology">Obstetrics & Gynecology</option>
+                <option value="General">Internal & General Medicine</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Admin Specific Fields -->
+          <div id="admin-specific-fields" style="display: none; background: var(--slate-50); padding: 1.15rem; border-radius: var(--radius-md); border: 1px solid var(--slate-200); margin-bottom: 1.25rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="admin-facility" class="form-label">Hospital / Clinic Facility Name</label>
+              <div class="input-icon-wrapper">
+                <span class="input-icon-left"><i data-lucide="building"></i></span>
+                <input type="text" id="admin-facility" class="form-control" placeholder="e.g. Central Regional Hospital">
+              </div>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label for="reg-password" class="form-label">Create Password <span class="required">*</span></label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="lock"></i></span>
+              <input type="password" id="reg-password" class="form-control" placeholder="Minimum 6 characters" required autocomplete="new-password">
+              <button type="button" class="input-icon-right toggle-password-btn" aria-label="Toggle password visibility">
+                <i data-lucide="eye"></i>
+              </button>
+            </div>
+            <div class="password-strength-bar" id="password-strength-bar">
+              <div class="password-strength-fill" id="password-strength-fill"></div>
+            </div>
+          </div>
+
+          <!-- Consent Checkbox -->
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" id="reg-terms" required checked>
+              <span class="form-check-label">
+                I agree to the <a href="#" style="font-weight: 600;">Terms of Healthcare Service</a>, Patient Rights, and HIPAA-compliant data confidentiality.
+              </span>
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="register-submit-btn" class="btn btn-primary btn-block btn-lg">
+            <span>Create Account</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </form>
+
+        <div class="auth-switch-prompt">
+          Already registered? 
+          <a href="login.html">Sign in to your account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+  <!-- MediBook Core Scripts -->
+  <script src="../assets/js/config/firebase-config.js"></script>
+  <script src="../assets/js/data/demo-data.js"></script>
+  <script src="../assets/js/utils/validators.js"></script>
+  <script src="../assets/js/utils/formatters.js"></script>
+  <script src="../assets/js/components/toast.js"></script>
+  <script src="../assets/js/services/auth-service.js"></script>
+  <script src="../assets/js/pages/auth.js"></script>
+</body>
+</html>

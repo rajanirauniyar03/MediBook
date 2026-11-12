@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In – MediBook Healthcare Platform</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/auth.css">
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <!-- Left Branding & Trust Showcase -->
+    <div class="auth-branding-panel">
+      <div class="auth-panel-top">
+        <a href="../index.html" class="auth-panel-logo">
+          <span class="brand-icon-wrap">
+            <i data-lucide="cross"></i>
+          </span>
+          <span>Medi<span style="color: var(--primary-300);">Book</span></span>
+        </a>
+      </div>
+
+      <div class="auth-panel-middle">
+        <div class="eyebrow-badge" style="background: rgba(255,255,255,0.12); color: #ffffff; border-color: rgba(255,255,255,0.25);">
+          <i data-lucide="shield-check"></i>
+          <span>Trusted Healthcare Portal</span>
+        </div>
+        <h1 class="auth-panel-headline">
+          Dedicated Care, <br>
+          <span>One Secure Login.</span>
+        </h1>
+        <p class="auth-panel-text">
+          Access your appointment calendar, consult with licensed specialists, and manage encrypted medical records all in one unified platform.
+        </p>
+
+        <!-- Testimonial Box -->
+        <div class="auth-testimonial-box">
+          <p class="auth-testimonial-quote">
+            "MediBook revolutionized how our outpatient clinic coordinates with senior specialists and patients. The interface is clean, fast, and remarkably reliable."
+          </p>
+          <div class="auth-testimonial-author">
+            <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=100&auto=format&fit=crop&q=80" alt="Dr. Alexander Wright" class="auth-testimonial-avatar">
+            <div class="auth-testimonial-info">
+              <h5>Dr. Alexander Wright</h5>
+              <p>MD, FACC - Chief of Cardiology</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-panel-bottom">
+        <div>&copy; 2026 MediBook Health Systems</div>
+        <div class="auth-security-badges">
+          <span class="auth-badge-item"><i data-lucide="lock"></i> 256-bit AES</span>
+          <span class="auth-badge-item"><i data-lucide="shield"></i> HIPAA</span>
+          <span class="auth-badge-item"><i data-lucide="check"></i> JCI Certified</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Login Form -->
+    <div class="auth-form-panel">
+      <div class="auth-form-container">
+        
+        <!-- Navigation Back -->
+        <div style="margin-bottom: 1.5rem;">
+          <a href="../index.html" class="btn btn-ghost btn-sm" style="padding-left: 0;">
+            <i data-lucide="arrow-left"></i>
+            <span>Return to MediBook Home</span>
+          </a>
+        </div>
+
+        <div class="auth-form-header">
+          <h2 class="auth-form-title">Sign In to MediBook</h2>
+          <p class="auth-form-desc">
+            Logging in as <strong id="current-role-label" style="color: var(--primary-600);">Patient</strong>. Select your role below.
+          </p>
+        </div>
+
+        <!-- Role Switcher Tabs -->
+        <div class="role-selector-tabs" role="tablist">
+          <button type="button" class="role-tab active" data-role="patient" role="tab">
+            <i data-lucide="user"></i>
+            <span>Patient</span>
+          </button>
+          <button type="button" class="role-tab" data-role="doctor" role="tab">
+            <i data-lucide="stethoscope"></i>
+            <span>Doctor</span>
+          </button>
+          <button type="button" class="role-tab" data-role="admin" role="tab">
+            <i data-lucide="shield-alert"></i>
+            <span>Admin</span>
+          </button>
+        </div>
+
+        <!-- 1-Click Evaluation Accounts Preset Box -->
+        <div class="demo-accounts-card">
+          <div class="demo-accounts-title">
+            <span><i data-lucide="sparkles"></i> 1-Click Quick Demo Evaluation</span>
+            <span class="badge badge-teal text-xs">Ready</span>
+          </div>
+          <div class="demo-btn-group">
+            <button type="button" class="demo-account-chip" data-demo-role="patient" title="Load Patient: Sarah Jenkins">
+              👤 Demo Patient
+            </button>
+            <button type="button" class="demo-account-chip" data-demo-role="doctor" title="Load Doctor: Dr. Wright">
+              🩺 Demo Doctor
+            </button>
+            <button type="button" class="demo-account-chip" data-demo-role="admin" title="Load Admin: Central Hospital">
+              🛡️ Demo Admin
+            </button>
+          </div>
+        </div>
+
+        <!-- Login Form -->
+        <form id="medibook-login-form" novalidate>
+          <input type="hidden" id="auth-role-input" value="patient">
+
+          <!-- Email Address -->
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address <span class="required">*</span></label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="mail"></i></span>
+              <input type="email" id="email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+              <label for="password" class="form-label" style="margin-bottom: 0;">Password <span class="required">*</span></label>
+              <a href="#" class="forgot-password-link" onclick="alert('Password reset link will be dispatched to your registered email.'); return false;">Forgot password?</a>
+            </div>
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="lock"></i></span>
+              <input type="password" id="password" class="form-control" placeholder="Enter your account password" required autocomplete="current-password">
+              <button type="button" class="input-icon-right toggle-password-btn" aria-label="Toggle password visibility">
+                <i data-lucide="eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Remember me -->
+          <div class="auth-options-row">
+            <label class="form-check">
+              <input type="checkbox" id="remember-me" checked>
+              <span class="form-check-label">Keep me signed in for 30 days</span>
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="login-submit-btn" class="btn btn-primary btn-block btn-lg">
+            <span>Sign In to Dashboard</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </form>
+
+        <div class="auth-switch-prompt">
+          Don't have an account yet? 
+          <a href="register.html">Create a free account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+  <!-- MediBook Core Scripts -->
+  <script src="../assets/js/config/firebase-config.js"></script>
+  <script src="../assets/js/data/demo-data.js"></script>
+  <script src="../assets/js/utils/validators.js"></script>
+  <script src="../assets/js/utils/formatters.js"></script>
+  <script src="../assets/js/components/toast.js"></script>
+  <script src="../assets/js/services/auth-service.js"></script>
+  <script src="../assets/js/pages/auth.js"></script>
+</body>
+</html>
