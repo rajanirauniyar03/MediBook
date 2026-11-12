@@ -190,18 +190,18 @@ function updateNavbarAuthState(user) {
     const bookPath = isInsideAuth ? '../find-doctors.html' : 'find-doctors.html';
 
     headerActions.innerHTML = `
-      <a href="${loginPath}" class="btn btn-ghost">Sign In</a>
-      <a href="${bookPath}" class="btn btn-primary btn-book-nav">
-        <i data-lucide="calendar-plus"></i>
-        <span>Book Appointment</span>
+      <a href="${loginPath}" class="btn btn-ghost">Login</a>
+      <a href="${registerPath}" class="btn btn-primary btn-book-nav">
+        <i data-lucide="user-plus"></i>
+        <span>Get Started</span>
       </a>
     `;
 
     // Unauthenticated Mobile Drawer
     if (mobileDrawerActions) {
       mobileDrawerActions.innerHTML = `
-        <a href="${loginPath}" class="btn btn-outline btn-block">Sign In</a>
-        <a href="${registerPath}" class="btn btn-primary btn-block">Create Free Account</a>
+        <a href="${loginPath}" class="btn btn-outline btn-block">Login</a>
+        <a href="${registerPath}" class="btn btn-primary btn-block">Get Started</a>
       `;
     }
   }

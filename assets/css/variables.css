@@ -24,6 +24,17 @@
   --accent-700: #0f766e;
   --accent-800: #115e59;
 
+  /* Coral Accent Palette */
+  --coral-50: #fff5f2;
+  --coral-100: #ffe6de;
+  --coral-200: #fec5b5;
+  --coral-300: #fca085;
+  --coral-400: #fa825c;
+  --coral-500: #ff7f50; /* Primary Coral Accent */
+  --coral-600: #f06a38;
+  --coral-700: #d95321;
+  --coral-800: #b83f14;
+
   /* Neutral & Dark Navy Slate */
   --slate-50: #f8fafc;
   --slate-100: #f1f5f9;
