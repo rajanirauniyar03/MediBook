@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MediBook – Online Doctor Appointment & Healthcare Management Platform</title>
-  <meta name="description" content="Book top certified doctors and medical specialists online. Manage appointments, digital prescriptions, and health records securely.">
+  <meta name="description" content="Your Health, Our Priority. Find trusted doctors and book your healthcare appointments with ease.">
 
   <!-- Google Fonts: Plus Jakarta Sans & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +21,7 @@
 <body>
 
   <!-- ========================================================================
-       Global Navigation Header
+       Navigation Bar (Sticky & Responsive)
        ======================================================================== -->
   <header class="site-header">
     <div class="container header-container">
@@ -38,14 +38,14 @@
           <li><a href="index.html" class="nav-link active">Home</a></li>
           <li><a href="find-doctors.html" class="nav-link">Find Doctors</a></li>
           <li><a href="departments.html" class="nav-link">Departments</a></li>
-          <li><a href="about.html" class="nav-link">About Us</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
           <li><a href="contact.html" class="nav-link">Contact</a></li>
         </ul>
       </nav>
 
-      <!-- Desktop Auth / CTA Actions -->
+      <!-- Desktop Auth / Action Buttons -->
       <div class="header-actions" id="header-auth-actions">
-        <a href="auth/login.html" class="btn btn-ghost">Sign In</a>
+        <a href="auth/login.html" class="btn btn-ghost">Login</a>
         <a href="find-doctors.html" class="btn btn-primary btn-book-nav">
           <i data-lucide="calendar-plus"></i>
           <span>Book Appointment</span>
@@ -80,80 +80,85 @@
         <li><a href="index.html" class="mobile-nav-link active"><i data-lucide="home"></i> Home</a></li>
         <li><a href="find-doctors.html" class="mobile-nav-link"><i data-lucide="user-search"></i> Find Doctors</a></li>
         <li><a href="departments.html" class="mobile-nav-link"><i data-lucide="grid"></i> Departments</a></li>
-        <li><a href="about.html" class="mobile-nav-link"><i data-lucide="info"></i> About Us</a></li>
+        <li><a href="about.html" class="mobile-nav-link"><i data-lucide="info"></i> About</a></li>
         <li><a href="contact.html" class="mobile-nav-link"><i data-lucide="phone"></i> Contact</a></li>
       </ul>
 
       <div class="mobile-drawer-actions" id="mobile-drawer-auth-actions">
-        <a href="auth/login.html" class="btn btn-outline btn-block">Sign In</a>
-        <a href="auth/register.html" class="btn btn-primary btn-block">Create Free Account</a>
+        <a href="auth/login.html" class="btn btn-outline btn-block">Login</a>
+        <a href="find-doctors.html" class="btn btn-primary btn-block">
+          <i data-lucide="calendar-plus"></i> Book Appointment
+        </a>
       </div>
     </div>
   </div>
 
   <main>
     <!-- ========================================================================
-         Hero Section with Search Bar
+         Hero Section (Split Layout)
          ======================================================================== -->
     <section class="hero-section">
       <div class="hero-background-pattern"></div>
       <div class="container">
         <div class="hero-grid">
+          <!-- Left Content -->
           <div class="hero-content">
             <div class="eyebrow-badge">
               <i data-lucide="shield-check"></i>
-              <span>Accredited Healthcare Network</span>
+              <span>Trusted Healthcare Platform</span>
             </div>
             <h1 class="hero-title">
-              Healthcare Appointments, <span class="highlight-blue">Simplified</span>.
+              Your Health, <span class="highlight-blue">Our Priority</span>.
             </h1>
             <p class="hero-subtitle">
-              Connect with top-rated medical specialists, schedule in-person clinic or video consultations in seconds, and track your health history with enterprise-grade security.
+              Find trusted doctors and book your healthcare appointments with ease.
             </p>
 
-            <!-- Search Card -->
+            <!-- Search Bar for doctor name, specialization or department -->
             <div class="hero-search-card">
               <form id="hero-search-form" class="hero-search-form">
                 <div class="hero-search-input-group">
                   <span class="icon"><i data-lucide="search"></i></span>
-                  <input type="text" id="hero-search-query" placeholder="Doctor name or condition..." aria-label="Search doctor or condition">
+                  <input type="text" id="hero-search-query" placeholder="Doctor name or condition..." aria-label="Search doctor name or condition">
                 </div>
 
                 <div class="hero-search-input-group">
                   <span class="icon"><i data-lucide="stethoscope"></i></span>
-                  <select id="hero-dept-select" aria-label="Select Specialization">
-                    <option value="">All Specialties</option>
+                  <select id="hero-dept-select" aria-label="Select Specialization or Department">
+                    <option value="">All Specializations</option>
                   </select>
                 </div>
 
-                <div class="hero-search-input-group">
-                  <span class="icon"><i data-lucide="map-pin"></i></span>
-                  <select id="hero-location-select" aria-label="Select Location">
-                    <option value="">All Hospital Wings</option>
-                    <option value="metropolitan">Central Hospital</option>
-                    <option value="st-jude">St. Jude Medical</option>
-                    <option value="childrens">Children's Wing</option>
-                  </select>
-                </div>
-
-                <div class="hero-search-btn-col">
+                <div>
                   <button type="submit" class="btn btn-primary btn-block">
                     <i data-lucide="search"></i>
-                    <span>Find Care</span>
+                    <span>Find</span>
                   </button>
                 </div>
               </form>
             </div>
 
-            <!-- Trust Indicators -->
+            <!-- Primary CTA & Secondary CTA -->
+            <div class="hero-cta-group">
+              <a href="find-doctors.html" class="btn btn-primary btn-lg">
+                <i data-lucide="user-search"></i>
+                <span>Find a Doctor</span>
+              </a>
+              <a href="departments.html" class="btn btn-outline btn-lg">
+                <i data-lucide="grid"></i>
+                <span>Explore Departments</span>
+              </a>
+            </div>
+
+            <!-- Small Trust Indicator Badges -->
             <div class="hero-trust-indicators">
               <div class="trust-item">
                 <div class="trust-item-icon"><i data-lucide="check"></i></div>
-                <div class="trust-item-text">150+ Verified Doctors</div>
+                <div class="trust-item-text">100% Verified Profiles</div>
               </div>
               <div class="trust-item">
-                <div class="trust-item-icon"><i data-lucide="star"></i></div>
-                <div class="trust-item-text">99.4% Patient Rating</div>
+                <div class="trust-item-icon"><i data-lucide="clock"></i></div>
+                <div class="trust-item-text">Instant Confirmation</div>
               </div>
               <div class="trust-item">
                 <div class="trust-item-icon"><i data-lucide="lock"></i></div>
@@ -162,10 +167,10 @@
             </div>
           </div>
 
-          <!-- Hero Visual Column -->
+          <!-- Right Visual Column -->
           <div class="hero-visual">
             <div class="hero-visual-card">
-              <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&auto=format&fit=crop&q=80" alt="Doctor reviewing digital patient records" class="hero-img">
+              <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&auto=format&fit=crop&q=80" alt="Attending healthcare doctor with digital medical tablet" class="hero-img">
               
               <!-- Floating Card 1: Instant Confirmation -->
               <div class="hero-floating-card-1">
@@ -173,18 +178,18 @@
                   <i data-lucide="calendar-check"></i>
                 </div>
                 <div>
-                  <div style="font-weight: 700; font-size: 0.9rem; color: var(--slate-900);">Instant Booking</div>
+                  <div style="font-weight: 700; font-size: 0.925rem; color: var(--slate-900);">Instant Booking</div>
                   <div style="font-size: 0.775rem; color: var(--slate-500);">Confirmed in 30 seconds</div>
                 </div>
               </div>
 
-              <!-- Floating Card 2: Doctor Schedule Status -->
+              <!-- Floating Card 2: Schedule Status -->
               <div class="hero-floating-card-2">
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                   <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--success-500); display: inline-block;"></span>
                   <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-700); text-transform: uppercase;">Available Today</span>
                 </div>
-                <div style="font-weight: 700; font-size: 0.95rem; color: var(--slate-900);">42 Specialists On Call</div>
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--slate-900);">Top Specialists On Duty</div>
               </div>
             </div>
           </div>
@@ -193,73 +198,43 @@
     </section>
 
     <!-- ========================================================================
-         Pillars of Care / Core Capabilities
+         Statistics Section (Clearly Labelled Sample Figures in Demo Mode)
          ======================================================================== -->
-    <section class="pillars-section">
-      <div class="container">
-        <div class="grid grid-cols-4 lg:grid-cols-2 md:grid-cols-1 gap-6">
-          <div class="pillar-card">
-            <div class="pillar-icon-box">
-              <i data-lucide="calendar"></i>
-            </div>
-            <h3>In-Person Clinic Visits</h3>
-            <p>Schedule visits at accredited hospital pavilions without waiting in tedious reception lines.</p>
-            <a href="find-doctors.html" class="pillar-link">Browse Clinics <i data-lucide="arrow-right"></i></a>
-          </div>
-
-          <div class="pillar-card">
-            <div class="pillar-icon-box" style="background: var(--accent-100); color: var(--accent-700);">
-              <i data-lucide="video"></i>
-            </div>
-            <h3>Telehealth Consultations</h3>
-            <p>High-definition video consultations with board-certified physicians from the comfort of your home.</p>
-            <a href="find-doctors.html?type=video" class="pillar-link">Learn More <i data-lucide="arrow-right"></i></a>
-          </div>
-
-          <div class="pillar-card">
-            <div class="pillar-icon-box" style="background: #fef2f2; color: #ef4444;">
-              <i data-lucide="ambulance"></i>
-            </div>
-            <h3>24/7 Emergency Care</h3>
-            <p>Immediate triage guidance, emergency department routing, and on-call specialist dispatch.</p>
-            <a href="contact.html#emergency" class="pillar-link">Emergency Details <i data-lucide="arrow-right"></i></a>
-          </div>
-
-          <div class="pillar-card">
-            <div class="pillar-icon-box" style="background: #f0fdf4; color: #16a34a;">
-              <i data-lucide="pill"></i>
-            </div>
-            <h3>E-Prescriptions & Pharmacy</h3>
-            <p>Digital prescription generation and optional integrated pharmacy dispensing with home delivery.</p>
-            <a href="departments.html" class="pillar-link">Pharmacy Module <i data-lucide="arrow-right"></i></a>
-          </div>
+    <section class="stats-section">
+      <div class="container text-center">
+        <div class="stats-demo-banner">
+          <i data-lucide="info"></i>
+          <span>Sample Platform Metrics (Demo Mode)</span>
+        </div>
+        <div class="stats-grid" id="platform-stats-grid">
+          <!-- Populated dynamically via landing.js using MEDIBOOK_DATA.stats -->
         </div>
       </div>
     </section>
 
     <!-- ========================================================================
-         Medical Specialties / Departments Grid
+         Specialization Section (8 Core Disciplines)
          ======================================================================== -->
     <section class="section-padding">
       <div class="container">
         <div class="section-header">
           <div class="eyebrow-badge">
             <i data-lucide="layers"></i>
-            <span>Clinical Excellence</span>
+            <span>Clinical Departments</span>
           </div>
-          <h2 class="section-title">Specialized Care Across All Disciplines</h2>
+          <h2 class="section-title">Explore by Specialization</h2>
           <p class="section-subtitle">
-            Our multi-specialty clinical network houses leading medical experts across cardiology, neurology, pediatrics, and more.
+            Find the right clinical expertise for you and your family across our 8 primary healthcare disciplines.
           </p>
         </div>
 
         <div class="grid grid-cols-4 lg:grid-cols-2 md:grid-cols-1 gap-6" id="specialties-grid">
-          <!-- Populated dynamically via landing.js -->
+          <!-- Populated dynamically via landing.js (Cardiology, Dermatology, Neurology, Orthopedics, Pediatrics, Dentistry, General Medicine, Gynecology) -->
         </div>
 
         <div class="text-center" style="margin-top: 3rem;">
           <a href="departments.html" class="btn btn-outline">
-            <span>Explore All 18 Specializations</span>
+            <span>View All Clinical Departments</span>
             <i data-lucide="arrow-right"></i>
           </a>
         </div>
@@ -267,65 +242,18 @@
     </section>
 
     <!-- ========================================================================
-         How MediBook Works
+         Featured Doctors Section
          ======================================================================== -->
-    <section class="section-padding how-it-works-section">
-      <div class="container">
-        <div class="section-header">
-          <div class="eyebrow-badge">
-            <i data-lucide="zap"></i>
-            <span>Frictionless Booking</span>
-          </div>
-          <h2 class="section-title">How MediBook Works for Patients</h2>
-          <p class="section-subtitle">
-            Experience modern healthcare appointment management in three effortless steps.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-3 md:grid-cols-1 gap-8">
-          <div class="step-card">
-            <div class="step-number">01</div>
-            <div class="step-icon-box">
-              <i data-lucide="search"></i>
-            </div>
-            <h3>Find Your Doctor</h3>
-            <p>Search by specialty, location, accepted insurance, or doctor name. Read verified patient reviews and inspect credentials.</p>
-          </div>
-
-          <div class="step-card">
-            <div class="step-number">02</div>
-            <div class="step-icon-box" style="background: var(--primary-100); color: var(--primary-700);">
-              <i data-lucide="calendar"></i>
-            </div>
-            <h3>Pick a Suitable Slot</h3>
-            <p>Select your preferred consultation time, specify your visit purpose, and choose between in-person or video visit.</p>
-          </div>
-
-          <div class="step-card">
-            <div class="step-number">03</div>
-            <div class="step-icon-box" style="background: var(--success-50); color: var(--success-700);">
-              <i data-lucide="check-circle-2"></i>
-            </div>
-            <h3>Receive Confirmation</h3>
-            <p>Get instant calendar invitations, SMS reminders, digital intake forms, and direct access to your doctor's instructions.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         Featured Verified Specialists
-         ======================================================================== -->
-    <section class="section-padding">
+    <section class="section-padding" style="background: var(--slate-50); border-top: 1px solid var(--slate-200); border-bottom: 1px solid var(--slate-200);">
       <div class="container">
         <div class="section-header">
           <div class="eyebrow-badge">
             <i data-lucide="award"></i>
-            <span>Top Rated Doctors</span>
+            <span>Top Specialists</span>
           </div>
-          <h2 class="section-title">Consult with Leading Medical Practitioners</h2>
+          <h2 class="section-title">Featured Doctors Available for Booking</h2>
           <p class="section-subtitle">
-            Every physician on MediBook undergoes rigorous verification of medical licenses, board certifications, and clinical experience.
+            Consult with certified medical practitioners with transparent patient ratings, consultation fees, and available days.
           </p>
         </div>
 
@@ -334,8 +262,8 @@
         </div>
 
         <div class="text-center" style="margin-top: 3rem;">
-          <a href="find-doctors.html" class="btn btn-outline">
-            <span>View All Doctors & Available Slots</span>
+          <a href="find-doctors.html" class="btn btn-primary btn-lg">
+            <span>Browse All Doctors & Filter</span>
             <i data-lucide="arrow-right"></i>
           </a>
         </div>
@@ -343,58 +271,116 @@
     </section>
 
     <!-- ========================================================================
-         Enterprise Platform Benefits / Why Us
+         How It Works Section (3 Simple Steps)
          ======================================================================== -->
-    <section class="section-padding" style="background: #ffffff; border-top: 1px solid var(--slate-200); border-bottom: 1px solid var(--slate-200);">
+    <section class="section-padding how-it-works-section">
       <div class="container">
-        <div class="why-us-grid">
-          <div class="why-us-image-container">
-            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&auto=format&fit=crop&q=80" alt="Hospital modern clinic reception">
-            <div class="why-us-badge-card">
-              <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--primary-100); color: var(--primary-600); display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="shield-check" style="width: 24px; height: 24px;"></i>
-              </div>
-              <div>
-                <div style="font-weight: 700; font-size: 0.95rem; color: var(--slate-900);">Enterprise Healthcare Grade</div>
-                <div style="font-size: 0.8rem; color: var(--slate-500);">ISO 27001 & HIPAA Compliant Security</div>
-              </div>
+        <div class="section-header">
+          <div class="eyebrow-badge">
+            <i data-lucide="zap"></i>
+            <span>Streamlined Care</span>
+          </div>
+          <h2 class="section-title">How It Works</h2>
+          <p class="section-subtitle">
+            Experience effortless appointment scheduling designed to respect your time in three simple steps.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 md:grid-cols-1 gap-8">
+          <!-- Step 1 -->
+          <div class="step-card">
+            <div class="step-number">01</div>
+            <div class="step-icon-box">
+              <i data-lucide="search"></i>
             </div>
+            <h3>1. Find a Doctor</h3>
+            <p>Filter by specialization, experience, or consultation fee. Review doctor qualifications, hospital affiliations, and verified feedback.</p>
           </div>
 
-          <div>
-            <div class="eyebrow-badge">
-              <i data-lucide="sparkles"></i>
-              <span>Why Choose MediBook</span>
+          <!-- Step 2 -->
+          <div class="step-card">
+            <div class="step-number">02</div>
+            <div class="step-icon-box" style="background: var(--accent-100); color: var(--accent-700);">
+              <i data-lucide="calendar"></i>
             </div>
-            <h2 class="section-title">Built for Patients, Trusted by Premier Hospitals</h2>
-            <p style="color: var(--slate-600); line-height: 1.65; margin-bottom: 1.5rem;">
-              MediBook bridges the gap between modern patient convenience and complex hospital administrative workflows, reducing no-shows while delivering elevated patient care.
-            </p>
+            <h3>2. Choose a Convenient Time</h3>
+            <p>Select your preferred consultation date and available morning, afternoon, or evening time slot that fits your personal schedule.</p>
+          </div>
 
-            <div class="feature-check-list">
-              <div class="feature-check-item">
-                <div class="feature-check-icon"><i data-lucide="check"></i></div>
-                <div class="feature-check-text">
-                  <h4>Real-Time Schedule Synchronization</h4>
-                  <p>Direct integration with doctor consultation calendars eliminates double bookings and ensures precise slot allocation.</p>
-                </div>
-              </div>
+          <!-- Step 3 -->
+          <div class="step-card">
+            <div class="step-number">03</div>
+            <div class="step-icon-box" style="background: var(--success-50); color: var(--success-700);">
+              <i data-lucide="check-circle-2"></i>
+            </div>
+            <h3>3. Confirm Your Appointment</h3>
+            <p>Receive immediate calendar invitations, SMS reminders, and visit details with zero queue wait times.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-              <div class="feature-check-item">
-                <div class="feature-check-icon"><i data-lucide="check"></i></div>
-                <div class="feature-check-text">
-                  <h4>Encrypted Medical History & Reports</h4>
-                  <p>Patient health records, prescriptions, and lab test results are stored with 256-bit AES encryption.</p>
-                </div>
-              </div>
+    <!-- ========================================================================
+         Why Choose MediBook (5 Core Value Pillars)
+         ======================================================================== -->
+    <section class="section-padding" style="background: #ffffff;">
+      <div class="container">
+        <div class="section-header">
+          <div class="eyebrow-badge">
+            <i data-lucide="shield-check"></i>
+            <span>Our Commitment</span>
+          </div>
+          <h2 class="section-title">Why Choose MediBook</h2>
+          <p class="section-subtitle">
+            Engineered to deliver a modern, dignified, and friction-free healthcare management experience.
+          </p>
+        </div>
 
-              <div class="feature-check-item">
-                <div class="feature-check-icon"><i data-lucide="check"></i></div>
-                <div class="feature-check-text">
-                  <h4>Multi-Role Healthcare Management</h4>
-                  <p>Dedicated portals tailored specifically for Patients, Attending Doctors, and Hospital Administrators.</p>
-                </div>
-              </div>
+        <div class="why-choose-grid">
+          <!-- 1. Easy online booking -->
+          <div class="why-card">
+            <div class="why-icon-wrap">
+              <i data-lucide="mouse-pointer-click"></i>
+            </div>
+            <h3>Easy Online Booking</h3>
+            <p>Seamless 24/7 web booking without phone hold queues, busy signals, or receptionist back-and-forth.</p>
+          </div>
+
+          <!-- 2. Verified doctor profiles -->
+          <div class="why-card">
+            <div class="why-icon-wrap" style="background: var(--primary-50); color: var(--primary-700);">
+              <i data-lucide="user-check"></i>
+            </div>
+            <h3>Verified Doctor Profiles</h3>
+            <p>Every medical practitioner’s license, degrees, and hospital credentials undergo strict background verification.</p>
+          </div>
+
+          <!-- 3. Appointment management -->
+          <div class="why-card">
+            <div class="why-icon-wrap" style="background: #fdf2f8; color: #db2777;">
+              <i data-lucide="calendar-range"></i>
+            </div>
+            <h3>Appointment Management</h3>
+            <p>Reschedule, cancel, or track past consultation records effortlessly from your secure patient portal.</p>
+          </div>
+
+          <!-- 4. Convenient scheduling -->
+          <div class="why-card">
+            <div class="why-icon-wrap" style="background: #eff6ff; color: #2563eb;">
+              <i data-lucide="clock"></i>
+            </div>
+            <h3>Convenient Scheduling</h3>
+            <p>Transparent real-time slots synced directly to attending doctors' calendars to eliminate double-booking.</p>
+          </div>
+
+          <!-- 5. Patient-friendly experience -->
+          <div class="why-card" style="grid-column: span 2; display: flex; align-items: flex-start; gap: 1.5rem;">
+            <div class="why-icon-wrap" style="background: #ecfdf5; color: #059669; margin-bottom: 0; flex-shrink: 0;">
+              <i data-lucide="smile"></i>
+            </div>
+            <div>
+              <h3>Patient-Friendly Experience</h3>
+              <p>Designed with intuitive typography, high accessibility contrast, responsive layouts on all screens, and zero medical jargon.</p>
             </div>
           </div>
         </div>
@@ -402,75 +388,23 @@
     </section>
 
     <!-- ========================================================================
-         Testimonials
+         Testimonials Section (Clearly Identified as Demo Content)
          ======================================================================== -->
-    <section class="section-padding" style="background: var(--slate-50);">
+    <section class="section-padding" style="background: var(--slate-50); border-top: 1px solid var(--slate-200);">
       <div class="container">
         <div class="section-header">
           <div class="eyebrow-badge">
             <i data-lucide="message-square"></i>
-            <span>Patient Feedback</span>
+            <span>Patient Testimonials</span>
           </div>
-          <h2 class="section-title">Real Stories from Satisfied Patients</h2>
+          <h2 class="section-title">What Patients Say About MediBook</h2>
           <p class="section-subtitle">
-            See how MediBook is redefining the medical visit experience for thousands of families every week.
+            Read verified feedback from patients who booked and managed their healthcare visits through MediBook.
           </p>
         </div>
 
-        <div class="grid grid-cols-3 md:grid-cols-1 gap-6">
-          <div class="testimonial-card">
-            <div>
-              <div class="testimonial-rating">
-                <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
-              </div>
-              <p class="testimonial-text">
-                "Booking an urgent cardiology consultation took literally 45 seconds on MediBook. The SMS reminder and instant calendar sync made the whole experience painless."
-              </p>
-            </div>
-            <div class="testimonial-author">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Robert M. Davenport" class="testimonial-avatar">
-              <div>
-                <div class="testimonial-name">Robert M. Davenport</div>
-                <div class="testimonial-role">Cardiology Patient</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="testimonial-card">
-            <div>
-              <div class="testimonial-rating">
-                <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
-              </div>
-              <p class="testimonial-text">
-                "As a busy mother of two, having verified pediatric appointment slots and digital records in one portal saves our family hours of stressful phone queues."
-              </p>
-            </div>
-            <div class="testimonial-author">
-              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80" alt="Jessica Hall-Vance" class="testimonial-avatar">
-              <div>
-                <div class="testimonial-name">Jessica Hall-Vance</div>
-                <div class="testimonial-role">Parent & Patient</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="testimonial-card">
-            <div>
-              <div class="testimonial-rating">
-                <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
-              </div>
-              <p class="testimonial-text">
-                "From an administrator's standpoint, MediBook cut down no-shows by 42% in our hospital network. The doctor schedule management is intuitive and robust."
-              </p>
-            </div>
-            <div class="testimonial-author">
-              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80" alt="Dr. Evelyn Reed" class="testimonial-avatar">
-              <div>
-                <div class="testimonial-name">Dr. Evelyn Reed</div>
-                <div class="testimonial-role">Clinical Director, Metro Health</div>
-              </div>
-            </div>
-          </div>
+        <div class="grid grid-cols-3 md:grid-cols-1 gap-6" id="testimonials-grid">
+          <!-- Populated dynamically via landing.js (Identified with Demo Review label) -->
         </div>
       </div>
     </section>
@@ -482,18 +416,18 @@
       <div class="cta-banner">
         <div class="cta-banner-pattern"></div>
         <div class="cta-content">
-          <h2 class="cta-title">Ready for a Better Healthcare Experience?</h2>
+          <h2 class="cta-title">Ready to Experience Better Healthcare?</h2>
           <p class="cta-desc">
-            Join over 120,000 patients and 45 premier hospitals enjoying hassle-free doctor consultations and intelligent scheduling.
+            Take control of your appointments and consult with trusted medical doctors today.
           </p>
           <div class="cta-buttons">
             <a href="find-doctors.html" class="btn btn-teal btn-lg">
               <i data-lucide="calendar-plus"></i>
               <span>Book Appointment Now</span>
             </a>
-            <a href="auth/register.html?role=doctor" class="btn btn-outline btn-lg" style="color: #ffffff; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.1);">
-              <i data-lucide="stethoscope"></i>
-              <span>Join as a Doctor</span>
+            <a href="departments.html" class="btn btn-outline btn-lg" style="color: #ffffff; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.1);">
+              <i data-lucide="grid"></i>
+              <span>Browse Specializations</span>
             </a>
           </div>
         </div>
@@ -502,12 +436,12 @@
   </main>
 
   <!-- ========================================================================
-       Public Footer
+       Footer (Company Info, Quick Links, Departments, Contact, Privacy, Terms)
        ======================================================================== -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-top">
-        <!-- Brand Info -->
+        <!-- Company Information -->
         <div>
           <a href="index.html" class="brand-logo" style="color: #ffffff;">
             <span class="brand-icon-wrap">
@@ -516,7 +450,7 @@
             <span>Medi<span class="brand-highlight" style="color: var(--primary-400);">Book</span></span>
           </a>
           <p class="footer-brand-desc">
-            MediBook is a next-generation healthcare appointment and hospital management platform connecting patients, accredited practitioners, and clinics.
+            MediBook is a premier healthcare appointment and patient management platform connecting patients with trusted, board-certified doctors and specialized hospital clinics.
           </p>
           <div class="footer-accreditation-row">
             <span class="accreditation-pill"><i data-lucide="shield-check"></i> JCI Standard</span>
@@ -527,31 +461,33 @@
 
         <!-- Quick Links -->
         <div>
-          <h4 class="footer-heading">For Patients</h4>
+          <h4 class="footer-heading">Quick Links</h4>
           <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
             <li><a href="find-doctors.html">Find Doctors</a></li>
             <li><a href="departments.html">Departments</a></li>
-            <li><a href="auth/login.html?role=patient">Patient Portal Login</a></li>
-            <li><a href="auth/register.html">Create Patient Account</a></li>
-            <li><a href="contact.html">Clinic Locations</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="auth/login.html">Login Portal</a></li>
           </ul>
         </div>
 
-        <!-- Healthcare Providers -->
+        <!-- Departments -->
         <div>
-          <h4 class="footer-heading">For Providers</h4>
+          <h4 class="footer-heading">Departments</h4>
           <ul class="footer-links">
-            <li><a href="auth/login.html?role=doctor">Doctor Portal Login</a></li>
-            <li><a href="auth/register.html?role=doctor">Join Doctor Network</a></li>
-            <li><a href="auth/login.html?role=admin">Hospital Admin Access</a></li>
-            <li><a href="about.html#accreditation">Hospital Standards</a></li>
-            <li><a href="contact.html">Enterprise Inquiries</a></li>
+            <li><a href="find-doctors.html?dept=Cardiology">Cardiology</a></li>
+            <li><a href="find-doctors.html?dept=Dermatology">Dermatology</a></li>
+            <li><a href="find-doctors.html?dept=Neurology">Neurology</a></li>
+            <li><a href="find-doctors.html?dept=Orthopedics">Orthopedics</a></li>
+            <li><a href="find-doctors.html?dept=Pediatrics">Pediatrics</a></li>
+            <li><a href="find-doctors.html?dept=Dentistry">Dentistry</a></li>
           </ul>
         </div>
 
-        <!-- Emergency & Support -->
+        <!-- Contact Details -->
         <div>
-          <h4 class="footer-heading">Emergency & Support</h4>
+          <h4 class="footer-heading">Contact Details</h4>
           <div class="footer-contact-item">
             <i data-lucide="map-pin"></i>
             <span>500 Healthcare Boulevard, Suite 400<br>San Francisco, CA 94107</span>
@@ -561,7 +497,7 @@
             <span>care@medibook.health</span>
           </div>
           <div class="footer-helpline">
-            <div class="footer-helpline-label">24/7 Medical Hotline</div>
+            <div class="footer-helpline-label">24/7 Healthcare Helpline</div>
             <div class="footer-helpline-number">+1 (800) 432-6334</div>
           </div>
         </div>
@@ -573,8 +509,8 @@
         </div>
         <div class="footer-legal-links">
           <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">HIPAA Notice</a>
+          <a href="#">Terms and Conditions</a>
+          <a href="#">HIPAA Compliance</a>
           <a href="#">Security Standards</a>
         </div>
       </div>
@@ -582,18 +518,14 @@
   </footer>
 
   <!-- ========================================================================
-       Scripts & CDNs
+       Scripts
        ======================================================================== -->
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Firebase Compat SDKs (App, Auth, Firestore, Storage) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
-  <!-- MediBook Core Scripts -->
   <script src="assets/js/config/firebase-config.js"></script>
   <script src="assets/js/data/demo-data.js"></script>
   <script src="assets/js/utils/validators.js"></script>

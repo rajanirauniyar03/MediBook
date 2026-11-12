@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact & Emergency Hotline – MediBook</title>
+  <title>Contact – MediBook Healthcare Network</title>
+  <meta name="description" content="Get in touch with MediBook for clinic appointments, hospital partnerships, and 24/7 emergency hotline assistance.">
 
   <!-- Google Fonts: Plus Jakarta Sans & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,13 +33,13 @@
           <li><a href="index.html" class="nav-link">Home</a></li>
           <li><a href="find-doctors.html" class="nav-link">Find Doctors</a></li>
           <li><a href="departments.html" class="nav-link">Departments</a></li>
-          <li><a href="about.html" class="nav-link">About Us</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
           <li><a href="contact.html" class="nav-link active">Contact</a></li>
         </ul>
       </nav>
 
       <div class="header-actions" id="header-auth-actions">
-        <a href="auth/login.html" class="btn btn-ghost">Sign In</a>
+        <a href="auth/login.html" class="btn btn-ghost">Login</a>
         <a href="find-doctors.html" class="btn btn-primary btn-book-nav">
           <i data-lucide="calendar-plus"></i>
           <span>Book Appointment</span>
@@ -48,6 +49,34 @@
       <button class="mobile-nav-toggle" id="mobile-nav-toggle"><i data-lucide="menu"></i></button>
     </div>
   </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-content">
+      <div class="mobile-drawer-header">
+        <a href="index.html" class="brand-logo">
+          <span class="brand-icon-wrap"><i data-lucide="cross"></i></span>
+          <span>Medi<span class="brand-highlight">Book</span></span>
+        </a>
+        <button class="btn btn-ghost btn-icon-only" id="close-mobile-drawer"><i data-lucide="x"></i></button>
+      </div>
+
+      <ul class="mobile-nav-list">
+        <li><a href="index.html" class="mobile-nav-link"><i data-lucide="home"></i> Home</a></li>
+        <li><a href="find-doctors.html" class="mobile-nav-link"><i data-lucide="user-search"></i> Find Doctors</a></li>
+        <li><a href="departments.html" class="mobile-nav-link"><i data-lucide="grid"></i> Departments</a></li>
+        <li><a href="about.html" class="mobile-nav-link"><i data-lucide="info"></i> About</a></li>
+        <li><a href="contact.html" class="mobile-nav-link active"><i data-lucide="phone"></i> Contact</a></li>
+      </ul>
+
+      <div class="mobile-drawer-actions" id="mobile-drawer-auth-actions">
+        <a href="auth/login.html" class="btn btn-outline btn-block">Login</a>
+        <a href="find-doctors.html" class="btn btn-primary btn-block">
+          <i data-lucide="calendar-plus"></i> Book Appointment
+        </a>
+      </div>
+    </div>
+  </div>
 
   <main style="padding: 3.5rem 0 5rem;">
     <div class="container">
@@ -161,8 +190,8 @@
       <div class="footer-bottom">
         <div>&copy; 2026 MediBook Healthcare Systems Inc.</div>
         <div class="footer-legal-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms and Conditions</a>
           <a href="#">Security</a>
         </div>
       </div>

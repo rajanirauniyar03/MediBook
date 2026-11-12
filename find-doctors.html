@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Find Doctors & Specialists – MediBook</title>
-  <meta name="description" content="Discover top-rated board-certified doctors across cardiology, neurology, pediatrics, and more.">
+  <meta name="description" content="Discover verified doctors across Cardiology, Neurology, Pediatrics, Dermatology and more. Filter by experience and fee.">
 
   <!-- Google Fonts: Plus Jakarta Sans & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,39 +19,101 @@
   <link rel="stylesheet" href="assets/css/landing.css">
 
   <style>
-    .filter-bar {
+    .filter-panel {
       background: #ffffff;
       border: 1px solid var(--slate-200);
       border-radius: var(--radius-xl);
-      padding: 1.25rem;
-      margin-bottom: 2rem;
+      padding: 1.5rem;
       box-shadow: var(--shadow-sm);
+      margin-bottom: 2rem;
     }
-    .filter-grid {
-      display: grid;
-      grid-template-columns: 2fr 1.5fr 1fr auto;
-      gap: 1rem;
-      align-items: center;
-    }
-    .results-count {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--slate-700);
-      margin-bottom: 1.5rem;
+    .filter-panel-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--slate-100);
     }
-    @media (max-width: 900px) {
-      .filter-grid {
+    .filter-controls-grid {
+      display: grid;
+      grid-template-columns: 2fr 1.3fr 1.1fr 1.1fr 1.2fr auto;
+      gap: 0.85rem;
+      align-items: center;
+    }
+    .results-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .pagination-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 3.5rem;
+    }
+    .page-btn {
+      min-width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--slate-200);
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--slate-700);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .page-btn:hover {
+      border-color: var(--primary-400);
+      color: var(--primary-600);
+      background: var(--primary-50);
+    }
+    .page-btn.active {
+      background: var(--primary-600);
+      color: #ffffff;
+      border-color: var(--primary-600);
+      box-shadow: var(--shadow-sm);
+    }
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    @media (max-width: 1100px) {
+      .filter-controls-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .filter-controls-grid .search-col {
+        grid-column: span 2;
+      }
+      .filter-controls-grid .reset-col {
+        grid-column: span 2;
+      }
+    }
+    @media (max-width: 640px) {
+      .filter-controls-grid {
         grid-template-columns: 1fr;
+      }
+      .filter-controls-grid .search-col,
+      .filter-controls-grid .reset-col {
+        grid-column: span 1;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Site Header -->
+  <!-- ========================================================================
+       Sticky Site Header
+       ======================================================================== -->
   <header class="site-header">
     <div class="container header-container">
       <a href="index.html" class="brand-logo">
@@ -64,13 +126,13 @@
           <li><a href="index.html" class="nav-link">Home</a></li>
           <li><a href="find-doctors.html" class="nav-link active">Find Doctors</a></li>
           <li><a href="departments.html" class="nav-link">Departments</a></li>
-          <li><a href="about.html" class="nav-link">About Us</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
           <li><a href="contact.html" class="nav-link">Contact</a></li>
         </ul>
       </nav>
 
       <div class="header-actions" id="header-auth-actions">
-        <a href="auth/login.html" class="btn btn-ghost">Sign In</a>
+        <a href="auth/login.html" class="btn btn-ghost">Login</a>
         <a href="find-doctors.html" class="btn btn-primary btn-book-nav">
           <i data-lucide="calendar-plus"></i>
           <span>Book Appointment</span>
@@ -98,91 +160,147 @@
         <li><a href="index.html" class="mobile-nav-link"><i data-lucide="home"></i> Home</a></li>
         <li><a href="find-doctors.html" class="mobile-nav-link active"><i data-lucide="user-search"></i> Find Doctors</a></li>
         <li><a href="departments.html" class="mobile-nav-link"><i data-lucide="grid"></i> Departments</a></li>
-        <li><a href="about.html" class="mobile-nav-link"><i data-lucide="info"></i> About Us</a></li>
+        <li><a href="about.html" class="mobile-nav-link"><i data-lucide="info"></i> About</a></li>
         <li><a href="contact.html" class="mobile-nav-link"><i data-lucide="phone"></i> Contact</a></li>
       </ul>
 
       <div class="mobile-drawer-actions" id="mobile-drawer-auth-actions">
-        <a href="auth/login.html" class="btn btn-outline btn-block">Sign In</a>
-        <a href="auth/register.html" class="btn btn-primary btn-block">Create Free Account</a>
+        <a href="auth/login.html" class="btn btn-outline btn-block">Login</a>
+        <a href="find-doctors.html" class="btn btn-primary btn-block">
+          <i data-lucide="calendar-plus"></i> Book Appointment
+        </a>
       </div>
     </div>
   </div>
 
-  <main style="padding: 3rem 0 5rem;">
+  <main style="padding: 3rem 0 6rem;">
     <div class="container">
       
       <!-- Page Header -->
       <div style="margin-bottom: 2rem;">
         <div class="eyebrow-badge">
           <i data-lucide="user-check"></i>
-          <span>Verified Medical Specialists</span>
+          <span>Verified Healthcare Specialists</span>
         </div>
-        <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Find the Right Doctor For You</h1>
-        <p class="text-muted">Browse licensed physicians, inspect patient reviews, and schedule your appointment instantly.</p>
+        <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Find Top Doctors & Specialists</h1>
+        <p class="text-muted">Search by doctor name, filter by medical specialization, years of experience, or consultation fee.</p>
       </div>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <div class="filter-grid">
-          <div class="input-icon-wrapper">
-            <span class="input-icon-left"><i data-lucide="search"></i></span>
-            <input type="text" id="doctor-search-input" class="form-control" placeholder="Search by doctor name or condition...">
+      <!-- Filter Panel (All requested filters functional) -->
+      <div class="filter-panel">
+        <div class="filter-panel-header">
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--slate-900); display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="sliders-horizontal" style="width: 18px; height: 18px; color: var(--primary-600);"></i>
+            <span>Search & Filter Criteria</span>
+          </div>
+          <span class="badge badge-teal text-xs"><i data-lucide="shield-check"></i> Board Certified</span>
+        </div>
+
+        <div class="filter-controls-grid">
+          <!-- 1. Search by Doctor Name -->
+          <div class="search-col">
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="search"></i></span>
+              <input type="text" id="doctor-search-input" class="form-control" placeholder="Search by doctor name or subspecialty...">
+            </div>
           </div>
 
-          <div class="input-icon-wrapper">
-            <span class="input-icon-left"><i data-lucide="stethoscope"></i></span>
-            <select id="department-filter" class="form-control">
-              <option value="">All Departments</option>
-              <option value="Cardiology">Cardiology</option>
-              <option value="Neurology">Neurology</option>
-              <option value="Pediatrics">Pediatrics</option>
-              <option value="Orthopedics">Orthopedics</option>
-              <option value="Dermatology">Dermatology</option>
-              <option value="Obstetrics & Gynecology">Obstetrics & Gynecology</option>
+          <!-- 2. Filter by Specialization -->
+          <div>
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="stethoscope"></i></span>
+              <select id="specialization-filter" class="form-control" aria-label="Filter by specialization">
+                <option value="">All Specializations</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Dermatology">Dermatology</option>
+                <option value="Neurology">Neurology</option>
+                <option value="Orthopedics">Orthopedics</option>
+                <option value="Pediatrics">Pediatrics</option>
+                <option value="Dentistry">Dentistry</option>
+                <option value="General Medicine">General Medicine</option>
+                <option value="Gynecology">Gynecology</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 3. Filter by Experience -->
+          <div>
+            <select id="experience-filter" class="form-control" aria-label="Filter by experience">
+              <option value="">Any Experience</option>
+              <option value="10">10+ Years</option>
+              <option value="15">15+ Years</option>
             </select>
           </div>
 
+          <!-- 4. Filter by Consultation Fee -->
           <div>
-            <select id="sort-filter" class="form-control">
+            <select id="fee-filter" class="form-control" aria-label="Filter by fee">
+              <option value="">All Fees</option>
+              <option value="under-100">Under $100</option>
+              <option value="100-130">$100 – $130</option>
+              <option value="above-130">Above $130</option>
+            </select>
+          </div>
+
+          <!-- 5. Sort by Experience or Fee -->
+          <div>
+            <select id="sort-filter" class="form-control" aria-label="Sort doctors">
               <option value="rating">Highest Rated</option>
-              <option value="experience">Most Experienced</option>
+              <option value="experience-desc">Most Experienced</option>
               <option value="fee-asc">Fee: Low to High</option>
               <option value="fee-desc">Fee: High to Low</option>
             </select>
           </div>
 
-          <div>
-            <button id="reset-filters-btn" class="btn btn-outline btn-block">Reset</button>
+          <!-- Reset Filter -->
+          <div class="reset-col">
+            <button id="reset-filters-btn" class="btn btn-outline btn-block" title="Clear all filters">
+              <i data-lucide="rotate-ccw"></i>
+              <span>Reset</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Results Info -->
-      <div class="results-count">
-        <span id="results-count-text">Showing verified doctors</span>
-        <span class="badge badge-teal"><i data-lucide="shield-check"></i> All Board Certified</span>
+      <!-- Results Count Bar -->
+      <div class="results-bar">
+        <div style="font-weight: 700; font-size: 1.05rem; color: var(--slate-900);">
+          <span id="results-count-text">Showing doctors</span>
+        </div>
+        <div class="text-sm text-muted">
+          Showing <span id="pagination-current-range">1-6</span> of <span id="pagination-total-count">0</span> verified practitioners
+        </div>
       </div>
 
       <!-- Doctor Cards Grid -->
       <div class="grid grid-cols-3 lg:grid-cols-2 md:grid-cols-1 gap-6" id="doctors-directory-grid">
-        <!-- Rendered via JS -->
+        <!-- Rendered dynamically -->
       </div>
 
       <!-- Empty State -->
-      <div id="no-doctors-empty" style="display: none; text-align: center; padding: 4rem 1.5rem; background: #ffffff; border-radius: var(--radius-xl); border: 1px dashed var(--slate-300); margin-top: 1.5rem;">
-        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--slate-100); display: inline-flex; align-items: center; justify-content: center; color: var(--slate-400); margin-bottom: 1rem;">
+      <div id="no-doctors-empty" style="display: none; text-align: center; padding: 4.5rem 1.5rem; background: #ffffff; border-radius: var(--radius-xl); border: 1px dashed var(--slate-300); margin-top: 1.5rem;">
+        <div style="width: 68px; height: 68px; border-radius: 50%; background: var(--slate-100); display: inline-flex; align-items: center; justify-content: center; color: var(--slate-400); margin-bottom: 1.25rem;">
           <i data-lucide="user-x" style="width: 32px; height: 32px;"></i>
         </div>
-        <h3 style="margin-bottom: 0.5rem;">No Doctors Found</h3>
-        <p class="text-muted" style="max-width: 420px; margin: 0 auto 1.5rem;">We couldn't find any medical practitioners matching your filter criteria. Try clearing some filters.</p>
-        <button id="empty-reset-btn" class="btn btn-primary">Clear All Filters</button>
+        <h3 style="font-size: 1.35rem; margin-bottom: 0.5rem;">No Matching Doctors Found</h3>
+        <p class="text-muted" style="max-width: 440px; margin: 0 auto 1.5rem;">We couldn't find any medical practitioners matching your filter criteria. Try adjusting your fee range or selecting All Specializations.</p>
+        <button id="empty-reset-btn" class="btn btn-primary">
+          <i data-lucide="rotate-ccw"></i>
+          <span>Clear All Filters</span>
+        </button>
+      </div>
+
+      <!-- Pagination Bar -->
+      <div class="pagination-bar" id="pagination-container">
+        <!-- Page buttons populated dynamically -->
       </div>
 
     </div>
   </main>
 
-  <!-- Site Footer -->
+  <!-- ========================================================================
+       Footer
+       ======================================================================== -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-top">
@@ -192,27 +310,31 @@
             <span>Medi<span class="brand-highlight" style="color: var(--primary-400);">Book</span></span>
           </a>
           <p class="footer-brand-desc">
-            Empowering patients and hospitals with intelligent scheduling, trusted specialist discovery, and encrypted health records.
+            Empowering patients and clinics with intelligent scheduling, trusted specialist discovery, and encrypted health records.
           </p>
         </div>
         <div>
-          <h4 class="footer-heading">Portals</h4>
+          <h4 class="footer-heading">Quick Links</h4>
           <ul class="footer-links">
-            <li><a href="auth/login.html?role=patient">Patient Portal</a></li>
-            <li><a href="auth/login.html?role=doctor">Doctor Portal</a></li>
-            <li><a href="auth/login.html?role=admin">Hospital Admin</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="find-doctors.html">Find Doctors</a></li>
+            <li><a href="departments.html">Departments</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
         <div>
-          <h4 class="footer-heading">Departments</h4>
+          <h4 class="footer-heading">Specializations</h4>
           <ul class="footer-links">
             <li><a href="find-doctors.html?dept=Cardiology">Cardiology</a></li>
+            <li><a href="find-doctors.html?dept=Dermatology">Dermatology</a></li>
             <li><a href="find-doctors.html?dept=Neurology">Neurology</a></li>
-            <li><a href="find-doctors.html?dept=Pediatrics">Pediatrics</a></li>
+            <li><a href="find-doctors.html?dept=Orthopedics">Orthopedics</a></li>
+            <li><a href="find-doctors.html?dept=Dentistry">Dentistry</a></li>
           </ul>
         </div>
         <div>
-          <h4 class="footer-heading">Emergency Hotline</h4>
+          <h4 class="footer-heading">Emergency Helpline</h4>
           <div class="footer-helpline">
             <div class="footer-helpline-label">24/7 Response Line</div>
             <div class="footer-helpline-number">+1 (800) 432-6334</div>
@@ -222,8 +344,8 @@
       <div class="footer-bottom">
         <div>&copy; 2026 MediBook Healthcare Systems Inc.</div>
         <div class="footer-legal-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms and Conditions</a>
           <a href="#">Security</a>
         </div>
       </div>
@@ -232,10 +354,6 @@
 
   <!-- Scripts -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   <script src="assets/js/config/firebase-config.js"></script>
   <script src="assets/js/data/demo-data.js"></script>
   <script src="assets/js/utils/validators.js"></script>
@@ -244,154 +362,264 @@
   <script src="assets/js/services/auth-service.js"></script>
   <script src="assets/js/components/navbar.js"></script>
 
+  <!-- Doctor Discovery Logic -->
   <script>
-    // Directory Page Logic
     document.addEventListener('DOMContentLoaded', () => {
       const searchInput = document.getElementById('doctor-search-input');
-      const deptFilter = document.getElementById('department-filter');
+      const specFilter = document.getElementById('specialization-filter');
+      const expFilter = document.getElementById('experience-filter');
+      const feeFilter = document.getElementById('fee-filter');
       const sortFilter = document.getElementById('sort-filter');
       const resetBtn = document.getElementById('reset-filters-btn');
       const emptyResetBtn = document.getElementById('empty-reset-btn');
 
-      // Parse query params from URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const q = urlParams.get('q');
-      const dept = urlParams.get('dept');
-      if (q && searchInput) searchInput.value = q;
-      if (dept && deptFilter) deptFilter.value = dept;
+      const grid = document.getElementById('doctors-directory-grid');
+      const emptyState = document.getElementById('no-doctors-empty');
+      const countText = document.getElementById('results-count-text');
+      const rangeText = document.getElementById('pagination-current-range');
+      const totalText = document.getElementById('pagination-total-count');
+      const paginationContainer = document.getElementById('pagination-container');
 
-      function renderList() {
+      const ITEMS_PER_PAGE = 6;
+      let currentPage = 1;
+
+      // Read query params from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const qParam = urlParams.get('q');
+      const deptParam = urlParams.get('dept');
+      if (qParam && searchInput) searchInput.value = qParam;
+      if (deptParam && specFilter) {
+        // Match department/specialty
+        for (let i = 0; i < specFilter.options.length; i++) {
+          if (specFilter.options[i].value.toLowerCase() === deptParam.toLowerCase()) {
+            specFilter.selectedIndex = i;
+            break;
+          }
+        }
+      }
+
+      function getFilteredList() {
         const query = (searchInput.value || '').toLowerCase().trim();
-        const selectedDept = deptFilter.value;
+        const selectedSpec = specFilter.value.toLowerCase();
+        const minExp = parseInt(expFilter.value) || 0;
+        const feeChoice = feeFilter.value;
         const sortBy = sortFilter.value;
 
         let list = [...(window.MEDIBOOK_DATA ? window.MEDIBOOK_DATA.doctors : [])];
 
-        // Filter by keyword
+        // 1. Search by Name / Subspecialty / Bio
         if (query) {
           list = list.filter(d => 
-            d.name.toLowerCase().includes(query) || 
-            d.specialty.toLowerCase().includes(query) || 
-            d.department.toLowerCase().includes(query) ||
-            d.about.toLowerCase().includes(query)
+            d.name.toLowerCase().includes(query) ||
+            (d.specialization && d.specialization.toLowerCase().includes(query)) ||
+            (d.department && d.department.toLowerCase().includes(query)) ||
+            (d.subspecialty && d.subspecialty.toLowerCase().includes(query)) ||
+            (d.qualification && d.qualification.toLowerCase().includes(query))
           );
         }
 
-        // Filter by department
-        if (selectedDept) {
-          list = list.filter(d => d.department.toLowerCase().includes(selectedDept.toLowerCase()));
+        // 2. Filter by Specialization
+        if (selectedSpec) {
+          list = list.filter(d => 
+            (d.specialization && d.specialization.toLowerCase() === selectedSpec) ||
+            (d.department && d.department.toLowerCase().includes(selectedSpec))
+          );
         }
 
-        // Sorting
+        // 3. Filter by Experience
+        if (minExp > 0) {
+          list = list.filter(d => (d.experienceYears || 0) >= minExp);
+        }
+
+        // 4. Filter by Fee
+        if (feeChoice === 'under-100') {
+          list = list.filter(d => (d.consultationFee || d.fee) < 100);
+        } else if (feeChoice === '100-130') {
+          list = list.filter(d => {
+            const f = d.consultationFee || d.fee;
+            return f >= 100 && f <= 130;
+          });
+        } else if (feeChoice === 'above-130') {
+          list = list.filter(d => (d.consultationFee || d.fee) > 130);
+        }
+
+        // 5. Sorting
         if (sortBy === 'rating') {
           list.sort((a, b) => b.rating - a.rating);
+        } else if (sortBy === 'experience-desc') {
+          list.sort((a, b) => (b.experienceYears || 0) - (a.experienceYears || 0));
         } else if (sortBy === 'fee-asc') {
-          list.sort((a, b) => a.fee - b.fee);
+          list.sort((a, b) => (a.consultationFee || a.fee) - (b.consultationFee || b.fee));
         } else if (sortBy === 'fee-desc') {
-          list.sort((a, b) => b.fee - a.fee);
-        } else if (sortBy === 'experience') {
-          list.sort((a, b) => parseInt(b.experience) - parseInt(a.experience));
+          list.sort((a, b) => (b.consultationFee || b.fee) - (a.consultationFee || a.fee));
         }
 
-        const grid = document.getElementById('doctors-directory-grid');
-        const emptyState = document.getElementById('no-doctors-empty');
-        const countText = document.getElementById('results-count-text');
+        return list;
+      }
 
-        countText.textContent = `Showing ${list.length} certified medical specialist${list.length === 1 ? '' : 's'}`;
+      function render() {
+        const filteredList = getFilteredList();
+        const total = filteredList.length;
+        const totalPages = Math.ceil(total / ITEMS_PER_PAGE) || 1;
 
-        if (list.length === 0) {
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        countText.textContent = `${total} Certified Practitioner${total === 1 ? '' : 's'} Available`;
+        totalText.textContent = total;
+
+        if (total === 0) {
           grid.innerHTML = '';
           emptyState.style.display = 'block';
-        } else {
-          emptyState.style.display = 'none';
-          grid.innerHTML = list.map(doc => `
-            <div class="doctor-card">
-              <div>
-                <div class="doctor-header">
-                  <div class="doctor-avatar-wrapper">
-                    <img src="${doc.avatar}" alt="${doc.name}" class="doctor-avatar" />
-                    <div class="doctor-verified-badge" title="Board Certified">
-                      <i data-lucide="check"></i>
-                    </div>
-                  </div>
-                  <div class="doctor-meta">
-                    <h3 class="doctor-name">${doc.name}</h3>
-                    <div class="doctor-spec">${doc.specialty}</div>
-                    <div class="doctor-rating">
-                      <i data-lucide="star"></i>
-                      <strong>${doc.rating}</strong>
-                      <span class="text-muted">(${doc.reviews} reviews)</span>
-                    </div>
-                  </div>
-                </div>
-
-                <p style="font-size: 0.85rem; color: var(--slate-600); line-height: 1.5; margin-bottom: 1rem;">
-                  ${doc.about}
-                </p>
-
-                <div class="doctor-details-list">
-                  <div class="doctor-detail-item">
-                    <i data-lucide="building-2"></i>
-                    <span>${doc.hospital}</span>
-                  </div>
-                  <div class="doctor-detail-item">
-                    <i data-lucide="briefcase"></i>
-                    <span>${doc.experience}</span>
-                  </div>
-                  <div class="doctor-detail-item">
-                    <i data-lucide="clock"></i>
-                    <span style="color: var(--accent-700); font-weight: 600;">Next Slot: ${doc.nextAvailable}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="doctor-card-footer">
-                <div class="doctor-fee-box">
-                  <span class="doctor-fee-label">Consultation Fee</span>
-                  <span class="doctor-fee-value">$${doc.fee}</span>
-                </div>
-                <button onclick="handleBookDoctor('${doc.id}')" class="btn btn-primary btn-sm">
-                  <i data-lucide="calendar-plus"></i>
-                  <span>Book Appointment</span>
-                </button>
-              </div>
-            </div>
-          `).join('');
+          rangeText.textContent = '0';
+          paginationContainer.innerHTML = '';
+          return;
         }
 
+        emptyState.style.display = 'none';
+
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, total);
+        rangeText.textContent = `${startIndex + 1}–${endIndex}`;
+
+        const pageItems = filteredList.slice(startIndex, endIndex);
+
+        grid.innerHTML = pageItems.map(doc => `
+          <div class="doctor-card-rich">
+            <div class="doctor-card-body">
+              <div class="doctor-card-top">
+                <div class="doctor-avatar-box">
+                  <img src="${doc.avatar}" alt="${doc.name}" />
+                  <div class="doctor-verified-check" title="Board-Certified Specialist">
+                    <i data-lucide="check"></i>
+                  </div>
+                </div>
+                <div class="doctor-info-col">
+                  <h3 class="doctor-card-name">
+                    <a href="doctor-profile.html?id=${encodeURIComponent(doc.id)}" style="color: inherit; text-decoration: none;">
+                      ${doc.name}
+                    </a>
+                  </h3>
+                  <div class="doctor-card-qualification">${doc.qualification}</div>
+                  <span class="doctor-spec-pill">${doc.specialization}</span>
+                  <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.825rem; color: var(--slate-600);">
+                    <i data-lucide="star" style="width: 14px; height: 14px; color: #f59e0b; fill: #f59e0b;"></i>
+                    <strong>${doc.rating}</strong>
+                    <span class="text-muted">(${doc.reviews} reviews)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="doctor-specs-list">
+                <div class="doctor-spec-item">
+                  <i data-lucide="building-2"></i>
+                  <span>${doc.hospital}</span>
+                </div>
+                <div class="doctor-spec-item">
+                  <i data-lucide="briefcase"></i>
+                  <span>${doc.experience}</span>
+                </div>
+                <div class="doctor-spec-item">
+                  <i data-lucide="calendar"></i>
+                  <span style="color: var(--primary-700); font-weight: 600;">Days: ${doc.availableDaysText || (doc.availableDays ? doc.availableDays.join(', ') : 'Mon - Fri')}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="doctor-card-bottom">
+              <div class="doctor-price-tag">
+                <span class="label">Consultation Fee</span>
+                <span class="amount">$${doc.consultationFee || doc.fee}</span>
+              </div>
+              <div class="doctor-actions-row">
+                <a href="doctor-profile.html?id=${encodeURIComponent(doc.id)}" class="btn btn-outline btn-sm">
+                  <span>Profile</span>
+                </a>
+                <a href="doctor-profile.html?id=${encodeURIComponent(doc.id)}#book-now" class="btn btn-primary btn-sm">
+                  <i data-lucide="calendar-plus"></i>
+                  <span>Book Appointment</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        renderPagination(totalPages);
         if (window.lucide) window.lucide.createIcons();
       }
 
-      window.handleBookDoctor = function(docId) {
-        const user = window.AuthService ? window.AuthService.getCurrentUser() : null;
-        if (!user) {
-          if (window.Toast) {
-            window.Toast.info('Please sign in or create an account to book your consultation appointment.', 'Sign In Required');
-          }
-          setTimeout(() => {
-            window.location.href = `auth/login.html?redirect=${encodeURIComponent(window.location.href)}`;
-          }, 1200);
-        } else {
-          // If logged in, navigate to booking flow
-          window.location.href = `portal/patient/book-appointment.html?doc=${encodeURIComponent(docId)}`;
+      function renderPagination(totalPages) {
+        if (totalPages <= 1) {
+          paginationContainer.innerHTML = '';
+          return;
         }
-      };
 
-      searchInput.addEventListener('input', renderList);
-      deptFilter.addEventListener('change', renderList);
-      sortFilter.addEventListener('change', renderList);
+        let html = '';
+        // Previous Button
+        html += `<button class="page-btn" id="prev-page-btn" ${currentPage === 1 ? 'disabled' : ''} aria-label="Previous Page"><i data-lucide="chevron-left"></i></button>`;
 
-      const resetAll = () => {
+        // Number Buttons
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+
+        // Next Button
+        html += `<button class="page-btn" id="next-page-btn" ${currentPage === totalPages ? 'disabled' : ''} aria-label="Next Page"><i data-lucide="chevron-right"></i></button>`;
+
+        paginationContainer.innerHTML = html;
+
+        // Wire pagination listeners
+        const prevBtn = document.getElementById('prev-page-btn');
+        const nextBtn = document.getElementById('next-page-btn');
+        if (prevBtn) {
+          prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+              currentPage--;
+              render();
+              window.scrollTo({ top: 200, behavior: 'smooth' });
+            }
+          });
+        }
+        if (nextBtn) {
+          nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+              currentPage++;
+              render();
+              window.scrollTo({ top: 200, behavior: 'smooth' });
+            }
+          });
+        }
+
+        const pageBtns = paginationContainer.querySelectorAll('.page-btn[data-page]');
+        pageBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            currentPage = parseInt(btn.getAttribute('data-page'));
+            render();
+            window.scrollTo({ top: 200, behavior: 'smooth' });
+          });
+        });
+      }
+
+      function resetAll() {
         searchInput.value = '';
-        deptFilter.value = '';
+        specFilter.value = '';
+        expFilter.value = '';
+        feeFilter.value = '';
         sortFilter.value = 'rating';
-        renderList();
-      };
+        currentPage = 1;
+        render();
+      }
+
+      searchInput.addEventListener('input', () => { currentPage = 1; render(); });
+      specFilter.addEventListener('change', () => { currentPage = 1; render(); });
+      expFilter.addEventListener('change', () => { currentPage = 1; render(); });
+      feeFilter.addEventListener('change', () => { currentPage = 1; render(); });
+      sortFilter.addEventListener('change', () => { currentPage = 1; render(); });
 
       resetBtn.addEventListener('click', resetAll);
       emptyResetBtn.addEventListener('click', resetAll);
 
-      renderList();
+      render();
     });
   </script>
 </body>

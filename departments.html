@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clinical Departments & Specializations – MediBook</title>
+  <meta name="description" content="Explore MediBook's specialized clinical faculties: Cardiology, Dermatology, Neurology, Orthopedics, Pediatrics, Dentistry, General Medicine, and Gynecology.">
 
   <!-- Google Fonts: Plus Jakarta Sans & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,13 +33,13 @@
           <li><a href="index.html" class="nav-link">Home</a></li>
           <li><a href="find-doctors.html" class="nav-link">Find Doctors</a></li>
           <li><a href="departments.html" class="nav-link active">Departments</a></li>
-          <li><a href="about.html" class="nav-link">About Us</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
           <li><a href="contact.html" class="nav-link">Contact</a></li>
         </ul>
       </nav>
 
       <div class="header-actions" id="header-auth-actions">
-        <a href="auth/login.html" class="btn btn-ghost">Sign In</a>
+        <a href="auth/login.html" class="btn btn-ghost">Login</a>
         <a href="find-doctors.html" class="btn btn-primary btn-book-nav">
           <i data-lucide="calendar-plus"></i>
           <span>Book Appointment</span>
@@ -66,18 +67,20 @@
         <li><a href="index.html" class="mobile-nav-link"><i data-lucide="home"></i> Home</a></li>
         <li><a href="find-doctors.html" class="mobile-nav-link"><i data-lucide="user-search"></i> Find Doctors</a></li>
         <li><a href="departments.html" class="mobile-nav-link active"><i data-lucide="grid"></i> Departments</a></li>
-        <li><a href="about.html" class="mobile-nav-link"><i data-lucide="info"></i> About Us</a></li>
+        <li><a href="about.html" class="mobile-nav-link"><i data-lucide="info"></i> About</a></li>
         <li><a href="contact.html" class="mobile-nav-link"><i data-lucide="phone"></i> Contact</a></li>
       </ul>
 
       <div class="mobile-drawer-actions" id="mobile-drawer-auth-actions">
-        <a href="auth/login.html" class="btn btn-outline btn-block">Sign In</a>
-        <a href="auth/register.html" class="btn btn-primary btn-block">Create Free Account</a>
+        <a href="auth/login.html" class="btn btn-outline btn-block">Login</a>
+        <a href="find-doctors.html" class="btn btn-primary btn-block">
+          <i data-lucide="calendar-plus"></i> Book Appointment
+        </a>
       </div>
     </div>
   </div>
 
-  <main style="padding: 3.5rem 0 5.5rem;">
+  <main style="padding: 3.5rem 0 6rem;">
     <div class="container">
       <div class="section-header">
         <div class="eyebrow-badge">
@@ -86,12 +89,12 @@
         </div>
         <h1 class="section-title">Specialized Clinical Units</h1>
         <p class="section-subtitle">
-          Our integrated network unites certified departments offering comprehensive diagnostics, preventative medicine, and specialized surgery.
+          Our integrated network brings together 8 core medical specializations equipped with advanced diagnostics and board-certified practitioners.
         </p>
       </div>
 
-      <div class="grid grid-cols-3 lg:grid-cols-2 md:grid-cols-1 gap-6" id="departments-full-grid">
-        <!-- Rendered via JS -->
+      <div class="grid grid-cols-4 lg:grid-cols-2 md:grid-cols-1 gap-6" id="departments-full-grid">
+        <!-- Rendered dynamically -->
       </div>
     </div>
   </main>
@@ -102,8 +105,8 @@
       <div class="footer-bottom">
         <div>&copy; 2026 MediBook Healthcare Systems Inc.</div>
         <div class="footer-legal-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms and Conditions</a>
           <a href="#">Security</a>
         </div>
       </div>
@@ -113,24 +116,29 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="assets/js/config/firebase-config.js"></script>
   <script src="assets/js/data/demo-data.js"></script>
+  <script src="assets/js/services/auth-service.js"></script>
   <script src="assets/js/components/navbar.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const container = document.getElementById('departments-full-grid');
       if (container && window.MEDIBOOK_DATA) {
         container.innerHTML = window.MEDIBOOK_DATA.departments.map(dept => `
-          <div class="card" style="padding: 2rem;">
-            <div style="width: 56px; height: 56px; border-radius: var(--radius-md); background: var(--primary-50); color: var(--primary-600); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
-              <i data-lucide="${dept.icon || 'stethoscope'}" style="width: 28px; height: 28px;"></i>
+          <div class="card" style="padding: 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="width: 58px; height: 58px; border-radius: var(--radius-lg); background: var(--primary-50); color: var(--primary-600); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                <i data-lucide="${dept.icon || 'stethoscope'}" style="width: 28px; height: 28px;"></i>
+              </div>
+              <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--slate-900);">${dept.name}</h3>
+              <p style="font-size: 0.9rem; color: var(--slate-600); line-height: 1.55; margin-bottom: 1.25rem;">${dept.shortDesc}</p>
+              
+              <div style="font-size: 0.825rem; color: var(--slate-500); margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.35rem; border-top: 1px solid var(--slate-100); padding-top: 0.75rem;">
+                <div><strong>Lead Physician:</strong> ${dept.headDoctor}</div>
+                <div><strong>Wing Location:</strong> ${dept.roomLocation}</div>
+              </div>
             </div>
-            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">${dept.name}</h3>
-            <p style="font-size: 0.9rem; color: var(--slate-600); line-height: 1.55; margin-bottom: 1.25rem;">${dept.shortDesc}</p>
-            <div style="font-size: 0.825rem; color: var(--slate-500); margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
-              <div><strong>Head of Dept:</strong> ${dept.headDoctor}</div>
-              <div><strong>Facility Location:</strong> ${dept.roomLocation}</div>
-            </div>
+
             <a href="find-doctors.html?dept=${encodeURIComponent(dept.name)}" class="btn btn-outline-primary btn-block btn-sm">
-              <span>View ${dept.doctorCount} Doctors</span>
+              <span>View Specialists</span>
               <i data-lucide="arrow-right"></i>
             </a>
           </div>
