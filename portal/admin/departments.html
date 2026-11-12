@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinical Departments – MediBook Admin</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/portal.css">
+</head>
+<body>
+
+  <div class="portal-layout">
+    
+    <!-- ======================================================================
+         Admin Sidebar Navigation
+         ====================================================================== -->
+    <aside class="portal-sidebar" id="portal-sidebar">
+      <div class="portal-sidebar-header">
+        <a href="../../index.html" class="brand-logo">
+          <span class="brand-icon-wrap"><i data-lucide="cross"></i></span>
+          <span>Medi<span class="brand-highlight">Book</span></span>
+        </a>
+      </div>
+
+      <!-- Admin User Identity -->
+      <div class="portal-sidebar-user">
+        <img id="admin-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Admin Avatar">
+        <div class="portal-user-meta">
+          <div class="portal-user-name" id="admin-user-name">Central Hospital IT</div>
+          <div class="portal-user-role" style="color: var(--primary-600); font-weight: 700;">Hospital Administrator</div>
+        </div>
+      </div>
+
+      <!-- Admin Navigation Menu -->
+      <ul class="portal-nav-list">
+        <li class="portal-nav-item">
+          <a href="dashboard.html">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Overview</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="doctors.html">
+            <i data-lucide="stethoscope"></i>
+            <span>Manage Doctors</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="patients.html">
+            <i data-lucide="users"></i>
+            <span>Manage Patients</span>
+          </a>
+        </li>
+        <li class="portal-nav-item active">
+          <a href="departments.html">
+            <i data-lucide="grid"></i>
+            <span>Departments</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="appointments.html">
+            <i data-lucide="calendar-check"></i>
+            <span>Appointments</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="reports.html">
+            <i data-lucide="bar-chart-3"></i>
+            <span>Reports & Analytics</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="settings.html">
+            <i data-lucide="settings"></i>
+            <span>Hospital Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Sidebar Sign Out -->
+      <div class="portal-sidebar-footer">
+        <button id="admin-logout-btn" class="btn btn-outline btn-block btn-sm text-danger">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ======================================================================
+         Main Admin Content
+         ====================================================================== -->
+    <div class="portal-main">
+      
+      <!-- Top Navigation Bar -->
+      <header class="portal-topbar">
+        <div class="flex items-center gap-3">
+          <button class="portal-mobile-toggle" id="portal-mobile-toggle" aria-label="Toggle Navigation">
+            <i data-lucide="menu"></i>
+          </button>
+          <div>
+            <div style="font-weight: 800; font-size: 1.15rem; color: var(--slate-900);">Medical Departments & Units</div>
+            <div style="font-size: 0.775rem; color: var(--slate-500);">Clinical Centers of Excellence, Unit Heads & Staffing Allocation</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button id="btn-open-add-dept" class="btn btn-primary btn-sm">
+            <i data-lucide="plus-circle"></i>
+            <span>Add Department</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="portal-page-content">
+        
+        <!-- Summary Stats Banner -->
+        <div class="portal-stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 1.5rem;">
+          <div class="portal-stat-card">
+            <div class="portal-stat-icon" style="background: var(--primary-50); color: var(--primary-600);">
+              <i data-lucide="grid"></i>
+            </div>
+            <div class="portal-stat-info">
+              <div class="portal-stat-label">Total Departments</div>
+              <div class="portal-stat-number" id="stat-total-depts">0</div>
+            </div>
+          </div>
+          <div class="portal-stat-card">
+            <div class="portal-stat-icon" style="background: var(--success-50); color: var(--success-600);">
+              <i data-lucide="check-circle-2"></i>
+            </div>
+            <div class="portal-stat-info">
+              <div class="portal-stat-label">Active Units</div>
+              <div class="portal-stat-number" id="stat-active-depts">0</div>
+            </div>
+          </div>
+          <div class="portal-stat-card">
+            <div class="portal-stat-icon" style="background: var(--accent-50); color: var(--accent-700);">
+              <i data-lucide="stethoscope"></i>
+            </div>
+            <div class="portal-stat-info">
+              <div class="portal-stat-label">Specialist Staff</div>
+              <div class="portal-stat-number" id="stat-total-staff">0</div>
+            </div>
+          </div>
+          <div class="portal-stat-card">
+            <div class="portal-stat-icon" style="background: var(--slate-100); color: var(--slate-600);">
+              <i data-lucide="pause-circle"></i>
+            </div>
+            <div class="portal-stat-info">
+              <div class="portal-stat-label">Inactive Units</div>
+              <div class="portal-stat-number" id="stat-inactive-depts">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="card" style="padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <div style="flex: 1; min-width: 260px;">
+              <div class="input-icon-wrapper">
+                <span class="input-icon-left"><i data-lucide="search"></i></span>
+                <input type="text" id="dept-search" class="form-control" placeholder="Search departments by name, specialty, or department head...">
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <select id="filter-dept-status" class="form-control" style="min-width: 150px;">
+                <option value="">All Statuses</option>
+                <option value="Active">Active Units</option>
+                <option value="Inactive">Inactive Units</option>
+              </select>
+              <button id="btn-reset-filters" class="btn btn-outline btn-sm">
+                <i data-lucide="rotate-ccw"></i> Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Departments Grid -->
+        <div id="departments-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
+          <!-- Dynamically populated cards -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="dept-empty-state" class="portal-empty-state" style="display: none; padding: 4rem 2rem;">
+          <div class="portal-empty-icon">
+            <i data-lucide="grid"></i>
+          </div>
+          <h3 class="portal-empty-title">No Departments Found</h3>
+          <p class="portal-empty-desc">No clinical departments match your current filter query.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: ADD DEPARTMENT
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modal-add-dept" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i data-lucide="plus-circle" style="color: var(--primary-600);"></i>
+          <span>Add Clinical Department</span>
+        </h3>
+        <button type="button" class="btn btn-ghost btn-icon-only modal-close-btn" aria-label="Close dialog">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form id="form-add-dept" novalidate>
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <div class="form-group">
+            <label class="form-label" for="add-dept-name">Department Name <span class="required">*</span></label>
+            <input type="text" id="add-dept-name" class="form-control" placeholder="e.g. Oncology, Ophthalmology, Urology" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="add-dept-head">Department Head / Chief</label>
+              <input type="text" id="add-dept-head" class="form-control" placeholder="e.g. Dr. Arthur Miller, Chief">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="add-dept-location">Clinic Wing & Room</label>
+              <input type="text" id="add-dept-location" class="form-control" placeholder="e.g. Building B, Level 3">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="add-dept-doctors">Assigned Physicians</label>
+              <input type="number" id="add-dept-doctors" class="form-control" min="0" value="2">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="add-dept-icon">Icon Name</label>
+              <select id="add-dept-icon" class="form-control">
+                <option value="heart-pulse">Heart (Cardiology)</option>
+                <option value="brain">Brain (Neurology)</option>
+                <option value="bone">Bone (Orthopedics)</option>
+                <option value="baby">Baby (Pediatrics)</option>
+                <option value="smile">Smile (Dentistry)</option>
+                <option value="stethoscope" selected>Stethoscope (General)</option>
+                <option value="shield">Shield (Immune/Derm)</option>
+                <option value="activity">Activity (Emergency)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="add-dept-image">Department Banner Image URL</label>
+            <input type="url" id="add-dept-image" class="form-control" placeholder="https://images.unsplash.com/...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="add-dept-desc">Clinical Description</label>
+            <textarea id="add-dept-desc" class="form-control" rows="2" placeholder="Brief outline of diagnostic treatments, tertiary care capabilities, and specialized equipment..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-add-dept">
+            <i data-lucide="check"></i> Create Department
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: EDIT DEPARTMENT
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modal-edit-dept" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i data-lucide="edit-3" style="color: var(--primary-600);"></i>
+          <span>Edit Department Information</span>
+        </h3>
+        <button type="button" class="btn btn-ghost btn-icon-only modal-close-btn" aria-label="Close dialog">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form id="form-edit-dept" novalidate>
+        <input type="hidden" id="edit-dept-id">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <div class="form-group">
+            <label class="form-label" for="edit-dept-name">Department Name <span class="required">*</span></label>
+            <input type="text" id="edit-dept-name" class="form-control" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="edit-dept-head">Department Head</label>
+              <input type="text" id="edit-dept-head" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-dept-location">Location / Room</label>
+              <input type="text" id="edit-dept-location" class="form-control">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="edit-dept-status">Status</label>
+              <select id="edit-dept-status" class="form-control">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-dept-doctors">Staff Count</label>
+              <input type="number" id="edit-dept-doctors" class="form-control" min="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-dept-image">Image URL</label>
+            <input type="url" id="edit-dept-image" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-dept-desc">Clinical Description</label>
+            <textarea id="edit-dept-desc" class="form-control" rows="2"></textarea>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-edit-dept">
+            <i data-lucide="check"></i> Update Department
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Core Scripts -->
+  <script src="../../assets/js/config/firebase-config.js"></script>
+  <script src="../../assets/js/data/demo-data.js"></script>
+  <script src="../../assets/js/utils/validators.js"></script>
+  <script src="../../assets/js/utils/formatters.js"></script>
+  <script src="../../assets/js/components/toast.js"></script>
+  <script src="../../assets/js/services/auth-service.js"></script>
+  <script src="../../assets/js/services/appointment-service.js"></script>
+  <script src="../../assets/js/services/admin-service.js"></script>
+
+  <!-- Department Governance Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Guard: Restrict strictly to authorized administrator accounts
+      const isAuthorized = window.AuthService.requireAuth(['admin']);
+      if (!isAuthorized) return;
+
+      const user = window.AuthService.getCurrentUser();
+      if (user) {
+        document.getElementById('admin-user-name').textContent = user.displayName || 'Hospital Administrator';
+        if (user.avatar) document.getElementById('admin-user-avatar').src = user.avatar;
+      }
+
+      // Mobile toggle
+      const mobileToggle = document.getElementById('portal-mobile-toggle');
+      const sidebar = document.getElementById('portal-sidebar');
+      if (mobileToggle && sidebar) {
+        mobileToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+      }
+
+      // Logout
+      document.getElementById('admin-logout-btn').addEventListener('click', async () => {
+        await window.AuthService.logout();
+        window.location.href = '../../index.html';
+      });
+
+      // Load Departments
+      loadDepartmentsGrid();
+
+      // Search & Filters
+      document.getElementById('dept-search').addEventListener('input', loadDepartmentsGrid);
+      document.getElementById('filter-dept-status').addEventListener('change', loadDepartmentsGrid);
+      document.getElementById('btn-reset-filters').addEventListener('click', () => {
+        document.getElementById('dept-search').value = '';
+        document.getElementById('filter-dept-status').value = '';
+        loadDepartmentsGrid();
+      });
+
+      // Modals
+      const addModal = document.getElementById('modal-add-dept');
+      document.getElementById('btn-open-add-dept').addEventListener('click', () => {
+        addModal.classList.add('show');
+        addModal.setAttribute('aria-hidden', 'false');
+      });
+
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const backdrop = e.target.closest('.modal-backdrop');
+          if (backdrop) {
+            backdrop.classList.remove('show');
+            backdrop.setAttribute('aria-hidden', 'true');
+          }
+        });
+      });
+
+      // Handle Add Department
+      document.getElementById('form-add-dept').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('add-dept-name').value.trim();
+        const headDoctor = document.getElementById('add-dept-head').value.trim();
+        const roomLocation = document.getElementById('add-dept-location').value.trim();
+        const doctorCount = document.getElementById('add-dept-doctors').value.trim();
+        const icon = document.getElementById('add-dept-icon').value;
+        const imageUrl = document.getElementById('add-dept-image').value.trim();
+        const shortDesc = document.getElementById('add-dept-desc').value.trim();
+
+        if (!name) {
+          window.Toast.show('Department name is required.', 'error');
+          return;
+        }
+
+        const res = await window.AdminService.addDepartment({
+          name,
+          headDoctor: headDoctor || 'Consultant Chief',
+          roomLocation: roomLocation || 'Main Pavilion',
+          doctorCount: parseInt(doctorCount) || 1,
+          icon,
+          imageUrl: imageUrl || undefined,
+          shortDesc: shortDesc || 'Comprehensive specialized medical diagnosis and patient care.'
+        });
+
+        if (res.success) {
+          window.Toast.show(`Department "${name}" successfully registered.`, 'success');
+          addModal.classList.remove('show');
+          document.getElementById('form-add-dept').reset();
+          loadDepartmentsGrid();
+        } else {
+          window.Toast.show(res.error || 'Failed to add department.', 'error');
+        }
+      });
+
+      // Handle Edit Department
+      document.getElementById('form-edit-dept').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const deptId = document.getElementById('edit-dept-id').value;
+        const name = document.getElementById('edit-dept-name').value.trim();
+        const headDoctor = document.getElementById('edit-dept-head').value.trim();
+        const roomLocation = document.getElementById('edit-dept-location').value.trim();
+        const status = document.getElementById('edit-dept-status').value;
+        const doctorCount = document.getElementById('edit-dept-doctors').value.trim();
+        const imageUrl = document.getElementById('edit-dept-image').value.trim();
+        const shortDesc = document.getElementById('edit-dept-desc').value.trim();
+
+        const res = await window.AdminService.updateDepartment(deptId, {
+          name,
+          headDoctor,
+          roomLocation,
+          status,
+          doctorCount: parseInt(doctorCount) || 1,
+          imageUrl,
+          shortDesc
+        });
+
+        if (res.success) {
+          window.Toast.show(`Department updated successfully.`, 'success');
+          document.getElementById('modal-edit-dept').classList.remove('show');
+          loadDepartmentsGrid();
+        } else {
+          window.Toast.show(res.error || 'Failed to update department.', 'error');
+        }
+      });
+    });
+
+    function loadDepartmentsGrid() {
+      const depts = window.AdminService.getDepartments();
+      const doctors = window.AdminService.getDoctors();
+      const searchTerm = (document.getElementById('dept-search').value || '').toLowerCase().trim();
+      const statusFilter = document.getElementById('filter-dept-status').value;
+
+      // Update KPIs
+      const activeDepts = depts.filter(d => d.status === 'Active');
+      const inactiveDepts = depts.filter(d => d.status === 'Inactive');
+      const totalStaff = depts.reduce((sum, d) => sum + (d.doctorCount || doctors.filter(doc => doc.department === d.name).length || 1), 0);
+
+      document.getElementById('stat-total-depts').textContent = depts.length;
+      document.getElementById('stat-active-depts').textContent = activeDepts.length;
+      document.getElementById('stat-inactive-depts').textContent = inactiveDepts.length;
+      document.getElementById('stat-total-staff').textContent = totalStaff;
+
+      // Filter
+      const filtered = depts.filter(d => {
+        const matchesSearch = !searchTerm ||
+          d.name.toLowerCase().includes(searchTerm) ||
+          (d.headDoctor && d.headDoctor.toLowerCase().includes(searchTerm)) ||
+          (d.shortDesc && d.shortDesc.toLowerCase().includes(searchTerm));
+
+        const matchesStatus = !statusFilter || d.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
+
+      const grid = document.getElementById('departments-grid');
+      const emptyState = document.getElementById('dept-empty-state');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.style.display = 'block';
+        if (window.lucide) window.lucide.createIcons();
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      grid.innerHTML = filtered.map(dept => {
+        const isActive = dept.status === 'Active';
+        const docCount = dept.doctorCount || doctors.filter(doc => doc.department === dept.name).length || 1;
+        const fallbackImg = "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=500&auto=format&fit=crop&q=80";
+
+        return `
+          <div class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+            <!-- Department Image Header -->
+            <div style="position: relative; height: 140px; overflow: hidden; background: var(--slate-800);">
+              <img src="${dept.imageUrl || fallbackImg}" 
+                   alt="${dept.name}" 
+                   style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;">
+              <div style="position: absolute; top: 12px; right: 12px;">
+                <button class="status-pill-toggle ${isActive ? 'active' : 'inactive'}" 
+                        onclick="toggleDeptStatus('${dept.id || dept.slug}')" 
+                        title="Click to toggle status">
+                  <i data-lucide="${isActive ? 'check' : 'pause'}"></i>
+                  <span>${dept.status || 'Active'}</span>
+                </button>
+              </div>
+              <div style="position: absolute; bottom: 12px; left: 16px; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); padding: 0.35rem 0.75rem; border-radius: var(--radius-md); color: #fff; font-size: 0.8rem; font-weight: 600;" class="flex items-center gap-2">
+                <i data-lucide="${dept.icon || 'stethoscope'}"></i>
+                <span>${dept.roomLocation || 'Tower Pavilion'}</span>
+              </div>
+            </div>
+
+            <!-- Department Info -->
+            <div style="padding: 1.25rem 1.5rem; flex: 1; display: flex; flex-direction: column;">
+              <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.35rem;">
+                ${dept.name}
+              </h3>
+              <p style="font-size: 0.875rem; color: var(--slate-600); line-height: 1.5; margin-bottom: 1rem; flex: 1;">
+                ${dept.shortDesc || 'Comprehensive specialized medical diagnosis and patient care.'}
+              </p>
+
+              <div style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.825rem;">
+                <div class="flex justify-between items-center" style="margin-bottom: 0.35rem;">
+                  <span style="color: var(--slate-500);">Department Head:</span>
+                  <strong style="color: var(--slate-800);">${dept.headDoctor || 'Consultant Chief'}</strong>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span style="color: var(--slate-500);">Assigned Specialists:</span>
+                  <span class="badge badge-teal text-xs">${docCount} Physicians</span>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex items-center justify-between gap-2" style="border-top: 1px solid var(--slate-100); padding-top: 0.75rem;">
+                <a href="doctors.html?dept=${encodeURIComponent(dept.name)}" class="btn btn-ghost btn-sm text-primary" style="padding: 0;">
+                  <i data-lucide="stethoscope"></i> View Doctors
+                </a>
+                <div class="flex items-center gap-1">
+                  <button class="btn btn-outline btn-sm" onclick="editDepartment('${dept.id || dept.slug}')" title="Edit Department">
+                    <i data-lucide="edit-3"></i> Edit
+                  </button>
+                  <button class="btn btn-ghost btn-icon-only btn-sm text-danger" onclick="toggleDeptStatus('${dept.id || dept.slug}')" title="${isActive ? 'Deactivate' : 'Activate'} Department">
+                    <i data-lucide="${isActive ? 'slash' : 'play'}"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    window.toggleDeptStatus = async function(deptId) {
+      const res = await window.AdminService.toggleDepartmentStatus(deptId);
+      if (res.success) {
+        window.Toast.show(`Department status updated to ${res.department.status}.`, 'info');
+        loadDepartmentsGrid();
+      } else {
+        window.Toast.show(res.error || 'Failed to update department status.', 'error');
+      }
+    };
+
+    window.editDepartment = function(deptId) {
+      const depts = window.AdminService.getDepartments();
+      const dept = depts.find(d => d.id === deptId || d.slug === deptId);
+      if (!dept) return;
+
+      document.getElementById('edit-dept-id').value = dept.id || dept.slug;
+      document.getElementById('edit-dept-name').value = dept.name;
+      document.getElementById('edit-dept-head').value = dept.headDoctor || '';
+      document.getElementById('edit-dept-location').value = dept.roomLocation || '';
+      document.getElementById('edit-dept-status').value = dept.status || 'Active';
+      document.getElementById('edit-dept-doctors').value = dept.doctorCount || 1;
+      document.getElementById('edit-dept-image').value = dept.imageUrl || '';
+      document.getElementById('edit-dept-desc').value = dept.shortDesc || '';
+
+      const editModal = document.getElementById('modal-edit-dept');
+      editModal.classList.add('show');
+      editModal.setAttribute('aria-hidden', 'false');
+    };
+  </script>
+</body>
+</html>

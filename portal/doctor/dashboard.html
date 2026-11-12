@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doctor Portal Dashboard – MediBook</title>
+  <title>Physician Practice Portal – MediBook Healthcare</title>
 
   <!-- Google Fonts: Plus Jakarta Sans & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,111 +15,990 @@
   <link rel="stylesheet" href="../../assets/css/base.css">
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
 </head>
-<body>
+<body class="dashboard-body">
 
-  <!-- Site Header -->
-  <header class="site-header">
-    <div class="container header-container">
-      <a href="../../index.html" class="brand-logo">
-        <span class="brand-icon-wrap"><i data-lucide="cross"></i></span>
-        <span>Medi<span class="brand-highlight">Book</span></span>
-      </a>
+  <div class="dashboard-layout">
+    
+    <!-- =========================================================================
+         1. PROFESSIONAL DOCTOR SIDEBAR
+         ========================================================================= -->
+    <aside class="dashboard-sidebar">
+      
+      <!-- Brand Logo -->
+      <div class="sidebar-brand-box">
+        <a href="../../index.html" class="brand-logo" title="Back to MediBook Public Portal">
+          <span class="brand-icon-wrap"><i data-lucide="cross"></i></span>
+          <span>Medi<span class="brand-highlight">Book</span></span>
+        </a>
+        <div>
+          <span class="sidebar-portal-badge">
+            <i data-lucide="stethoscope"></i> Physician Portal
+          </span>
+        </div>
+      </div>
 
-      <div class="flex items-center gap-4">
-        <span class="badge badge-teal"><i data-lucide="stethoscope"></i> Doctor Practice Portal</span>
-        <button id="doctor-logout-btn" class="btn btn-outline btn-sm">
+      <!-- Doctor Quick Profile Card -->
+      <div class="sidebar-doctor-card">
+        <div class="sidebar-avatar-wrap">
+          <img id="sidebar-doc-avatar" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&auto=format&fit=crop&q=80" alt="Doctor Profile">
+          <span class="sidebar-status-dot" title="Physician On Duty"></span>
+        </div>
+        <div class="sidebar-doc-info">
+          <h4 class="sidebar-doc-name" id="sidebar-doc-name">Dr. Alexander Wright</h4>
+          <div class="sidebar-doc-dept" id="sidebar-doc-dept">Cardiology • On Duty</div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Clinical Practice</div>
+
+        <button class="dash-nav-item active" data-tab="overview">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard Overview</span>
+        </button>
+
+        <button class="dash-nav-item" data-tab="appointments">
+          <i data-lucide="calendar"></i>
+          <span>Appointments</span>
+          <span class="dash-nav-badge" id="sidebar-upcoming-badge">4 Today</span>
+        </button>
+
+        <button class="dash-nav-item" data-tab="schedule">
+          <i data-lucide="clock"></i>
+          <span>Schedule & Availability</span>
+        </button>
+
+        <button class="dash-nav-item" data-tab="patients">
+          <i data-lucide="users"></i>
+          <span>Patient Records</span>
+        </button>
+
+        <div class="nav-section-title" style="margin-top: 0.5rem;">Account Governance</div>
+
+        <button class="dash-nav-item" data-tab="profile">
+          <i data-lucide="user-check"></i>
+          <span>Doctor Profile</span>
+        </button>
+
+        <a href="../../find-doctors.html" class="dash-nav-item" target="_blank">
+          <i data-lucide="external-link"></i>
+          <span>Public Directory View</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer with Multi-Doctor Testing Switcher & Logout -->
+      <div class="sidebar-footer">
+        <div class="sidebar-switcher-wrap">
+          <label for="doctor-switcher-select" class="sidebar-switcher-label">
+            <i data-lucide="repeat" style="width: 12px; height: 12px; display: inline;"></i> Switch Active Doctor:
+          </label>
+          <select id="doctor-switcher-select" class="sidebar-doc-select" title="Switch between registered hospital doctors to test scheduling isolation">
+            <!-- Dynamically populated with doctor roster -->
+          </select>
+        </div>
+
+        <div class="sidebar-sync-status">
+          <span class="sync-pulse"></span>
+          <span>Firestore Connected • HIPAA Sync</span>
+        </div>
+
+        <button id="doctor-logout-btn" class="btn btn-outline btn-sm btn-block" style="color: var(--danger-600); border-color: var(--slate-300);">
           <i data-lucide="log-out"></i>
-          <span>Sign Out</span>
+          <span>Sign Out Practice</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- =========================================================================
+         2. MAIN DASHBOARD CONTENT AREA
+         ========================================================================= -->
+    <main class="dashboard-main">
+
+      <!-- Topbar Header -->
+      <header class="dashboard-topbar">
+        <div class="topbar-left">
+          <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Open Navigation Menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="topbar-title-wrap">
+            <h1>Physician Practice Console</h1>
+            <p id="header-live-date">Thursday, November 12, 2026</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Conflict Alert Pill (Visible when schedule conflicts exist) -->
+          <button id="topbar-conflict-pill" class="conflict-alert-pill open-conflicts-btn" style="display: none;">
+            <i data-lucide="alert-triangle"></i>
+            <span><span id="topbar-conflict-count">0</span> Schedule Conflict(s)</span>
+          </button>
+
+          <span class="badge badge-teal" style="font-size: 0.85rem; padding: 0.45rem 0.85rem;">
+            <i data-lucide="stethoscope"></i>
+            <span id="header-doc-name">Dr. Alexander Wright</span> • <span id="header-doc-specialty">Cardiology</span>
+          </span>
+        </div>
+      </header>
+
+      <!-- Dashboard Tab Views Container -->
+      <div class="dashboard-content">
+
+        <!-- ===================================================================
+             TAB 1: DASHBOARD OVERVIEW
+             =================================================================== -->
+        <section id="tab-overview" class="tab-panel active">
+          
+          <!-- Schedule Conflict Alert Banner (Shown when conflicts are detected) -->
+          <div id="conflict-alert-banner" class="conflict-banner" style="display: none;">
+            <div class="conflict-banner-content">
+              <h4>
+                <i data-lucide="alert-triangle"></i>
+                <span>Action Required: <span id="conflict-count">0</span> Appointment Schedule Conflict(s) Detected</span>
+              </h4>
+              <p>
+                Recent availability modifications or added leave overlap with existing booked consultations. In compliance with hospital governance, appointments are <strong>not silently deleted</strong>. Please review affected patients.
+              </p>
+            </div>
+            <button class="btn btn-danger btn-sm open-conflicts-btn" style="white-space: nowrap;">
+              <i data-lucide="eye"></i> Review Conflicts
+            </button>
+          </div>
+
+          <!-- 5 KPI Statistic Cards -->
+          <div class="stats-kpi-grid">
+            
+            <div class="kpi-card kpi-blue">
+              <div class="kpi-header">
+                <span class="kpi-label">Total Appointments</span>
+                <div class="kpi-icon-wrap"><i data-lucide="calendar"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-total-val">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="database"></i> All assigned consultations
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-teal">
+              <div class="kpi-header">
+                <span class="kpi-label">Today's Schedule</span>
+                <div class="kpi-icon-wrap"><i data-lucide="clock"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-today-val">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="activity"></i> Scheduled for today
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-orange">
+              <div class="kpi-header">
+                <span class="kpi-label">Upcoming Patients</span>
+                <div class="kpi-icon-wrap"><i data-lucide="calendar-plus"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-upcoming-val">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="user-check"></i> Confirmed & Pending
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-green">
+              <div class="kpi-header">
+                <span class="kpi-label">Completed Visits</span>
+                <div class="kpi-icon-wrap"><i data-lucide="check-circle-2"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-completed-val">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="file-check"></i> Finished consultations
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-red">
+              <div class="kpi-header">
+                <span class="kpi-label">Cancelled / Rejected</span>
+                <div class="kpi-icon-wrap"><i data-lucide="x-circle"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-cancelled-val">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="history"></i> Cancellation records
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Section 2 Cols: Today's Schedule & Weekly Stats Chart -->
+          <div class="dashboard-grid-2cols">
+            
+            <!-- Left: Today's Schedule Timeline -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <h3 class="dash-card-title">
+                  <i data-lucide="calendar-check" style="color: var(--primary-600);"></i>
+                  <span>Today's Consultation Schedule</span>
+                </h3>
+                <span class="badge badge-teal text-xs">Today's Queue</span>
+              </div>
+              <div class="dash-card-body">
+                <div class="today-timeline" id="today-schedule-container">
+                  <!-- Populated dynamically via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Weekly Appointment Statistics -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <h3 class="dash-card-title">
+                  <i data-lucide="bar-chart-2" style="color: var(--accent-600);"></i>
+                  <span>Weekly Appointment Statistics</span>
+                </h3>
+                <span class="badge badge-neutral text-xs">Mon – Sun</span>
+              </div>
+              <div class="dash-card-body" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <p style="font-size: 0.825rem; color: var(--slate-500); margin: 0 0 1rem;">
+                  Patient volume distribution across clinic consultation days:
+                </p>
+                <div class="weekly-stats-bar-chart" id="weekly-stats-chart">
+                  <!-- Populated dynamically via JS -->
+                </div>
+                <div style="font-size: 0.75rem; color: var(--slate-400); text-align: center; margin-top: 1rem; border-top: 1px solid var(--slate-100); padding-top: 0.75rem;">
+                  <i data-lucide="info" style="width: 13px; height: 13px; display: inline; vertical-align: middle;"></i> Higher bars indicate peak clinic intake days.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Section 2 Cols: Upcoming Appointments & Activity Feed -->
+          <div class="dashboard-grid-2cols">
+            
+            <!-- Left: Upcoming Patient Appointments -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <h3 class="dash-card-title">
+                  <i data-lucide="clock" style="color: var(--primary-600);"></i>
+                  <span>Upcoming Patient Appointments</span>
+                </h3>
+                <button class="btn btn-ghost btn-sm" onclick="switchTab('appointments')">
+                  <span>View All</span> <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+              <div class="dash-card-body">
+                <div id="upcoming-overview-container">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Recent Appointment Activity Feed -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <h3 class="dash-card-title">
+                  <i data-lucide="activity" style="color: var(--accent-600);"></i>
+                  <span>Recent Practice Activity</span>
+                </h3>
+                <span class="badge badge-neutral text-xs">Audit Trail</span>
+              </div>
+              <div class="dash-card-body">
+                <div class="activity-feed-list" id="activity-feed-container">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Appointment Calendar Section -->
+          <div class="calendar-wrapper">
+            <div class="calendar-header">
+              <div>
+                <h3 class="dash-card-title" style="margin-bottom: 0.25rem;">
+                  <i data-lucide="calendar" style="color: var(--primary-600);"></i>
+                  <span>Practice Appointment Calendar</span>
+                </h3>
+                <p style="font-size: 0.825rem; color: var(--slate-500); margin: 0;">Click on any calendar day to inspect booked consultation slots.</p>
+              </div>
+              <div class="calendar-nav-controls">
+                <button id="cal-today-btn" class="btn btn-outline btn-sm">Today</button>
+                <button id="cal-prev-btn" class="btn btn-outline btn-sm" aria-label="Previous Month">
+                  <i data-lucide="chevron-left"></i>
+                </button>
+                <span id="calendar-month-title" class="calendar-month-title">November 2026</span>
+                <button id="cal-next-btn" class="btn btn-outline btn-sm" aria-label="Next Month">
+                  <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="calendar-grid">
+              <div class="calendar-day-header">Sun</div>
+              <div class="calendar-day-header">Mon</div>
+              <div class="calendar-day-header">Tue</div>
+              <div class="calendar-day-header">Wed</div>
+              <div class="calendar-day-header">Thu</div>
+              <div class="calendar-day-header">Fri</div>
+              <div class="calendar-day-header">Sat</div>
+            </div>
+            <div id="calendar-grid" class="calendar-grid">
+              <!-- Calendar day cells populated via JS -->
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             TAB 2: APPOINTMENT MANAGEMENT
+             =================================================================== -->
+        <section id="tab-appointments" class="tab-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin: 0 0 0.25rem;">Appointment Management</h2>
+              <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0;">Manage your today, upcoming, pending confirmation, and completed consultations.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span id="filtered-apt-count" class="badge badge-primary">0 records</span>
+            </div>
+          </div>
+
+          <!-- Filter Toolbar -->
+          <div class="table-toolbar">
+            <div class="filter-btn-group">
+              <button class="filter-chip-btn apt-filter-chip active" data-filter="all">All Appointments</button>
+              <button class="filter-chip-btn apt-filter-chip" data-filter="today">Today's</button>
+              <button class="filter-chip-btn apt-filter-chip" data-filter="upcoming">Upcoming</button>
+              <button class="filter-chip-btn apt-filter-chip" data-filter="pending">Pending Review</button>
+              <button class="filter-chip-btn apt-filter-chip" data-filter="completed">Completed</button>
+              <button class="filter-chip-btn apt-filter-chip" data-filter="cancelled">Cancellation History</button>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+              <div class="search-input-wrap">
+                <i data-lucide="search" class="search-input-icon"></i>
+                <input type="text" id="apt-search-input" class="form-control" placeholder="Search by patient, phone, ref...">
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <input type="date" id="apt-date-filter" class="form-control" style="font-size: 0.825rem; padding: 0.55rem 0.75rem;" title="Filter by specific date">
+                <button id="clear-date-filter-btn" class="btn btn-outline btn-sm" title="Clear Date Filter">
+                  <i data-lucide="x"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Appointments Responsive Table -->
+          <div class="responsive-table-card">
+            <div style="overflow-x: auto;">
+              <table class="medibook-table">
+                <thead>
+                  <tr>
+                    <th>Reference</th>
+                    <th>Patient Name & Contact</th>
+                    <th>Date & Slot</th>
+                    <th>Mode</th>
+                    <th>Chief Reason</th>
+                    <th>Status</th>
+                    <th>Practice Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="appointments-table-body">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             TAB 3: AVAILABILITY & SCHEDULE MANAGEMENT
+             =================================================================== -->
+        <section id="tab-schedule" class="tab-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin: 0 0 0.25rem;">Availability & Schedule Management</h2>
+              <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0;">Configure your available weekdays, clinic hours, appointment slot duration, break times, and scheduled leaves.</p>
+            </div>
+            <div>
+              <button id="save-schedule-btn" class="btn btn-primary btn-lg">
+                <i data-lucide="save"></i>
+                <span>Save Availability & Schedule</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="schedule-settings-grid">
+            
+            <!-- Left Panel: Schedule Controls -->
+            <div>
+              
+              <!-- Available Weekdays Card -->
+              <div class="dash-card" style="margin-bottom: 1.5rem;">
+                <div class="dash-card-header">
+                  <h3 class="dash-card-title">
+                    <i data-lucide="calendar" style="color: var(--primary-600);"></i>
+                    <span>Available Clinical Weekdays</span>
+                  </h3>
+                  <span class="badge badge-teal text-xs">Toggle Days</span>
+                </div>
+                <div class="dash-card-body">
+                  <p style="font-size: 0.85rem; color: var(--slate-600); margin: 0 0 0.5rem;">
+                    Select the weekdays on which you hold outpatient consultations:
+                  </p>
+
+                  <div class="weekdays-toggle-row">
+                    <div class="weekday-toggle-card active" data-day="Monday">
+                      <span class="day-abbr">MON</span>
+                      <span class="day-status">Available</span>
+                    </div>
+                    <div class="weekday-toggle-card active" data-day="Tuesday">
+                      <span class="day-abbr">TUE</span>
+                      <span class="day-status">Available</span>
+                    </div>
+                    <div class="weekday-toggle-card active" data-day="Wednesday">
+                      <span class="day-abbr">WED</span>
+                      <span class="day-status">Available</span>
+                    </div>
+                    <div class="weekday-toggle-card active" data-day="Thursday">
+                      <span class="day-abbr">THU</span>
+                      <span class="day-status">Available</span>
+                    </div>
+                    <div class="weekday-toggle-card active" data-day="Friday">
+                      <span class="day-abbr">FRI</span>
+                      <span class="day-status">Available</span>
+                    </div>
+                    <div class="weekday-toggle-card" data-day="Saturday">
+                      <span class="day-abbr">SAT</span>
+                      <span class="day-status">Unavailable</span>
+                    </div>
+                    <div class="weekday-toggle-card" data-day="Sunday">
+                      <span class="day-abbr">SUN</span>
+                      <span class="day-status">Unavailable</span>
+                    </div>
+                  </div>
+
+                  <!-- Starting, Ending Hours & Duration -->
+                  <div class="grid grid-cols-3 md:grid-cols-1 gap-4" style="margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--slate-100);">
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label for="sched-start-time" class="form-label">Starting Time <span class="required">*</span></label>
+                      <input type="time" id="sched-start-time" class="form-control" value="09:00">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label for="sched-end-time" class="form-label">Ending Time <span class="required">*</span></label>
+                      <input type="time" id="sched-end-time" class="form-control" value="17:00">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label for="sched-slot-duration" class="form-label">Consultation Duration <span class="required">*</span></label>
+                      <select id="sched-slot-duration" class="form-control">
+                        <option value="15">15 Minutes</option>
+                        <option value="20">20 Minutes</option>
+                        <option value="30" selected>30 Minutes</option>
+                        <option value="45">45 Minutes</option>
+                        <option value="60">60 Minutes (1 Hour)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Break Times Card -->
+              <div class="dash-card" style="margin-bottom: 1.5rem;">
+                <div class="dash-card-header">
+                  <div>
+                    <h3 class="dash-card-title">
+                      <i data-lucide="coffee" style="color: var(--warning-500);"></i>
+                      <span>Break Times & Clinical Recesses</span>
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--slate-500); margin: 0.2rem 0 0;">
+                      Slots falling within break hours will be automatically excluded from booking.
+                    </p>
+                  </div>
+                  <button type="button" id="add-break-btn" class="btn btn-outline btn-sm">
+                    <i data-lucide="plus"></i> Add Break
+                  </button>
+                </div>
+                <div class="dash-card-body">
+                  <div id="break-times-list" class="break-times-list">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Unavailable Dates Card -->
+              <div class="dash-card" style="margin-bottom: 1.5rem;">
+                <div class="dash-card-header">
+                  <div>
+                    <h3 class="dash-card-title">
+                      <i data-lucide="calendar-x" style="color: var(--danger-500);"></i>
+                      <span>Specific Unavailable Dates</span>
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--slate-500); margin: 0.2rem 0 0;">
+                      Block individual dates for conferences, surgery days, or holidays.
+                    </p>
+                  </div>
+                </div>
+                <div class="dash-card-body">
+                  <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem;">
+                    <input type="date" id="unavail-date-input" class="form-control" style="max-width: 220px;">
+                    <button type="button" id="add-unavail-date-btn" class="btn btn-outline btn-sm">
+                      <i data-lucide="plus"></i> Block Date
+                    </button>
+                  </div>
+                  <div id="unavail-dates-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Leave Management Card -->
+              <div class="dash-card">
+                <div class="dash-card-header">
+                  <h3 class="dash-card-title">
+                    <i data-lucide="plane" style="color: var(--accent-600);"></i>
+                    <span>Scheduled Leave Management</span>
+                  </h3>
+                  <span class="badge badge-success text-xs">Official Leave</span>
+                </div>
+                <div class="dash-card-body">
+                  <form id="add-leave-form" style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.25rem;">
+                    <div class="grid grid-cols-4 md:grid-cols-2 gap-4">
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label for="leave-start-date" class="form-label">Start Date</label>
+                        <input type="date" id="leave-start-date" class="form-control" required>
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label for="leave-end-date" class="form-label">End Date</label>
+                        <input type="date" id="leave-end-date" class="form-control" required>
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label for="leave-type" class="form-label">Leave Type</label>
+                        <select id="leave-type" class="form-control">
+                          <option value="Annual Leave">Annual Leave</option>
+                          <option value="Medical Conference">Medical Conference</option>
+                          <option value="Sabbatical">Sabbatical</option>
+                          <option value="Personal Leave">Personal Leave</option>
+                        </select>
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label for="leave-reason" class="form-label">Reason / Notes</label>
+                        <input type="text" id="leave-reason" class="form-control" placeholder="e.g. Cardiology Symposium" required>
+                      </div>
+                    </div>
+                    <div style="margin-top: 1rem; text-align: right;">
+                      <button type="submit" class="btn btn-outline btn-sm">
+                        <i data-lucide="plus"></i> Add Scheduled Leave
+                      </button>
+                    </div>
+                  </form>
+
+                  <table class="medibook-table leave-records-table">
+                    <thead>
+                      <tr>
+                        <th>Leave Dates</th>
+                        <th>Type</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="leaves-table-body">
+                      <!-- Populated dynamically via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Panel: Live Slot Generator Preview & Conflict Protection Note -->
+            <div>
+              
+              <!-- Slot Preview Card -->
+              <div class="slot-preview-box">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                  <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--slate-900); margin: 0;">
+                    <i data-lucide="sparkles" style="color: var(--accent-600); display: inline; vertical-align: middle;"></i>
+                    Automatically Generated Slots
+                  </h4>
+                </div>
+                <p id="generated-slots-count" style="font-size: 0.85rem; font-weight: 700; color: var(--primary-700); margin: 0 0 1rem;">
+                  Calculating available slots...
+                </p>
+
+                <p style="font-size: 0.8rem; color: var(--slate-600); line-height: 1.5; margin: 0 0 1rem;">
+                  MediBook's dynamic scheduler computes these discrete consultation slots in real-time according to your hours and breaks. Break periods are automatically protected from patient booking:
+                </p>
+
+                <div id="generated-slots-cloud" class="slot-pills-cloud">
+                  <!-- Populated dynamically via JS -->
+                </div>
+              </div>
+
+              <!-- Conflict Protection Notice -->
+              <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--accent-600); background: var(--slate-50); margin-top: 1.5rem;">
+                <div style="display: flex; gap: 0.65rem; align-items: flex-start;">
+                  <i data-lucide="shield-check" style="color: var(--accent-700); width: 22px; height: 22px; flex-shrink: 0; margin-top: 2px;"></i>
+                  <div>
+                    <strong style="color: var(--slate-900); font-size: 0.9rem; display: block; margin-bottom: 0.25rem;">Appointment Preservation Guard</strong>
+                    <p style="font-size: 0.825rem; color: var(--slate-600); margin: 0; line-height: 1.5;">
+                      Changing availability will <strong>never silently delete existing appointments</strong>. If an update affects a confirmed or pending booking, MediBook immediately triggers a <strong>conflict notification</strong> for you and the hospital administrator.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             TAB 4: PATIENT RECORDS (Doctor Scoped)
+             =================================================================== -->
+        <section id="tab-patients" class="tab-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin: 0 0 0.25rem;">Patient Records & Clinical Intake</h2>
+              <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0;">Authorized patient records for individuals with consultation appointments in your practice.</p>
+            </div>
+            <div>
+              <span id="patients-total-count" class="badge badge-primary">0 assigned patients</span>
+            </div>
+          </div>
+
+          <div class="table-toolbar">
+            <div class="search-input-wrap" style="max-width: 360px;">
+              <i data-lucide="search" class="search-input-icon"></i>
+              <input type="text" id="patients-search-input" class="form-control" placeholder="Search patients by name, phone, email...">
+            </div>
+          </div>
+
+          <div class="responsive-table-card">
+            <div style="overflow-x: auto;">
+              <table class="medibook-table">
+                <thead>
+                  <tr>
+                    <th>Patient Name & Account</th>
+                    <th>Contact Phone</th>
+                    <th>Latest Visit Date</th>
+                    <th>Total Visits</th>
+                    <th>Primary Reason / Condition</th>
+                    <th>Clinical History</th>
+                  </tr>
+                </thead>
+                <tbody id="patients-table-body">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <p style="font-size: 0.78rem; color: var(--slate-400); margin-top: 1rem;">
+            <i data-lucide="lock" style="width: 13px; height: 13px; display: inline; vertical-align: middle;"></i> <strong>Data Protection Notice:</strong> In strict compliance with HIPAA privacy standards, patient clinical details are strictly isolated. Doctors only have access to patients with authorized appointments in their departmental queue.
+          </p>
+
+        </section>
+
+        <!-- ===================================================================
+             TAB 5: DOCTOR PROFILE & ADMIN APPROVAL
+             =================================================================== -->
+        <section id="tab-profile" class="tab-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin: 0 0 0.25rem;">Doctor Profile & Credentials</h2>
+              <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0;">Manage your physician profile, qualifications, specialization, experience, and consultation fees.</p>
+            </div>
+            <div>
+              <button type="submit" form="doctor-profile-form" id="save-profile-btn" class="btn btn-primary btn-lg">
+                <i data-lucide="save"></i>
+                <span>Save Profile Changes</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pending Approval Warning Banner (If critical fields submitted for review) -->
+          <div id="profile-pending-approval-banner" class="profile-approval-notice" style="display: none;">
+            <i data-lucide="shield-alert" style="color: var(--warning-500); width: 22px; height: 22px; flex-shrink: 0; margin-top: 2px;"></i>
+            <div>
+              <strong style="color: #92400e; font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">Credential Modifications Pending Administrator Approval</strong>
+              <p style="font-size: 0.85rem; color: #78350f; margin: 0 0 0.5rem; line-height: 1.45;">
+                In accordance with medical staff bylaws, alterations to qualifications, specialization, license numbers, or consultation fees require review and approval by the <strong>Hospital Medical Director / Administrator</strong> before being published on the public MediBook directory.
+              </p>
+              <ul id="pending-approval-details" style="font-size: 0.825rem; color: #78350f; margin: 0; padding-left: 1.25rem;">
+                <!-- Populated dynamically via JS -->
+              </ul>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-card-body">
+              <form id="doctor-profile-form">
+                
+                <!-- Avatar Preview & Edit -->
+                <div class="profile-avatar-editor">
+                  <img id="doc-profile-avatar-preview" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&auto=format&fit=crop&q=80" alt="Avatar Preview" class="profile-avatar-large">
+                  <div style="flex: 1; max-width: 480px;">
+                    <label for="doc-profile-avatar-url" class="form-label">Profile Photograph URL</label>
+                    <input type="url" id="doc-profile-avatar-url" class="form-control" placeholder="https://example.com/physician-photo.jpg">
+                    <p style="font-size: 0.78rem; color: var(--slate-400); margin: 0.35rem 0 0;">Enter direct high-resolution image URL or upload avatar.</p>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-1 gap-6" style="margin-bottom: 1.5rem;">
+                  
+                  <div class="form-group">
+                    <label for="doc-profile-name" class="form-label">Full Legal Medical Name <span class="required">*</span></label>
+                    <input type="text" id="doc-profile-name" class="form-control" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="doc-profile-qualification" class="form-label">
+                      Medical Qualifications & Degrees <span class="required">*</span>
+                      <span class="badge badge-warning text-xs" style="float: right;">Requires Admin Approval</span>
+                    </label>
+                    <input type="text" id="doc-profile-qualification" class="form-control" placeholder="e.g. MD, FACC - Harvard Medical School" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="doc-profile-department" class="form-label">
+                      Clinical Department <span class="required">*</span>
+                      <span class="badge badge-warning text-xs" style="float: right;">Requires Admin Approval</span>
+                    </label>
+                    <input type="text" id="doc-profile-department" class="form-control" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="doc-profile-specialization" class="form-label">
+                      Subspecialty & Focus Area <span class="required">*</span>
+                      <span class="badge badge-warning text-xs" style="float: right;">Requires Admin Approval</span>
+                    </label>
+                    <input type="text" id="doc-profile-specialization" class="form-control" placeholder="e.g. Interventional Cardiology" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="doc-profile-license" class="form-label">
+                      Medical Board License Number <span class="required">*</span>
+                      <span class="badge badge-warning text-xs" style="float: right;">Requires Admin Approval</span>
+                    </label>
+                    <input type="text" id="doc-profile-license" class="form-control" placeholder="e.g. MED-CA-884920" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="doc-profile-experience" class="form-label">
+                      Years of Clinical Experience <span class="required">*</span>
+                    </label>
+                    <input type="number" id="doc-profile-experience" class="form-control" min="1" max="60" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="doc-profile-fee" class="form-label">
+                      Consultation Fee (USD $) <span class="required">*</span>
+                      <span class="badge badge-warning text-xs" style="float: right;">Requires Admin Approval</span>
+                    </label>
+                    <input type="number" id="doc-profile-fee" class="form-control" min="10" max="1000" step="5" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="doc-profile-hospital" class="form-label">Hospital Affiliation / Clinic Base <span class="required">*</span></label>
+                    <input type="text" id="doc-profile-hospital" class="form-control" required>
+                  </div>
+
+                  <div class="form-group" style="grid-column: span 2;">
+                    <label for="doc-profile-languages" class="form-label">Languages Spoken (comma separated)</label>
+                    <input type="text" id="doc-profile-languages" class="form-control" placeholder="e.g. English, Spanish, Mandarin">
+                  </div>
+
+                  <div class="form-group" style="grid-column: span 2;">
+                    <label for="doc-profile-about" class="form-label">Clinical Background & About Section <span class="required">*</span></label>
+                    <textarea id="doc-profile-about" class="form-control" rows="5" required placeholder="Describe your clinical background, fellowships, procedural expertise, and patient care philosophy..."></textarea>
+                  </div>
+
+                </div>
+
+                <div style="border-top: 1px solid var(--slate-100); padding-top: 1.25rem; display: flex; justify-content: flex-end;">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <i data-lucide="check"></i>
+                    <span>Submit Profile Updates</span>
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- =========================================================================
+       MODALS
+       ========================================================================= -->
+
+  <!-- Modal 1: Appointment Detail Modal -->
+  <div id="appointment-detail-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom">
+      <div class="modal-header-custom">
+        <h3><i data-lucide="calendar" style="display:inline; vertical-align:middle; width:20px; color:var(--primary-600);"></i> Appointment Details</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('appointment-detail-modal')" style="padding:4px;"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body-custom" id="appointment-modal-content">
+        <!-- Content injected dynamically -->
+      </div>
+      <div class="modal-footer-custom" id="appointment-modal-actions">
+        <!-- Actions injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Reject Appointment with Reason Modal -->
+  <div id="reject-appointment-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 520px;">
+      <div class="modal-header-custom">
+        <h3 style="color: var(--danger-600);"><i data-lucide="x-circle" style="display:inline; vertical-align:middle; width:20px;"></i> Reject Appointment</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('reject-appointment-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body-custom">
+        <p style="font-size: 0.875rem; color: var(--slate-600); margin-bottom: 1.25rem;">
+          Rejecting appointment for <strong id="reject-modal-patient-name" style="color: var(--slate-900);">Patient</strong>. Please specify the clinical or operational reason. The patient will be notified automatically.
+        </p>
+
+        <div class="form-group">
+          <label for="reject-reason-select" class="form-label">Primary Rejection Reason <span class="required">*</span></label>
+          <select id="reject-reason-select" class="form-control" required>
+            <option value="Emergency surgery / acute clinical procedure scheduled">Emergency surgery / acute clinical procedure scheduled</option>
+            <option value="Specialist physician unavailable during requested time">Specialist physician unavailable during requested time</option>
+            <option value="Clinical referral to higher tertiary specialty required">Clinical referral to higher tertiary specialty required</option>
+            <option value="Double booking conflict / clinic schedule modification">Double booking conflict / clinic schedule modification</option>
+            <option value="Patient requested reschedule or cancellation">Patient requested reschedule or cancellation</option>
+            <option value="Other clinical or operational rationale">Other clinical or operational rationale</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="reject-custom-notes" class="form-label">Additional Clinical Notes for Patient (Optional)</label>
+          <textarea id="reject-custom-notes" class="form-control" rows="3" placeholder="Provide additional details or recommended rescheduling dates..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer-custom">
+        <button class="btn btn-outline" onclick="closeModal('reject-appointment-modal')">Cancel</button>
+        <button id="confirm-reject-btn" class="btn btn-danger">
+          <i data-lucide="x"></i> Confirm Rejection
         </button>
       </div>
     </div>
-  </header>
+  </div>
 
-  <main style="padding: 3rem 0 5rem;">
-    <div class="container">
-      
-      <!-- Welcome Card -->
-      <div class="card" style="padding: 2.5rem; background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%); border-color: var(--accent-200); margin-bottom: 2rem;">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <div class="eyebrow-badge" style="background: var(--accent-50); color: var(--accent-700); border-color: var(--accent-200);">
-              <i data-lucide="shield-check"></i>
-              <span>Physician Verified</span>
-            </div>
-            <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Welcome, <span id="doctor-name">Doctor</span></h1>
-            <p class="text-muted">Manage your daily consultation schedule, patient intake queue, and clinical notes.</p>
-          </div>
-          <div>
-            <span class="badge badge-success" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
-              <i data-lucide="activity"></i> On Duty Today
-            </span>
-          </div>
-        </div>
+  <!-- Modal 3: Complete Consultation Modal -->
+  <div id="complete-appointment-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 580px;">
+      <div class="modal-header-custom">
+        <h3 style="color: var(--primary-700);"><i data-lucide="check-circle-2" style="display:inline; vertical-align:middle; width:20px;"></i> Complete Clinical Consultation</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('complete-appointment-modal')"><i data-lucide="x"></i></button>
       </div>
-
-      <!-- Quick Stats -->
-      <div class="grid grid-cols-4 lg:grid-cols-2 md:grid-cols-1 gap-6" style="margin-bottom: 2.5rem;">
-        <div class="card" style="padding: 1.5rem;">
-          <div style="font-size: 0.85rem; color: var(--slate-500); font-weight: 600; text-transform: uppercase;">Today's Patients</div>
-          <div style="font-size: 2rem; font-weight: 800; color: var(--primary-600); margin: 0.5rem 0;">8 Booked</div>
-          <div class="badge badge-primary text-xs">Next: 02:30 PM (Sarah Jenkins)</div>
-        </div>
-
-        <div class="card" style="padding: 1.5rem;">
-          <div style="font-size: 0.85rem; color: var(--slate-500); font-weight: 600; text-transform: uppercase;">Completed Visits</div>
-          <div style="font-size: 2rem; font-weight: 800; color: var(--accent-600); margin: 0.5rem 0;">134</div>
-          <div class="badge badge-teal text-xs">This Month</div>
-        </div>
-
-        <div class="card" style="padding: 1.5rem;">
-          <div style="font-size: 0.85rem; color: var(--slate-500); font-weight: 600; text-transform: uppercase;">Patient Rating</div>
-          <div style="font-size: 2rem; font-weight: 800; color: #f59e0b; margin: 0.5rem 0;">4.9 ★</div>
-          <div class="badge badge-warning text-xs">142 Verified Reviews</div>
-        </div>
-
-        <div class="card" style="padding: 1.5rem;">
-          <div style="font-size: 0.85rem; color: var(--slate-500); font-weight: 600; text-transform: uppercase;">Schedule Availability</div>
-          <div style="font-size: 2rem; font-weight: 800; color: var(--success-500); margin: 0.5rem 0;">Active</div>
-          <div class="badge badge-success text-xs">Mon – Fri (9 AM - 5 PM)</div>
-        </div>
-      </div>
-
-      <!-- Stage 1 Status & Portal Preview -->
-      <div class="card" style="padding: 2rem; border-left: 4px solid var(--accent-600); background: var(--slate-50);">
-        <div class="flex items-center gap-3" style="margin-bottom: 0.5rem;">
-          <i data-lucide="info" style="color: var(--accent-600); width: 22px; height: 22px;"></i>
-          <h3 style="font-size: 1.15rem; margin: 0;">Stage 1 Foundation Complete</h3>
-        </div>
-        <p style="color: var(--slate-600); font-size: 0.925rem; line-height: 1.6; margin: 0;">
-          Physician authentication, department assignment, and security privileges are functional. The real-time patient queue, slot toggle manager, electronic prescription generator, and consultation history will be delivered in the dedicated portal modules.
+      <div class="modal-body-custom">
+        <p style="font-size: 0.875rem; color: var(--slate-600); margin-bottom: 1.25rem;">
+          Concluding visit for <strong id="complete-modal-patient-name" style="color: var(--slate-900);">Patient</strong>. Record clinical findings and post-visit recommendations.
         </p>
+
+        <div class="form-group">
+          <label for="complete-clinical-notes" class="form-label">Clinical Observations & Diagnosis</label>
+          <textarea id="complete-clinical-notes" class="form-control" rows="4" placeholder="Document resting vitals, examination notes, diagnostic assessment, or ECG findings..."></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="complete-prescription" class="form-label">Prescription / Follow-Up Recommendations</label>
+          <textarea id="complete-prescription" class="form-control" rows="3" placeholder="e.g. Prescribed medication dosages, dietary recommendations, schedule 6-month checkup..."></textarea>
+        </div>
       </div>
-
+      <div class="modal-footer-custom">
+        <button class="btn btn-outline" onclick="closeModal('complete-appointment-modal')">Cancel</button>
+        <button id="confirm-complete-btn" class="btn btn-primary">
+          <i data-lucide="check-circle-2"></i> Save & Mark Completed
+        </button>
+      </div>
     </div>
-  </main>
+  </div>
 
+  <!-- Modal 4: Patient Authorized History Modal -->
+  <div id="patient-history-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 680px;">
+      <div class="modal-header-custom">
+        <h3 id="history-modal-patient-name">Patient Clinical History</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('patient-history-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body-custom">
+        <div id="history-modal-patient-meta" style="background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+          <!-- Meta injected dynamically -->
+        </div>
+
+        <h5 style="font-size: 0.9rem; font-weight: 700; color: var(--slate-800); margin-bottom: 0.75rem;">Past Consultations & Encounters with this Practice:</h5>
+        <div id="history-modal-visits-list">
+          <!-- History injected dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer-custom">
+        <button class="btn btn-outline" onclick="closeModal('patient-history-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Schedule Conflicts Modal -->
+  <div id="conflicts-detail-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 680px;">
+      <div class="modal-header-custom">
+        <h3 style="color: var(--danger-600);"><i data-lucide="alert-triangle" style="display:inline; vertical-align:middle; width:22px;"></i> Active Schedule Conflicts</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('conflicts-detail-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body-custom">
+        <p style="font-size: 0.875rem; color: var(--slate-700); margin-bottom: 1rem; line-height: 1.5;">
+          The following existing confirmed or pending appointments conflict with your updated working hours, break periods, or scheduled leaves. In compliance with hospital policy, <strong>these appointments have been preserved</strong>:
+        </p>
+
+        <div id="conflicts-modal-list">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+      <div class="modal-footer-custom">
+        <button class="btn btn-outline" onclick="closeModal('conflicts-detail-modal')">Acknowledge & Close</button>
+        <button class="btn btn-primary" onclick="closeModal('conflicts-detail-modal'); switchTab('appointments');">
+          <i data-lucide="calendar"></i> Go to Appointments
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+  <!-- MediBook Core Scripts -->
   <script src="../../assets/js/config/firebase-config.js"></script>
   <script src="../../assets/js/data/demo-data.js"></script>
+  <script src="../../assets/js/utils/validators.js"></script>
+  <script src="../../assets/js/utils/formatters.js"></script>
+  <script src="../../assets/js/components/toast.js"></script>
   <script src="../../assets/js/services/auth-service.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      if (window.AuthService) {
-        const user = window.AuthService.getCurrentUser();
-        if (!user) {
-          window.location.href = '../../auth/login.html?role=doctor';
-          return;
-        }
-        document.getElementById('doctor-name').textContent = user.displayName || 'Doctor';
+  <script src="../../assets/js/services/doctor-service.js"></script>
+  <script src="../../assets/js/services/appointment-service.js"></script>
+  <script src="../../assets/js/pages/doctor-dashboard.js"></script>
 
-        document.getElementById('doctor-logout-btn').addEventListener('click', async () => {
-          await window.AuthService.logout();
-          window.location.href = '../../index.html';
-        });
-      }
-      if (window.lucide) window.lucide.createIcons();
-    });
-  </script>
 </body>
 </html>

@@ -637,3 +637,91 @@
     padding: 1.5rem 1rem 3rem;
   }
 }
+
+
+/* ==========================================================================
+   Hospital Admin Specific Layout & Chart Styles
+   ========================================================================== */
+.admin-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-chart-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--slate-100);
+}
+
+.admin-chart-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--slate-900);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chart-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 280px;
+}
+
+/* Status toggles & actions */
+.status-pill-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.775rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.status-pill-toggle.active {
+  background: var(--success-50);
+  color: var(--success-700);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status-pill-toggle.inactive {
+  background: var(--slate-100);
+  color: var(--slate-600);
+  border-color: var(--slate-300);
+}
+
+.status-pill-toggle.pending {
+  background: var(--warning-50);
+  color: var(--warning-700);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* Modal form large */
+.modal-dialog-lg {
+  max-width: 720px;
+}
+
+@media (max-width: 1024px) {
+  .admin-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}

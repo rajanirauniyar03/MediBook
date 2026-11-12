@@ -1,0 +1,399 @@
+/**
+ * MediBook Pharmacy & Dispensary Module Stylesheet
+ * Patient-facing Pharmacy Catalog & Staff Pharmacy Management Dashboard
+ */
+
+/* ==========================================================================
+   1. Patient-Facing Pharmacy Catalog (pharmacy.html)
+   ========================================================================== */
+.pharmacy-hero-section {
+  background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+  border-bottom: 1px solid var(--accent-200);
+  padding: 3.5rem 0 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.pharmacy-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-700);
+  background: #ffffff;
+  border: 1px solid var(--accent-300);
+  padding: 0.3rem 0.85rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.pharmacy-hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--slate-900);
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.03em;
+}
+
+.pharmacy-hero-desc {
+  font-size: 1.05rem;
+  color: var(--slate-600);
+  max-width: 680px;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+.pharmacy-meta-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.pharmacy-meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--slate-700);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--slate-200);
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(4px);
+}
+
+.pharmacy-meta-chip i {
+  color: var(--accent-600);
+  width: 16px;
+  height: 16px;
+}
+
+/* Regulatory Medical & Stock Disclaimer */
+.pharmacy-disclaimer-banner {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 5px solid var(--warning-500);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem 1.35rem;
+  margin: 2rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.disclaimer-icon {
+  color: var(--warning-700);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.disclaimer-content strong {
+  color: #92400e;
+  font-size: 0.925rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.disclaimer-content p {
+  font-size: 0.835rem;
+  color: #78350f;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Quick Action Cards (Upload Prescription & Track) */
+.pharmacy-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.pharm-cta-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-xs);
+  transition: all var(--transition-normal);
+}
+
+.pharm-cta-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-300);
+}
+
+.pharm-cta-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-lg);
+  background: var(--primary-50);
+  color: var(--primary-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pharm-cta-icon.teal {
+  background: var(--accent-50);
+  color: var(--accent-600);
+}
+
+.pharm-cta-info {
+  flex: 1;
+}
+
+.pharm-cta-info h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--slate-900);
+  margin: 0 0 0.25rem;
+}
+
+.pharm-cta-info p {
+  font-size: 0.85rem;
+  color: var(--slate-600);
+  margin: 0 0 0.85rem;
+}
+
+/* Catalog Filter Toolbar */
+.pharmacy-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.category-pill-row {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.cat-pill-btn {
+  font-size: 0.825rem;
+  font-weight: 600;
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--slate-300);
+  background: #ffffff;
+  color: var(--slate-700);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.cat-pill-btn:hover {
+  border-color: var(--primary-500);
+  color: var(--primary-600);
+}
+
+.cat-pill-btn.active {
+  background: var(--primary-600);
+  color: #ffffff;
+  border-color: var(--primary-600);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+/* Medicine Product Cards Grid */
+.medicine-products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.medicine-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
+}
+
+.medicine-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-300);
+}
+
+.medicine-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.medicine-category-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary-700);
+  background: var(--primary-50);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+}
+
+.medicine-name-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--slate-900);
+  margin: 0 0 0.25rem;
+  line-height: 1.3;
+}
+
+.medicine-brand-sub {
+  font-size: 0.8rem;
+  color: var(--slate-500);
+  margin-bottom: 0.75rem;
+}
+
+.medicine-desc-box {
+  font-size: 0.825rem;
+  color: var(--slate-600);
+  line-height: 1.45;
+  margin-bottom: 1.25rem;
+  flex: 1;
+}
+
+.medicine-card-footer {
+  border-top: 1px solid var(--slate-100);
+  padding-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.medicine-price-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.medicine-price-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--slate-400);
+}
+
+.medicine-price-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--slate-900);
+}
+
+/* ==========================================================================
+   2. Staff Pharmacy Portal Dashboard
+   ========================================================================== */
+.pharmacy-portal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #065f46;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  margin-top: 0.5rem;
+}
+
+/* Prescription Status Badges */
+.status-pending-review { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.status-under-review { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.status-approved { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.status-rejected { background: #fef2f2; color: #b91c1c; border: 1px solid #fecdd3; }
+.status-ready-collection { background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4; }
+.status-completed { background: #f8fafc; color: #475569; border: 1px solid #cbd5e1; }
+
+/* Prescription Review Viewer in Modal */
+.prescription-doc-viewer {
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--slate-50);
+  text-align: center;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.prescription-preview-img {
+  max-width: 100%;
+  max-height: 380px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  object-fit: contain;
+}
+
+/* File Upload Drag-and-Drop Area */
+.upload-dropzone {
+  border: 2px dashed var(--slate-300);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  background: var(--slate-50);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.dragover {
+  border-color: var(--primary-600);
+  background: var(--primary-50);
+}
+
+.upload-dropzone i {
+  width: 44px;
+  height: 44px;
+  color: var(--primary-500);
+  margin-bottom: 0.75rem;
+}
+
+/* Responsive Adaptations */
+@media (max-width: 1100px) {
+  .medicine-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pharmacy-action-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .medicine-products-grid {
+    grid-template-columns: 1fr;
+  }
+  .pharmacy-hero-title {
+    font-size: 1.85rem;
+  }
+  .pharm-cta-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}

@@ -57,6 +57,18 @@ const MEDIBOOK_DATA = {
       phone: "+1 (555) 111-2233",
       department: "Hospital Operations & IT",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+    },
+    pharmacist: {
+      id: "pharm_001",
+      email: "pharmacist@medibook.com",
+      password: "password123",
+      role: "pharmacist",
+      displayName: "James Carter, RPh",
+      title: "Head Clinical Pharmacist & Dispensary Lead",
+      pharmacyName: "MediBook Central Outpatient Pharmacy",
+      licenseNumber: "RPH-CA-409182",
+      phone: "+1 (555) 345-6789",
+      avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&auto=format&fit=crop&q=80"
     }
   },
 

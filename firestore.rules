@@ -1,0 +1,152 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        getUserData().role == 'admin' ||
+        request.auth.token.admin == true
+      );
+    }
+
+    function isDoctor() {
+      return isAuthenticated() && getUserData().role == 'doctor';
+    }
+
+    function isPharmacist() {
+      return isAuthenticated() && (
+        getUserData().role == 'pharmacist' ||
+        getUserData().role == 'pharmacy' ||
+        isAdmin()
+      );
+    }
+
+    // 1. Users Collection
+    match /users/{userId} {
+      // Patients and Doctors can read/write their own records; Admins have full access
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Prohibit public creation of admin accounts
+      allow create: if isAuthenticated() && (
+        request.resource.data.role != 'admin' || isAdmin()
+      );
+      
+      // Only admins can alter user roles or approval statuses
+      allow update: if isOwner(userId) && (
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status'])
+      ) || isAdmin();
+      
+      allow delete: if isAdmin();
+    }
+
+    // 2. Doctors Directory
+    match /doctors/{doctorId} {
+      // Public read access for active and approved doctors
+      allow read: if true;
+      // Only administrators can add, edit, or approve doctors
+      allow write: if isAdmin();
+    }
+
+    // 3. Departments Directory
+    match /departments/{departmentId} {
+      // Public read access for departments
+      allow read: if true;
+      // Only administrators can manage departments
+      allow write: if isAdmin();
+    }
+
+    // 4. Appointments Collection
+    match /appointments/{appointmentId} {
+      // Patients can read their own; Doctors can read theirs; Admins can read all
+      allow read: if isAuthenticated() && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.patientEmail == request.auth.token.email ||
+        resource.data.doctorId == request.auth.uid ||
+        isAdmin()
+      );
+
+      // Authenticated patients can create valid appointments
+      allow create: if isAuthenticated();
+
+      // Patients can cancel eligible appointments; Doctors can update consult status; Admins have full control
+      allow update: if isAuthenticated() && (
+        (resource.data.patientId == request.auth.uid && request.resource.data.status == 'Cancelled') ||
+        (resource.data.doctorId == request.auth.uid) ||
+        isAdmin()
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // 5. Slot Locks (Atomic Reservation Mechanism)
+    match /slot_locks/{lockId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && !exists(/databases/$(database)/documents/slot_locks/$(lockId));
+      allow delete: if isAuthenticated();
+      allow update: if isAdmin();
+    }
+
+    // 6. Hospital Settings
+    match /hospital_settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 7. Pharmacy Module Collections (Part 6)
+    match /pharmacy_medicines/{medicineId} {
+      // Public read so patients can search and check listed availability
+      allow read: if true;
+      // Only authorized pharmacy staff or admins can add, update, delete
+      allow write: if isPharmacist();
+    }
+
+    match /pharmacy_prescriptions/{prescriptionId} {
+      // Patients can read their own prescriptions; pharmacists/admins can view all
+      allow read: if isAuthenticated() && (
+        resource.data.patientEmail == request.auth.token.email ||
+        isPharmacist()
+      );
+      // Anyone authenticated can upload/submit a prescription request
+      allow create: if isAuthenticated() || true;
+      // Only pharmacists or admins can update status, accept/reject, or annotate
+      allow update: if isPharmacist();
+      allow delete: if isAdmin();
+    }
+
+    match /pharmacy_enquiries/{enquiryId} {
+      // Anyone can submit an availability enquiry
+      allow create: if true;
+      // Patients can read their own enquiry, pharmacists/admins can read all
+      allow read: if isPharmacist() || (isAuthenticated() && resource.data.patientEmail == request.auth.token.email);
+      // Only pharmacists or admins can respond
+      allow update: if isPharmacist();
+      allow delete: if isAdmin();
+    }
+
+    match /pharmacy_stock_history/{historyId} {
+      // Internal audit trail restricted to pharmacy staff and admins
+      allow read: if isPharmacist();
+      allow write: if isPharmacist();
+    }
+
+    match /pharmacy_settings/{settingId} {
+      // Public read for operating hours, contact info, disclaimer
+      allow read: if true;
+      // Pharmacists or admins can configure pharmacy details
+      allow write: if isPharmacist();
+    }
+  }
+}

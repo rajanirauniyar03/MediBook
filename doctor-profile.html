@@ -553,26 +553,36 @@
   <script src="assets/js/utils/formatters.js"></script>
   <script src="assets/js/components/toast.js"></script>
   <script src="assets/js/services/auth-service.js"></script>
+  <script src="assets/js/services/doctor-service.js"></script>
+  <script src="assets/js/services/appointment-service.js"></script>
   <script src="assets/js/components/navbar.js"></script>
 
   <!-- Doctor Profile Controller Script -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       // 1. Resolve Doctor ID from Query Parameter (e.g. ?id=doc_001)
       const urlParams = new URLSearchParams(window.location.search);
       const doctorId = urlParams.get('id') || 'doc_001';
 
-      const doctorsList = window.MEDIBOOK_DATA ? window.MEDIBOOK_DATA.doctors : [];
-      let doctor = doctorsList.find(d => d.id === doctorId);
+      let doctor = null;
+      if (window.DoctorService) {
+        doctor = await window.DoctorService.getDoctorProfile(doctorId);
+      }
 
-      // Fallback to first doctor if not found
-      if (!doctor && doctorsList.length > 0) {
-        doctor = doctorsList[0];
+      if (!doctor) {
+        const doctorsList = window.MEDIBOOK_DATA ? window.MEDIBOOK_DATA.doctors : [];
+        doctor = doctorsList.find(d => d.id === doctorId) || doctorsList[0];
       }
 
       if (!doctor) {
         document.body.innerHTML = '<div class="container" style="padding: 4rem 1.5rem; text-align: center;"><h2>Doctor profile not found</h2><a href="find-doctors.html" class="btn btn-primary">Back to Directory</a></div>';
         return;
+      }
+
+      // Check for live schedule
+      let schedule = null;
+      if (window.DoctorService) {
+        schedule = await window.DoctorService.getDoctorSchedule(doctorId);
       }
 
       // 2. Populate Doctor Metadata
@@ -613,7 +623,8 @@
 
       // 4. Render Available Days Pills
       const daysContainer = document.getElementById('booking-available-days');
-      const days = doctor.availableDays || ["Monday", "Wednesday", "Friday"];
+      const days = (schedule && schedule.availableDays && schedule.availableDays.length > 0) ?
+        schedule.availableDays : (doctor.availableDays || ["Monday", "Wednesday", "Friday"]);
       daysContainer.innerHTML = days.map(d => `<span class="day-pill">${d}</span>`).join('');
 
       // 5. Setup Default Date in Picker (tomorrow by default)
@@ -625,7 +636,8 @@
 
       // 6. Render Available Time Slots
       const slotsContainer = document.getElementById('booking-time-slots');
-      const slots = doctor.availableSlots || ["09:00 AM", "10:30 AM", "02:00 PM", "03:30 PM", "05:00 PM"];
+      const slots = (schedule && schedule.generatedSlots && schedule.generatedSlots.length > 0) ?
+        schedule.generatedSlots : (doctor.availableSlots || ["09:00 AM", "10:30 AM", "02:00 PM", "03:30 PM", "05:00 PM"]);
       let selectedSlot = slots[0] || '09:00 AM';
 
       slotsContainer.innerHTML = slots.map((s, idx) => `
@@ -644,9 +656,9 @@
         });
       });
 
-      // 7. Handle Appointment Booking
+      // 7. Handle Appointment Booking with Doctor Availability Enforcement
       const bookBtn = document.getElementById('submit-booking-btn');
-      bookBtn.addEventListener('click', () => {
+      bookBtn.addEventListener('click', async () => {
         const selectedDate = dateInput.value;
         if (!selectedDate) {
           if (window.Toast) window.Toast.error('Please pick a preferred consultation date.', 'Date Required');
@@ -660,38 +672,50 @@
         // Check authentication
         const currentUser = window.AuthService ? window.AuthService.getCurrentUser() : null;
 
+        const bookingPayload = {
+          doctorId: doctor.id,
+          doctorName: doctor.name,
+          doctorAvatar: doctor.avatar,
+          specialization: doctor.specialization,
+          department: doctor.department || doctor.specialization,
+          hospital: doctor.hospital,
+          date: selectedDate,
+          timeSlot: selectedSlot,
+          consultationFee: doctor.consultationFee || doctor.fee,
+          mode: consultMode,
+          patientId: currentUser ? currentUser.id || currentUser.uid : "patient_001",
+          patientName: currentUser ? currentUser.displayName : "Sarah Jenkins",
+          patientEmail: currentUser ? currentUser.email : "patient@medibook.com",
+          patientPhone: currentUser ? currentUser.phone || "+1 (555) 234-5678" : "+1 (555) 234-5678",
+          reason: reason || "General Medical Consultation",
+          notes: "Scheduled via Doctor Profile booking widget."
+        };
+
+        const originalText = bookBtn.innerHTML;
+        bookBtn.disabled = true;
+        bookBtn.innerHTML = 'Validating Availability...';
+
+        let result = null;
+        if (window.AppointmentService) {
+          result = await window.AppointmentService.bookAppointment(bookingPayload);
+        } else {
+          result = { success: true };
+        }
+
+        bookBtn.disabled = false;
+        bookBtn.innerHTML = originalText;
+
+        if (!result.success) {
+          alert(`BOOKING RESTRICTED:\n\n${result.error}`);
+          if (window.Toast) window.Toast.error(result.error, 'Slot Unavailable');
+          return;
+        }
+
         // Populate Confirmation Modal Details
         document.getElementById('modal-doc-name').textContent = doctor.name;
         document.getElementById('modal-doc-spec').textContent = doctor.specialization;
         document.getElementById('modal-appointment-time').textContent = `📅 ${selectedDate} at ⏰ ${selectedSlot}`;
         document.getElementById('modal-appointment-mode').textContent = consultMode === 'video' ? '💻 Telehealth Video Consultation' : '🏥 In-Person Outpatient Visit';
-
-        // Store appointment in local mock appointments for persistence
-        const appointmentObj = {
-          id: 'apt_' + Date.now(),
-          doctorId: doctor.id,
-          doctorName: doctor.name,
-          specialization: doctor.specialization,
-          doctorAvatar: doctor.avatar,
-          patientName: currentUser ? currentUser.displayName : 'Guest Patient',
-          patientEmail: currentUser ? currentUser.email : 'patient@medibook.com',
-          date: selectedDate,
-          timeSlot: selectedSlot,
-          mode: consultMode,
-          fee: doctor.consultationFee || doctor.fee,
-          status: 'Confirmed',
-          reason: reason || 'General Consultation',
-          createdAt: new Date().toISOString()
-        };
-
-        try {
-          const stored = localStorage.getItem('medibook_appointments');
-          const appointments = stored ? JSON.parse(stored) : [];
-          appointments.push(appointmentObj);
-          localStorage.setItem('medibook_appointments', JSON.stringify(appointments));
-        } catch (e) {
-          console.error('Error saving appointment', e);
-        }
 
         // Show Modal
         const modal = document.getElementById('booking-success-modal');
@@ -700,7 +724,7 @@
         }
 
         if (window.Toast) {
-          window.Toast.success(`Appointment scheduled with ${doctor.name}!`, 'Success');
+          window.Toast.success(`Appointment confirmed with ${doctor.name}!`, 'Success');
         }
       });
 

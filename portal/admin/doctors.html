@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Doctors & Specialists – MediBook Admin</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/portal.css">
+</head>
+<body>
+
+  <div class="portal-layout">
+    
+    <!-- ======================================================================
+         Admin Sidebar Navigation
+         ====================================================================== -->
+    <aside class="portal-sidebar" id="portal-sidebar">
+      <div class="portal-sidebar-header">
+        <a href="../../index.html" class="brand-logo">
+          <span class="brand-icon-wrap"><i data-lucide="cross"></i></span>
+          <span>Medi<span class="brand-highlight">Book</span></span>
+        </a>
+      </div>
+
+      <!-- Admin User Identity -->
+      <div class="portal-sidebar-user">
+        <img id="admin-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Admin Avatar">
+        <div class="portal-user-meta">
+          <div class="portal-user-name" id="admin-user-name">Central Hospital IT</div>
+          <div class="portal-user-role" style="color: var(--primary-600); font-weight: 700;">Hospital Administrator</div>
+        </div>
+      </div>
+
+      <!-- Admin Navigation Menu -->
+      <ul class="portal-nav-list">
+        <li class="portal-nav-item">
+          <a href="dashboard.html">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Overview</span>
+          </a>
+        </li>
+        <li class="portal-nav-item active">
+          <a href="doctors.html">
+            <i data-lucide="stethoscope"></i>
+            <span>Manage Doctors</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="patients.html">
+            <i data-lucide="users"></i>
+            <span>Manage Patients</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="departments.html">
+            <i data-lucide="grid"></i>
+            <span>Departments</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="appointments.html">
+            <i data-lucide="calendar-check"></i>
+            <span>Appointments</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="reports.html">
+            <i data-lucide="bar-chart-3"></i>
+            <span>Reports & Analytics</span>
+          </a>
+        </li>
+        <li class="portal-nav-item">
+          <a href="settings.html">
+            <i data-lucide="settings"></i>
+            <span>Hospital Settings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Sidebar Sign Out -->
+      <div class="portal-sidebar-footer">
+        <button id="admin-logout-btn" class="btn btn-outline btn-block btn-sm text-danger">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ======================================================================
+         Main Admin Content
+         ====================================================================== -->
+    <div class="portal-main">
+      
+      <!-- Top Navigation Bar -->
+      <header class="portal-topbar">
+        <div class="flex items-center gap-3">
+          <button class="portal-mobile-toggle" id="portal-mobile-toggle" aria-label="Toggle Navigation">
+            <i data-lucide="menu"></i>
+          </button>
+          <div>
+            <div style="font-weight: 800; font-size: 1.15rem; color: var(--slate-900);">Physician & Specialist Roster</div>
+            <div style="font-size: 0.775rem; color: var(--slate-500);">Credentialing, Department Assignments & Schedule Governance</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button id="btn-open-add-doctor" class="btn btn-primary btn-sm">
+            <i data-lucide="user-plus"></i>
+            <span>Add New Doctor</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="portal-page-content">
+        
+        <!-- Summary Stats Banner -->
+        <div class="portal-stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 1.5rem;">
+          <div class="portal-stat-card">
+            <div class="portal-stat-icon" style="background: var(--primary-50); color: var(--primary-600);">
+              <i data-lucide="stethoscope"></i>
+            </div>
+            <div class="portal-stat-info">
+              <div class="portal-stat-label">Total Doctors</div>
+              <div class="portal-stat-number" id="stat-total-doctors">0</div>
+            </div>
+          </div>
+          <div class="portal-stat-card">
+            <div class="portal-stat-icon" style="background: var(--success-50); color: var(--success-600);">
+              <i data-lucide="check-circle-2"></i>
+            </div>
+            <div class="portal-stat-info">
+              <div class="portal-stat-label">Active on Roster</div>
+              <div class="portal-stat-number" id="stat-active-doctors">0</div>
+            </div>
+          </div>
+          <div class="portal-stat-card">
+            <div class="portal-stat-icon" style="background: #fffbeb; color: #b45309;">
+              <i data-lucide="shield-alert"></i>
+            </div>
+            <div class="portal-stat-info">
+              <div class="portal-stat-label">Pending Approval</div>
+              <div class="portal-stat-number" id="stat-pending-doctors">0</div>
+            </div>
+          </div>
+          <div class="portal-stat-card">
+            <div class="portal-stat-icon" style="background: var(--accent-50); color: var(--accent-700);">
+              <i data-lucide="dollar-sign"></i>
+            </div>
+            <div class="portal-stat-info">
+              <div class="portal-stat-label">Avg. Consultation</div>
+              <div class="portal-stat-number" id="stat-avg-fee">$0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="card" style="padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <!-- Search Input -->
+            <div style="flex: 1; min-width: 260px;">
+              <div class="input-icon-wrapper">
+                <span class="input-icon-left"><i data-lucide="search"></i></span>
+                <input type="text" id="doctor-search" class="form-control" placeholder="Search by physician name, email or qualification...">
+              </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex items-center gap-3 flex-wrap">
+              <div>
+                <select id="filter-department" class="form-control" style="min-width: 170px;">
+                  <option value="">All Departments</option>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <div>
+                <select id="filter-status" class="form-control" style="min-width: 150px;">
+                  <option value="">All Statuses</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Pending">Pending Approval</option>
+                </select>
+              </div>
+
+              <button id="btn-reset-filters" class="btn btn-outline btn-sm" title="Reset Filters">
+                <i data-lucide="rotate-ccw"></i> Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doctors Table Card -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div class="table-responsive">
+            <table class="table" style="margin: 0;">
+              <thead>
+                <tr>
+                  <th>Physician Profile</th>
+                  <th>Department</th>
+                  <th>Experience & Qualification</th>
+                  <th>Consultation Fee</th>
+                  <th>Availability</th>
+                  <th>Status</th>
+                  <th>Approval</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="doctors-tbody">
+                <!-- Dynamically rendered rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div id="doctors-empty-state" class="portal-empty-state" style="display: none; padding: 4rem 2rem;">
+            <div class="portal-empty-icon">
+              <i data-lucide="stethoscope"></i>
+            </div>
+            <h3 class="portal-empty-title">No Doctors Found</h3>
+            <p class="portal-empty-desc">No physicians match your filter criteria. Try adjusting your search term or department filter.</p>
+            <button id="btn-empty-reset" class="btn btn-outline btn-sm">Clear Filters</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: ADD NEW DOCTOR
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modal-add-doctor" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i data-lucide="user-plus" style="color: var(--primary-600);"></i>
+          <span>Add New Hospital Physician</span>
+        </h3>
+        <button type="button" class="btn btn-ghost btn-icon-only modal-close-btn" aria-label="Close dialog">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <form id="form-add-doctor" novalidate>
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="add-doc-name">Full Doctor Name <span class="required">*</span></label>
+              <input type="text" id="add-doc-name" class="form-control" placeholder="e.g. Dr. Jennifer Hayes" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="add-doc-email">Email Address <span class="required">*</span></label>
+              <input type="email" id="add-doc-email" class="form-control" placeholder="e.g. j.hayes@medibook.com" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="add-doc-phone">Phone Number <span class="required">*</span></label>
+              <input type="text" id="add-doc-phone" class="form-control" placeholder="+1 (555) 000-0000" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="add-doc-dept">Department <span class="required">*</span></label>
+              <select id="add-doc-dept" class="form-control" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="add-doc-qualification">Medical Qualification <span class="required">*</span></label>
+              <input type="text" id="add-doc-qualification" class="form-control" placeholder="e.g. MD, FACC, Harvard Medical" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="add-doc-experience">Experience (Years) <span class="required">*</span></label>
+              <input type="number" id="add-doc-experience" class="form-control" min="1" max="50" value="8" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="add-doc-fee">Consultation Fee ($ USD) <span class="required">*</span></label>
+              <input type="number" id="add-doc-fee" class="form-control" min="10" step="5" value="120" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="add-doc-avatar">Avatar Image URL (Optional)</label>
+              <input type="url" id="add-doc-avatar" class="form-control" placeholder="Leave empty for auto profile badge">
+            </div>
+          </div>
+
+          <!-- Working Days Checkboxes -->
+          <div class="form-group">
+            <label class="form-label">Consultation Schedule Days</label>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;" id="add-days-group">
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="add-doc-day" value="Monday" checked> Monday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="add-doc-day" value="Tuesday" checked> Tuesday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="add-doc-day" value="Wednesday" checked> Wednesday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="add-doc-day" value="Thursday" checked> Thursday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="add-doc-day" value="Friday" checked> Friday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="add-doc-day" value="Saturday"> Saturday
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="add-doc-about">Physician Bio / Clinical Focus</label>
+            <textarea id="add-doc-about" class="form-control" rows="2" placeholder="Brief summary of clinical specialties, fellowships, and focus areas..."></textarea>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-add-doctor">
+            <i data-lucide="check"></i> Save Physician
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: EDIT DOCTOR
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modal-edit-doctor" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i data-lucide="edit-3" style="color: var(--primary-600);"></i>
+          <span>Edit Physician Profile</span>
+        </h3>
+        <button type="button" class="btn btn-ghost btn-icon-only modal-close-btn" aria-label="Close dialog">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <form id="form-edit-doctor" novalidate>
+        <input type="hidden" id="edit-doc-id">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="edit-doc-name">Physician Name <span class="required">*</span></label>
+              <input type="text" id="edit-doc-name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-doc-dept">Department <span class="required">*</span></label>
+              <select id="edit-doc-dept" class="form-control" required>
+                <!-- Dynamic options -->
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="edit-doc-qualification">Qualification <span class="required">*</span></label>
+              <input type="text" id="edit-doc-qualification" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-doc-fee">Consultation Fee ($ USD) <span class="required">*</span></label>
+              <input type="number" id="edit-doc-fee" class="form-control" min="10" step="5" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="edit-doc-experience">Experience (Years)</label>
+              <input type="number" id="edit-doc-experience" class="form-control" min="1" max="50">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-doc-status">Status</label>
+              <select id="edit-doc-status" class="form-control">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Working Days Checkboxes -->
+          <div class="form-group">
+            <label class="form-label">Available Consultation Days</label>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;" id="edit-days-group">
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="edit-doc-day" value="Monday"> Monday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="edit-doc-day" value="Tuesday"> Tuesday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="edit-doc-day" value="Wednesday"> Wednesday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="edit-doc-day" value="Thursday"> Thursday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="edit-doc-day" value="Friday"> Friday
+              </label>
+              <label class="flex items-center gap-2" style="font-size: 0.875rem;">
+                <input type="checkbox" name="edit-doc-day" value="Saturday"> Saturday
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-doc-about">Clinical Profile Summary</label>
+            <textarea id="edit-doc-about" class="form-control" rows="2"></textarea>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-edit-doctor">
+            <i data-lucide="check"></i> Update Physician
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: VIEW SCHEDULE & AVAILABILITY
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modal-view-schedule" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i data-lucide="calendar" style="color: var(--primary-600);"></i>
+          <span id="schedule-modal-docname">Doctor Availability</span>
+        </h3>
+        <button type="button" class="btn btn-ghost btn-icon-only modal-close-btn" aria-label="Close dialog">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="schedule-modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline modal-close-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Core Scripts -->
+  <script src="../../assets/js/config/firebase-config.js"></script>
+  <script src="../../assets/js/data/demo-data.js"></script>
+  <script src="../../assets/js/utils/validators.js"></script>
+  <script src="../../assets/js/utils/formatters.js"></script>
+  <script src="../../assets/js/components/toast.js"></script>
+  <script src="../../assets/js/services/auth-service.js"></script>
+  <script src="../../assets/js/services/appointment-service.js"></script>
+  <script src="../../assets/js/services/admin-service.js"></script>
+
+  <!-- Doctor Management Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Guard: Restrict strictly to authorized administrator accounts
+      const isAuthorized = window.AuthService.requireAuth(['admin']);
+      if (!isAuthorized) return;
+
+      const user = window.AuthService.getCurrentUser();
+      if (user) {
+        document.getElementById('admin-user-name').textContent = user.displayName || 'Hospital Administrator';
+        if (user.avatar) document.getElementById('admin-user-avatar').src = user.avatar;
+      }
+
+      // Mobile toggle
+      const mobileToggle = document.getElementById('portal-mobile-toggle');
+      const sidebar = document.getElementById('portal-sidebar');
+      if (mobileToggle && sidebar) {
+        mobileToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+      }
+
+      // Logout
+      document.getElementById('admin-logout-btn').addEventListener('click', async () => {
+        await window.AuthService.logout();
+        window.location.href = '../../index.html';
+      });
+
+      // Populate Department Filters and Selectors
+      populateDepartmentDropdowns();
+
+      // Load and Render Doctors
+      loadDoctorsTable();
+
+      // Bind search & filter inputs
+      document.getElementById('doctor-search').addEventListener('input', loadDoctorsTable);
+      document.getElementById('filter-department').addEventListener('change', loadDoctorsTable);
+      document.getElementById('filter-status').addEventListener('change', loadDoctorsTable);
+      document.getElementById('btn-reset-filters').addEventListener('click', () => {
+        document.getElementById('doctor-search').value = '';
+        document.getElementById('filter-department').value = '';
+        document.getElementById('filter-status').value = '';
+        loadDoctorsTable();
+      });
+      document.getElementById('btn-empty-reset').addEventListener('click', () => {
+        document.getElementById('doctor-search').value = '';
+        document.getElementById('filter-department').value = '';
+        document.getElementById('filter-status').value = '';
+        loadDoctorsTable();
+      });
+
+      // Add Doctor Modal Triggers
+      const addModal = document.getElementById('modal-add-doctor');
+      document.getElementById('btn-open-add-doctor').addEventListener('click', () => {
+        openModal(addModal);
+      });
+
+      // Modal close handlers
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const backdrop = e.target.closest('.modal-backdrop');
+          if (backdrop) closeModal(backdrop);
+        });
+      });
+
+      // Handle Add Doctor Form Submit
+      document.getElementById('form-add-doctor').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('add-doc-name').value.trim();
+        const email = document.getElementById('add-doc-email').value.trim();
+        const phone = document.getElementById('add-doc-phone').value.trim();
+        const dept = document.getElementById('add-doc-dept').value;
+        const qualification = document.getElementById('add-doc-qualification').value.trim();
+        const exp = document.getElementById('add-doc-experience').value.trim();
+        const fee = document.getElementById('add-doc-fee').value.trim();
+        const avatar = document.getElementById('add-doc-avatar').value.trim();
+        const about = document.getElementById('add-doc-about').value.trim();
+
+        if (!name || !email || !phone || !qualification) {
+          window.Toast.show('Please complete all required fields.', 'error');
+          return;
+        }
+
+        const days = Array.from(document.querySelectorAll('input[name="add-doc-day"]:checked')).map(cb => cb.value);
+
+        const res = await window.AdminService.addDoctor({
+          name,
+          email,
+          phone,
+          department: dept,
+          qualification,
+          experienceYears: exp,
+          consultationFee: fee,
+          avatar: avatar || undefined,
+          availableDays: days,
+          about
+        });
+
+        if (res.success) {
+          window.Toast.show(`Physician ${name} has been successfully added.`, 'success');
+          closeModal(addModal);
+          document.getElementById('form-add-doctor').reset();
+          loadDoctorsTable();
+        } else {
+          window.Toast.show(res.error || 'Failed to add physician.', 'error');
+        }
+      });
+
+      // Handle Edit Doctor Form Submit
+      document.getElementById('form-edit-doctor').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const docId = document.getElementById('edit-doc-id').value;
+        const name = document.getElementById('edit-doc-name').value.trim();
+        const dept = document.getElementById('edit-doc-dept').value;
+        const qualification = document.getElementById('edit-doc-qualification').value.trim();
+        const fee = document.getElementById('edit-doc-fee').value.trim();
+        const exp = document.getElementById('edit-doc-experience').value.trim();
+        const status = document.getElementById('edit-doc-status').value;
+        const about = document.getElementById('edit-doc-about').value.trim();
+        const days = Array.from(document.querySelectorAll('input[name="edit-doc-day"]:checked')).map(cb => cb.value);
+
+        const res = await window.AdminService.updateDoctor(docId, {
+          name,
+          department: dept,
+          qualification,
+          consultationFee: fee,
+          experienceYears: exp,
+          status,
+          availableDays: days,
+          availableDaysText: days.map(d => d.slice(0, 3)).join(', '),
+          about
+        });
+
+        if (res.success) {
+          window.Toast.show(`Physician profile updated successfully.`, 'success');
+          closeModal(document.getElementById('modal-edit-doctor'));
+          loadDoctorsTable();
+        } else {
+          window.Toast.show(res.error || 'Failed to update physician.', 'error');
+        }
+      });
+    });
+
+    function populateDepartmentDropdowns() {
+      const depts = window.AdminService.getDepartments();
+      const filterSelect = document.getElementById('filter-department');
+      const addSelect = document.getElementById('add-doc-dept');
+      const editSelect = document.getElementById('edit-doc-dept');
+
+      depts.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.name;
+        opt.textContent = d.name;
+        filterSelect.appendChild(opt);
+
+        const opt2 = opt.cloneNode(true);
+        addSelect.appendChild(opt2);
+
+        const opt3 = opt.cloneNode(true);
+        editSelect.appendChild(opt3);
+      });
+    }
+
+    function loadDoctorsTable() {
+      const doctors = window.AdminService.getDoctors();
+      const searchTerm = (document.getElementById('doctor-search').value || '').toLowerCase().trim();
+      const deptFilter = document.getElementById('filter-department').value;
+      const statusFilter = document.getElementById('filter-status').value;
+
+      // Update Summary KPI stats
+      document.getElementById('stat-total-doctors').textContent = doctors.length;
+      document.getElementById('stat-active-doctors').textContent = doctors.filter(d => d.status === 'Active').length;
+      document.getElementById('stat-pending-doctors').textContent = doctors.filter(d => d.approvalStatus === 'Pending').length;
+      const totalFees = doctors.reduce((sum, d) => sum + (parseFloat(d.consultationFee || d.fee) || 0), 0);
+      const avgFee = doctors.length ? Math.round(totalFees / doctors.length) : 0;
+      document.getElementById('stat-avg-fee').textContent = `$${avgFee}`;
+
+      // Filter Doctors
+      const filtered = doctors.filter(d => {
+        const matchesSearch = !searchTerm || 
+          d.name.toLowerCase().includes(searchTerm) || 
+          (d.email && d.email.toLowerCase().includes(searchTerm)) ||
+          (d.qualification && d.qualification.toLowerCase().includes(searchTerm));
+        
+        const matchesDept = !deptFilter || d.department === deptFilter;
+        
+        let matchesStatus = true;
+        if (statusFilter === 'Active') matchesStatus = d.status === 'Active';
+        else if (statusFilter === 'Inactive') matchesStatus = d.status === 'Inactive';
+        else if (statusFilter === 'Pending') matchesStatus = d.approvalStatus === 'Pending';
+
+        return matchesSearch && matchesDept && matchesStatus;
+      });
+
+      const tbody = document.getElementById('doctors-tbody');
+      const emptyState = document.getElementById('doctors-empty-state');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        if (window.lucide) window.lucide.createIcons();
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      tbody.innerHTML = filtered.map(doc => {
+        const isActive = doc.status === 'Active';
+        const isApproved = doc.approvalStatus === 'Approved';
+        const daysDisplay = doc.availableDaysText || (doc.availableDays ? doc.availableDays.map(d => d.slice(0, 3)).join(', ') : 'Mon - Fri');
+
+        return `
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <img src="${doc.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=2563eb&color=fff`}" 
+                     alt="${doc.name}" 
+                     style="width: 44px; height: 44px; border-radius: var(--radius-full); object-fit: cover; border: 2px solid var(--primary-100);">
+                <div>
+                  <div style="font-weight: 700; color: var(--slate-900);">${doc.name}</div>
+                  <div style="font-size: 0.775rem; color: var(--slate-500);">${doc.email || 'N/A'}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-teal text-xs">${doc.department || 'General Medicine'}</span>
+            </td>
+            <td>
+              <div style="font-weight: 600; color: var(--slate-800); font-size: 0.875rem;">${doc.qualification || doc.title || 'MD'}</div>
+              <div style="font-size: 0.775rem; color: var(--slate-500);">${doc.experienceYears || 5} Years Exp.</div>
+            </td>
+            <td>
+              <strong style="color: var(--slate-900); font-size: 0.95rem;">$${doc.consultationFee || doc.fee || 100}</strong>
+            </td>
+            <td>
+              <div style="font-size: 0.825rem; font-weight: 600; color: var(--slate-700);">${daysDisplay}</div>
+              <button class="btn btn-ghost btn-xs text-primary" onclick="viewDoctorSchedule('${doc.id}')" style="padding: 0; font-size: 0.75rem;">
+                View Hours & Slots
+              </button>
+            </td>
+            <td>
+              <button class="status-pill-toggle ${isActive ? 'active' : 'inactive'}" 
+                      onclick="toggleDoctorStatus('${doc.id}')" 
+                      title="Click to toggle status">
+                <i data-lucide="${isActive ? 'check' : 'pause'}"></i>
+                <span>${doc.status || 'Active'}</span>
+              </button>
+            </td>
+            <td>
+              ${isApproved ? `
+                <span class="badge badge-success text-xs">
+                  <i data-lucide="check-check"></i> Approved
+                </span>
+              ` : `
+                <button class="btn btn-primary btn-xs" onclick="approveDoctor('${doc.id}')">
+                  <i data-lucide="check"></i> Approve
+                </button>
+              `}
+            </td>
+            <td style="text-align: right;">
+              <div class="flex items-center justify-end gap-1">
+                <button class="btn btn-ghost btn-icon-only btn-sm" onclick="editDoctor('${doc.id}')" title="Edit Doctor Profile">
+                  <i data-lucide="edit-3"></i>
+                </button>
+                <button class="btn btn-ghost btn-icon-only btn-sm text-danger" onclick="toggleDoctorStatus('${doc.id}')" title="${isActive ? 'Deactivate' : 'Activate'} Doctor">
+                  <i data-lucide="${isActive ? 'slash' : 'play'}"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    // Modal Helpers
+    function openModal(modal) {
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Doctor Actions
+    window.toggleDoctorStatus = async function(docId) {
+      const res = await window.AdminService.toggleDoctorStatus(docId);
+      if (res.success) {
+        window.Toast.show(`Physician status updated to ${res.doctor.status}.`, 'info');
+        loadDoctorsTable();
+      } else {
+        window.Toast.show(res.error || 'Failed to toggle status.', 'error');
+      }
+    };
+
+    window.approveDoctor = async function(docId) {
+      const res = await window.AdminService.approveDoctor(docId);
+      if (res.success) {
+        window.Toast.show(`Doctor account approved and active on hospital roster.`, 'success');
+        loadDoctorsTable();
+      } else {
+        window.Toast.show(res.error || 'Failed to approve doctor.', 'error');
+      }
+    };
+
+    window.editDoctor = function(docId) {
+      const doctors = window.AdminService.getDoctors();
+      const doc = doctors.find(d => d.id === docId);
+      if (!doc) return;
+
+      document.getElementById('edit-doc-id').value = doc.id;
+      document.getElementById('edit-doc-name').value = doc.name;
+      document.getElementById('edit-doc-dept').value = doc.department || 'General Medicine';
+      document.getElementById('edit-doc-qualification').value = doc.qualification || doc.title || '';
+      document.getElementById('edit-doc-fee').value = doc.consultationFee || doc.fee || 100;
+      document.getElementById('edit-doc-experience').value = doc.experienceYears || 5;
+      document.getElementById('edit-doc-status').value = doc.status || 'Active';
+      document.getElementById('edit-doc-about').value = doc.about || '';
+
+      // Set Day checkboxes
+      const days = doc.availableDays || [];
+      document.querySelectorAll('input[name="edit-doc-day"]').forEach(cb => {
+        cb.checked = days.includes(cb.value);
+      });
+
+      openModal(document.getElementById('modal-edit-doctor'));
+    };
+
+    window.viewDoctorSchedule = function(docId) {
+      const doctors = window.AdminService.getDoctors();
+      const doc = doctors.find(d => d.id === docId);
+      if (!doc) return;
+
+      document.getElementById('schedule-modal-docname').textContent = `${doc.name} – Clinical Schedule`;
+      const slots = doc.availableSlots || ["09:00 AM", "10:30 AM", "02:00 PM", "03:30 PM"];
+      const days = doc.availableDays || ["Monday", "Wednesday", "Friday"];
+
+      document.getElementById('schedule-modal-body').innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div style="background: var(--slate-50); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--slate-200);">
+            <div style="font-size: 0.8rem; color: var(--slate-500); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">
+              Weekly Clinical Consultation Days
+            </div>
+            <div class="flex flex-wrap gap-2">
+              ${days.map(day => `<span class="badge badge-teal">${day}</span>`).join('')}
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size: 0.8rem; color: var(--slate-500); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">
+              Standard Appointment Slot Times
+            </div>
+            <div class="flex flex-wrap gap-2">
+              ${slots.map(slot => `<span class="badge badge-primary text-xs"><i data-lucide="clock"></i> ${slot}</span>`).join('')}
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--slate-100); padding-top: 1rem;" class="flex justify-between items-center">
+            <div>
+              <div style="font-size: 0.775rem; color: var(--slate-500);">Standard Consultation Rate</div>
+              <div style="font-size: 1.15rem; font-weight: 800; color: var(--slate-900);">$${doc.consultationFee || doc.fee || 100} / visit</div>
+            </div>
+            <span class="badge ${doc.status === 'Active' ? 'badge-success' : 'badge-neutral'}">
+              ${doc.status === 'Active' ? 'Currently Available' : 'On Leave / Inactive'}
+            </span>
+          </div>
+        </div>
+      `;
+
+      openModal(document.getElementById('modal-view-schedule'));
+    };
+  </script>
+</body>
+</html>

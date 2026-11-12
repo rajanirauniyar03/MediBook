@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacy Management Console – MediBook</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pharmacy.css">
+</head>
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    
+    <!-- =========================================================================
+         1. PHARMACY STAFF SIDEBAR
+         ========================================================================= -->
+    <aside class="dashboard-sidebar">
+      
+      <!-- Brand Logo -->
+      <div class="sidebar-brand-box">
+        <a href="../../index.html" class="brand-logo" title="Back to MediBook Public Portal">
+          <span class="brand-icon-wrap" style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);"><i data-lucide="cross"></i></span>
+          <span>Medi<span class="brand-highlight" style="color: var(--accent-600);">Book</span></span>
+        </a>
+        <div>
+          <span class="pharmacy-portal-badge">
+            <i data-lucide="pill"></i> Pharmacy Console
+          </span>
+        </div>
+      </div>
+
+      <!-- Staff Quick Profile Card -->
+      <div class="sidebar-doctor-card">
+        <div class="sidebar-avatar-wrap">
+          <img id="sidebar-staff-avatar" src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&auto=format&fit=crop&q=80" alt="Pharmacist Profile" style="border-color: var(--accent-500);">
+          <span class="sidebar-status-dot" style="background-color: var(--accent-500);" title="Dispensary Staff Active"></span>
+        </div>
+        <div class="sidebar-doc-info">
+          <h4 class="sidebar-doc-name" id="sidebar-staff-name">James Carter, RPh</h4>
+          <div class="sidebar-doc-dept" id="sidebar-staff-title">Head Clinical Pharmacist</div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Dispensary Operations</div>
+
+        <button class="dash-nav-item active" data-tab="overview">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard Overview</span>
+        </button>
+
+        <button class="dash-nav-item" data-tab="medicines">
+          <i data-lucide="pill"></i>
+          <span>Medicine Catalog</span>
+        </button>
+
+        <button class="dash-nav-item" data-tab="prescriptions">
+          <i data-lucide="file-check"></i>
+          <span>Prescription Requests</span>
+          <span class="dash-nav-badge warning" id="sidebar-rx-badge">0 New</span>
+        </button>
+
+        <button class="dash-nav-item" data-tab="enquiries">
+          <i data-lucide="message-square"></i>
+          <span>Medicine Enquiries</span>
+          <span class="dash-nav-badge" id="sidebar-enq-badge">0 New</span>
+        </button>
+
+        <button class="dash-nav-item" data-tab="inventory">
+          <i data-lucide="boxes"></i>
+          <span>Inventory & Stock Audit</span>
+          <span class="dash-nav-badge" id="sidebar-lowstock-badge" style="background-color: var(--danger-500);">0 Low</span>
+        </button>
+
+        <div class="nav-section-title" style="margin-top: 0.5rem;">Dispensary Configuration</div>
+
+        <button class="dash-nav-item" data-tab="settings">
+          <i data-lucide="settings"></i>
+          <span>Pharmacy Settings</span>
+        </button>
+
+        <a href="../../pharmacy.html" class="dash-nav-item" target="_blank">
+          <i data-lucide="external-link"></i>
+          <span>Patient Pharmacy View</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="sidebar-sync-status">
+          <span class="sync-pulse" style="background-color: var(--accent-600);"></span>
+          <span>Dispensary Operational • HIPAA</span>
+        </div>
+
+        <button id="pharmacy-logout-btn" class="btn btn-outline btn-sm btn-block" style="color: var(--danger-600); border-color: var(--slate-300);">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out Dispensary</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- =========================================================================
+         2. MAIN PHARMACY CONTENT AREA
+         ========================================================================= -->
+    <main class="dashboard-main">
+
+      <!-- Topbar Header -->
+      <header class="dashboard-topbar">
+        <div class="topbar-left">
+          <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Open Navigation Menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="topbar-title-wrap">
+            <h1>Pharmacy & Dispensary Management</h1>
+            <p id="header-live-date">Friday, November 13, 2026</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Low Stock Alert Pill -->
+          <button id="topbar-lowstock-pill" class="conflict-alert-pill" style="display: none; background: #fffbeb; border-color: var(--warning-500); color: var(--warning-700);" onclick="switchTab('inventory')">
+            <i data-lucide="alert-triangle"></i>
+            <span><span id="topbar-lowstock-count">0</span> Low-Stock Item(s)</span>
+          </button>
+
+          <span class="badge badge-teal" style="font-size: 0.85rem; padding: 0.45rem 0.85rem;">
+            <i data-lucide="shield-check"></i>
+            <span id="header-staff-name">James Carter, RPh</span>
+          </span>
+        </div>
+      </header>
+
+      <!-- Dashboard Tab Views Container -->
+      <div class="dashboard-content">
+
+        <!-- ===================================================================
+             TAB 1: DASHBOARD OVERVIEW
+             =================================================================== -->
+        <section id="tab-overview" class="tab-panel active">
+          
+          <!-- 6 KPI Metric Cards -->
+          <div class="stats-kpi-grid" style="grid-template-columns: repeat(6, 1fr);">
+            
+            <div class="kpi-card kpi-blue">
+              <div class="kpi-header">
+                <span class="kpi-label">Total Medicines</span>
+                <div class="kpi-icon-wrap"><i data-lucide="pill"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-total-meds">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="database"></i> Catalog Products
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-green">
+              <div class="kpi-header">
+                <span class="kpi-label">Available Stock</span>
+                <div class="kpi-icon-wrap"><i data-lucide="check-circle-2"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-avail-stock">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="boxes"></i> In Stock Items
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-orange">
+              <div class="kpi-header">
+                <span class="kpi-label">Low-Stock Items</span>
+                <div class="kpi-icon-wrap"><i data-lucide="alert-triangle"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-low-stock">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="trending-down"></i> Reorder Required
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-red">
+              <div class="kpi-header">
+                <span class="kpi-label">Out-of-Stock</span>
+                <div class="kpi-icon-wrap"><i data-lucide="x-circle"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-out-stock">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="slash"></i> Zero Inventory
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-teal">
+              <div class="kpi-header">
+                <span class="kpi-label">Pending Rx Requests</span>
+                <div class="kpi-icon-wrap"><i data-lucide="file-text"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-pending-rx">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="clock"></i> Awaiting Review
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-blue">
+              <div class="kpi-header">
+                <span class="kpi-label">Recent Enquiries</span>
+                <div class="kpi-icon-wrap"><i data-lucide="message-square"></i></div>
+              </div>
+              <div class="kpi-value" id="kpi-recent-enq">0</div>
+              <div class="kpi-footer">
+                <i data-lucide="user"></i> Patient Inquiries
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Section 2 Cols: Pending Prescriptions Queue & Stock Alerts -->
+          <div class="dashboard-grid-2cols">
+            
+            <!-- Left: Pending Prescription Requests Queue -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <h3 class="dash-card-title">
+                  <i data-lucide="file-check" style="color: var(--primary-600);"></i>
+                  <span>Pending Prescription Requests Queue</span>
+                </h3>
+                <button class="btn btn-ghost btn-sm" onclick="switchTab('prescriptions')">
+                  <span>View All</span> <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+              <div class="dash-card-body">
+                <div id="overview-prescriptions-queue">
+                  <!-- Populated dynamically via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Low-Stock & Expiry Alert Notice Cards -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <h3 class="dash-card-title">
+                  <i data-lucide="alert-triangle" style="color: var(--warning-500);"></i>
+                  <span>Inventory Alerts & Reorders</span>
+                </h3>
+                <button class="btn btn-ghost btn-sm" onclick="switchTab('inventory')">
+                  <span>Audit</span> <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+              <div class="dash-card-body">
+                <div id="overview-stock-alerts">
+                  <!-- Populated dynamically via JS -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom: Recent Medicine Enquiries from Patients -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h3 class="dash-card-title">
+                <i data-lucide="message-circle" style="color: var(--accent-600);"></i>
+                <span>Recent Patient Medicine Enquiries</span>
+              </h3>
+              <button class="btn btn-ghost btn-sm" onclick="switchTab('enquiries')">
+                <span>View All Enquiries</span> <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
+            <div class="dash-card-body">
+              <div id="overview-enquiries-queue">
+                <!-- Populated dynamically via JS -->
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             TAB 2: MEDICINE MANAGEMENT
+             =================================================================== -->
+        <section id="tab-medicines" class="tab-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin: 0 0 0.25rem;">Medicine Products & Catalog Management</h2>
+              <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0;">Add new pharmaceuticals, edit pricing, update stock quantities, configure expiry dates, and toggle product availability.</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <span id="medicines-table-count" class="badge badge-primary">0 medicines</span>
+              <button id="open-add-medicine-btn" class="btn btn-primary btn-md">
+                <i data-lucide="plus-circle"></i>
+                <span>Add Medicine Product</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="table-toolbar">
+            <div class="search-input-wrap" style="max-width: 320px;">
+              <i data-lucide="search" class="search-input-icon"></i>
+              <input type="text" id="med-search-input" class="form-control" placeholder="Search drug name, brand, category...">
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+              <select id="med-category-filter" class="form-control" style="font-size: 0.825rem; width: auto;">
+                <option value="all">All Categories</option>
+                <option value="Antibiotics">Antibiotics</option>
+                <option value="Cardiovascular">Cardiovascular</option>
+                <option value="Diabetes">Diabetes</option>
+                <option value="Pain Relief">Pain Relief</option>
+                <option value="Respiratory">Respiratory</option>
+                <option value="Gastrointestinal">Gastrointestinal</option>
+                <option value="Allergy">Allergy</option>
+                <option value="Dermatology">Dermatology</option>
+                <option value="Vitamins">Vitamins</option>
+              </select>
+
+              <select id="med-stock-filter" class="form-control" style="font-size: 0.825rem; width: auto;">
+                <option value="all">All Stock Statuses</option>
+                <option value="available">In Stock Only</option>
+                <option value="low_stock">Low Stock Only</option>
+                <option value="out_of_stock">Out of Stock Only</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Medicines Table -->
+          <div class="responsive-table-card">
+            <div style="overflow-x: auto;">
+              <table class="medibook-table">
+                <thead>
+                  <tr>
+                    <th>Medicine Product & Brand</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock On Hand</th>
+                    <th>Expiry Date</th>
+                    <th>Type</th>
+                    <th>Availability</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="medicines-table-body">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             TAB 3: PRESCRIPTION REQUESTS REVIEW WORKFLOW
+             =================================================================== -->
+        <section id="tab-prescriptions" class="tab-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin: 0 0 0.25rem;">Prescription Requests Review Workflow</h2>
+              <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0;">Review patient-uploaded prescriptions, authenticate physician scripts, approve, reject with clinical reasons, and mark ready for collection.</p>
+            </div>
+            <div>
+              <span id="prescriptions-table-count" class="badge badge-primary">0 requests</span>
+            </div>
+          </div>
+
+          <!-- Filter Toolbar with all 6 exact statuses -->
+          <div class="table-toolbar">
+            <div class="filter-btn-group">
+              <button class="filter-chip-btn rx-status-filter-chip active" data-status="all">All Requests</button>
+              <button class="filter-chip-btn rx-status-filter-chip" data-status="Pending Review">Pending Review</button>
+              <button class="filter-chip-btn rx-status-filter-chip" data-status="Under Review">Under Review</button>
+              <button class="filter-chip-btn rx-status-filter-chip" data-status="Approved">Approved</button>
+              <button class="filter-chip-btn rx-status-filter-chip" data-status="Ready for Collection">Ready for Collection</button>
+              <button class="filter-chip-btn rx-status-filter-chip" data-status="Completed">Completed</button>
+              <button class="filter-chip-btn rx-status-filter-chip" data-status="Rejected">Rejected</button>
+            </div>
+
+            <div class="search-input-wrap" style="max-width: 300px;">
+              <i data-lucide="search" class="search-input-icon"></i>
+              <input type="text" id="rx-table-search" class="form-control" placeholder="Search patient, phone, ref...">
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="responsive-table-card">
+            <div style="overflow-x: auto;">
+              <table class="medibook-table">
+                <thead>
+                  <tr>
+                    <th>Reference</th>
+                    <th>Patient Name & Phone</th>
+                    <th>Prescribing Physician</th>
+                    <th>Medication Requested</th>
+                    <th>Review Status</th>
+                    <th>Submitted</th>
+                    <th>Pharmacist Action</th>
+                  </tr>
+                </thead>
+                <tbody id="prescriptions-table-body">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             TAB 4: MEDICINE ENQUIRIES
+             =================================================================== -->
+        <section id="tab-enquiries" class="tab-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin: 0 0 0.25rem;">Patient Medicine Enquiries</h2>
+              <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0;">Review patient inquiries regarding stock availability, package sizes, and collection timing.</p>
+            </div>
+            <div>
+              <span id="enquiries-table-count" class="badge badge-primary">0 enquiries</span>
+            </div>
+          </div>
+
+          <div class="table-toolbar">
+            <div class="filter-btn-group">
+              <button class="filter-chip-btn enq-filter-chip active" data-status="all">All Enquiries</button>
+              <button class="filter-chip-btn enq-filter-chip" data-status="Pending Response">Pending Response</button>
+              <button class="filter-chip-btn enq-filter-chip" data-status="Responded">Responded</button>
+            </div>
+          </div>
+
+          <div class="responsive-table-card">
+            <div style="overflow-x: auto;">
+              <table class="medibook-table">
+                <thead>
+                  <tr>
+                    <th>Patient Contact</th>
+                    <th>Medicine Requested</th>
+                    <th>Urgency</th>
+                    <th>Question / Message</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="enquiries-table-body">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             TAB 5: INVENTORY & STOCK AUDIT HISTORY
+             =================================================================== -->
+        <section id="tab-inventory" class="tab-panel">
+          
+          <div style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin: 0 0 0.25rem;">Inventory Control & Stock Audit Ledger</h2>
+            <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0;">Monitor low-stock items, track approaching expiry dates, and review complete stock movement history logs.</p>
+          </div>
+
+          <div class="dashboard-grid-2cols" style="margin-bottom: 2rem;">
+            
+            <!-- Low-Stock Alerts -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <h3 class="dash-card-title">
+                  <i data-lucide="alert-triangle" style="color: var(--warning-500);"></i>
+                  <span>Active Low-Stock Alerts</span>
+                </h3>
+                <span class="badge badge-warning text-xs">Reorder Alerts</span>
+              </div>
+              <div class="dash-card-body">
+                <div id="inventory-low-stock-grid" style="display: flex; flex-direction: column; gap: 0.65rem;">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Expiry Warnings -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <h3 class="dash-card-title">
+                  <i data-lucide="calendar-alert" style="color: var(--danger-500);"></i>
+                  <span>Expiry Date Warnings (Within 60 Days)</span>
+                </h3>
+                <span class="badge badge-danger text-xs">Compliance Audit</span>
+              </div>
+              <div class="dash-card-body">
+                <div id="inventory-expiry-grid" style="display: flex; flex-direction: column; gap: 0.65rem;">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Stock Movement History Ledger -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h3 class="dash-card-title">
+                <i data-lucide="clipboard-list" style="color: var(--primary-600);"></i>
+                <span>Stock Movement & Audit History Ledger</span>
+              </h3>
+              <span class="badge badge-neutral text-xs">Full Audit Trail</span>
+            </div>
+            <div class="dash-card-body" style="padding: 0;">
+              <div style="overflow-x: auto;">
+                <table class="medibook-table">
+                  <thead>
+                    <tr>
+                      <th>Timestamp</th>
+                      <th>Medicine Name</th>
+                      <th>Adjustment</th>
+                      <th>Stock Change</th>
+                      <th>Reason / Reference</th>
+                      <th>Staff Account</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inventory-stock-history-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             TAB 6: PHARMACY SETTINGS
+             =================================================================== -->
+        <section id="tab-settings" class="tab-panel">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); margin: 0 0 0.25rem;">Pharmacy & Dispensary Settings</h2>
+              <p style="color: var(--slate-600); font-size: 0.875rem; margin: 0;">Configure your pharmacy facility name, address, contact phone, operating hours, and collection availability.</p>
+            </div>
+            <div>
+              <button type="submit" form="pharmacy-settings-form" class="btn btn-primary btn-lg">
+                <i data-lucide="save"></i>
+                <span>Save Pharmacy Settings</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-card-body">
+              <form id="pharmacy-settings-form">
+                
+                <div class="grid grid-cols-2 md:grid-cols-1 gap-6" style="margin-bottom: 1.5rem;">
+                  
+                  <div class="form-group">
+                    <label for="set-pharmacy-name" class="form-label">Pharmacy Facility Name <span class="required">*</span></label>
+                    <input type="text" id="set-pharmacy-name" class="form-control" required placeholder="e.g. MediBook Central Outpatient Pharmacy">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="set-pharmacy-tagline" class="form-label">Dispensary Brand Tagline</label>
+                    <input type="text" id="set-pharmacy-tagline" class="form-control" placeholder="e.g. Licensed Clinical Dispensary Services">
+                  </div>
+
+                  <div class="form-group" style="grid-column: span 2;">
+                    <label for="set-pharmacy-address" class="form-label">Physical Address / Facility Location <span class="required">*</span></label>
+                    <input type="text" id="set-pharmacy-address" class="form-control" required placeholder="Building C, Ground Floor Outpatient Pavilion, 500 Healthcare Blvd">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="set-pharmacy-phone" class="form-label">Direct Dispensary Contact Phone <span class="required">*</span></label>
+                    <input type="tel" id="set-pharmacy-phone" class="form-control" required placeholder="+1 (555) 345-6789">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="set-pharmacy-email" class="form-label">Dispensary Email Address <span class="required">*</span></label>
+                    <input type="email" id="set-pharmacy-email" class="form-control" required placeholder="pharmacy@medibook.com">
+                  </div>
+
+                  <div class="form-group" style="grid-column: span 2;">
+                    <label for="set-pharmacy-hours" class="form-label">Operating Hours <span class="required">*</span></label>
+                    <input type="text" id="set-pharmacy-hours" class="form-control" required placeholder="Monday – Saturday: 08:00 AM – 09:00 PM | Sunday: 09:00 AM – 05:00 PM">
+                  </div>
+
+                  <div class="form-group" style="grid-column: span 2;">
+                    <label for="set-pharmacy-collection" class="form-label">Collection & Pickup Availability</label>
+                    <input type="text" id="set-pharmacy-collection" class="form-control" placeholder="Counter Pickup Window • Drive-Thru Collection • 30-Minute Priority Prescription Dispense">
+                  </div>
+
+                  <div class="form-group" style="grid-column: span 2;">
+                    <label for="set-pharmacy-disclaimer" class="form-label">Mandatory Medical & Stock Disclaimer Text</label>
+                    <textarea id="set-pharmacy-disclaimer" class="form-control" rows="3" placeholder="Regulatory disclaimer displayed to patients..."></textarea>
+                  </div>
+
+                </div>
+
+                <div style="border-top: 1px solid var(--slate-100); padding-top: 1.25rem; display: flex; justify-content: flex-end;">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <i data-lucide="check"></i>
+                    <span>Save Pharmacy Settings</span>
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- =========================================================================
+       MODALS
+       ========================================================================= -->
+
+  <!-- Modal 1: Add Medicine Modal -->
+  <div id="add-medicine-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 640px;">
+      <div class="modal-header-custom">
+        <h3><i data-lucide="plus-circle" style="color:var(--primary-600); display:inline; vertical-align:middle; width:20px;"></i> Add New Medicine Product</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('add-medicine-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body-custom">
+        <form id="add-medicine-form">
+          <div class="grid grid-cols-2 md:grid-cols-1 gap-4">
+            <div class="form-group">
+              <label for="add-med-name" class="form-label">Medicine Name <span class="required">*</span></label>
+              <input type="text" id="add-med-name" class="form-control" required placeholder="e.g. Amoxicillin 500mg">
+            </div>
+
+            <div class="form-group">
+              <label for="add-med-brand" class="form-label">Brand / Manufacturer</label>
+              <input type="text" id="add-med-brand" class="form-control" placeholder="e.g. GlaxoSmithKline">
+            </div>
+
+            <div class="form-group">
+              <label for="add-med-category" class="form-label">Category <span class="required">*</span></label>
+              <select id="add-med-category" class="form-control" required>
+                <option value="Antibiotics">Antibiotics</option>
+                <option value="Cardiovascular">Cardiovascular</option>
+                <option value="Diabetes">Diabetes</option>
+                <option value="Pain Relief">Pain Relief</option>
+                <option value="Respiratory">Respiratory</option>
+                <option value="Gastrointestinal">Gastrointestinal</option>
+                <option value="Allergy">Allergy</option>
+                <option value="Dermatology">Dermatology</option>
+                <option value="Vitamins">Vitamins</option>
+                <option value="Ophthalmic">Ophthalmic</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="add-med-dosage" class="form-label">Dosage Form</label>
+              <input type="text" id="add-med-dosage" class="form-control" placeholder="e.g. Capsules, Tablets, Inhaler">
+            </div>
+
+            <div class="form-group">
+              <label for="add-med-price" class="form-label">Selling Price ($) <span class="required">*</span></label>
+              <input type="number" id="add-med-price" class="form-control" step="0.01" min="0.10" required placeholder="18.50">
+            </div>
+
+            <div class="form-group">
+              <label for="add-med-stock" class="form-label">Initial Stock Quantity <span class="required">*</span></label>
+              <input type="number" id="add-med-stock" class="form-control" min="0" required placeholder="50">
+            </div>
+
+            <div class="form-group">
+              <label for="add-med-threshold" class="form-label">Low Stock Reorder Alert Level</label>
+              <input type="number" id="add-med-threshold" class="form-control" min="1" value="15">
+            </div>
+
+            <div class="form-group">
+              <label for="add-med-expiry" class="form-label">Expiry Date <span class="required">*</span></label>
+              <input type="date" id="add-med-expiry" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="add-med-description" class="form-label">Description & Indications</label>
+            <textarea id="add-med-description" class="form-control" rows="2" placeholder="Clinical indications, pack size, storage conditions..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-check" style="font-weight: 600; color: var(--slate-800);">
+              <input type="checkbox" id="add-med-rx">
+              <span>Prescription Required (Rx Only)</span>
+            </label>
+          </div>
+
+          <div class="modal-footer-custom" style="padding: 1rem 0 0; background: none; border-top: 1px solid var(--slate-100);">
+            <button type="button" class="btn btn-outline" onclick="closeModal('add-medicine-modal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i data-lucide="plus"></i> Add Product
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Edit Medicine Modal -->
+  <div id="edit-medicine-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 640px;">
+      <div class="modal-header-custom">
+        <h3><i data-lucide="edit" style="color:var(--primary-600); display:inline; vertical-align:middle; width:20px;"></i> Edit Medicine Information</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('edit-medicine-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body-custom">
+        <form id="edit-medicine-form">
+          <input type="hidden" id="edit-med-id">
+
+          <div class="grid grid-cols-2 md:grid-cols-1 gap-4">
+            <div class="form-group">
+              <label for="edit-med-name" class="form-label">Medicine Name <span class="required">*</span></label>
+              <input type="text" id="edit-med-name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-med-brand" class="form-label">Brand / Manufacturer</label>
+              <input type="text" id="edit-med-brand" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="edit-med-category" class="form-label">Category <span class="required">*</span></label>
+              <select id="edit-med-category" class="form-control" required>
+                <option value="Antibiotics">Antibiotics</option>
+                <option value="Cardiovascular">Cardiovascular</option>
+                <option value="Diabetes">Diabetes</option>
+                <option value="Pain Relief">Pain Relief</option>
+                <option value="Respiratory">Respiratory</option>
+                <option value="Gastrointestinal">Gastrointestinal</option>
+                <option value="Allergy">Allergy</option>
+                <option value="Dermatology">Dermatology</option>
+                <option value="Vitamins">Vitamins</option>
+                <option value="Ophthalmic">Ophthalmic</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-med-dosage" class="form-label">Dosage Form</label>
+              <input type="text" id="edit-med-dosage" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="edit-med-price" class="form-label">Selling Price ($) <span class="required">*</span></label>
+              <input type="number" id="edit-med-price" class="form-control" step="0.01" min="0.10" required>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-med-stock" class="form-label">Stock Quantity <span class="required">*</span></label>
+              <input type="number" id="edit-med-stock" class="form-control" min="0" required>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-med-threshold" class="form-label">Low Stock Reorder Alert Level</label>
+              <input type="number" id="edit-med-threshold" class="form-control" min="1">
+            </div>
+
+            <div class="form-group">
+              <label for="edit-med-expiry" class="form-label">Expiry Date <span class="required">*</span></label>
+              <input type="date" id="edit-med-expiry" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-med-description" class="form-label">Description & Indications</label>
+            <textarea id="edit-med-description" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-check" style="font-weight: 600; color: var(--slate-800);">
+              <input type="checkbox" id="edit-med-rx">
+              <span>Prescription Required (Rx Only)</span>
+            </label>
+          </div>
+
+          <div class="modal-footer-custom" style="padding: 1rem 0 0; background: none; border-top: 1px solid var(--slate-100);">
+            <button type="button" class="btn btn-outline" onclick="closeModal('edit-medicine-modal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i data-lucide="save"></i> Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Quick Stock Adjustment Modal -->
+  <div id="quick-stock-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 480px;">
+      <div class="modal-header-custom">
+        <h3><i data-lucide="boxes" style="color:var(--primary-600); display:inline; vertical-align:middle; width:20px;"></i> Update Stock Quantity</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('quick-stock-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body-custom">
+        <form id="quick-stock-form">
+          <input type="hidden" id="quick-stock-med-id">
+
+          <p style="font-size: 0.9rem; color: var(--slate-700); margin-bottom: 1.25rem;">
+            Adjusting inventory count for: <br>
+            <strong id="quick-stock-med-name" style="font-size: 1.05rem; color: var(--slate-900);">Medicine</strong>
+          </p>
+
+          <div class="form-group">
+            <label for="quick-stock-qty" class="form-label">New Total Stock Quantity <span class="required">*</span></label>
+            <input type="number" id="quick-stock-qty" class="form-control form-control-lg" min="0" required style="font-weight: 800; font-size: 1.25rem;">
+          </div>
+
+          <div class="form-group">
+            <label for="quick-stock-reason" class="form-label">Movement / Adjustment Reason <span class="required">*</span></label>
+            <select id="quick-stock-reason" class="form-control" required>
+              <option value="Warehouse Re-Supply Shipment">Warehouse Re-Supply Shipment</option>
+              <option value="Physical Stock Count Correction">Physical Stock Count Correction</option>
+              <option value="Damaged / Expired Stock Removal">Damaged / Expired Stock Removal</option>
+              <option value="Emergency Internal Clinic Transfer">Emergency Internal Clinic Transfer</option>
+              <option value="Supplier Return">Supplier Return</option>
+            </select>
+          </div>
+
+          <div class="modal-footer-custom" style="padding: 1rem 0 0; background: none; border-top: 1px solid var(--slate-100);">
+            <button type="button" class="btn btn-outline" onclick="closeModal('quick-stock-modal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i data-lucide="check"></i> Confirm Stock Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Prescription Review & Status Modal -->
+  <div id="prescription-review-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 680px;">
+      <div class="modal-header-custom">
+        <h3><i data-lucide="file-check" style="color:var(--primary-600); display:inline; vertical-align:middle; width:20px;"></i> Review Prescription Request</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('prescription-review-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body-custom" id="rx-review-modal-content">
+        <!-- Content injected dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Enquiry Response Modal -->
+  <div id="enquiry-response-modal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 580px;">
+      <div class="modal-header-custom">
+        <h3><i data-lucide="message-square" style="color:var(--primary-600); display:inline; vertical-align:middle; width:20px;"></i> Respond to Medicine Enquiry</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('enquiry-response-modal')"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body-custom" id="enquiry-response-modal-content">
+        <!-- Content injected dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+  <!-- Core Scripts -->
+  <script src="../../assets/js/config/firebase-config.js"></script>
+  <script src="../../assets/js/data/demo-data.js"></script>
+  <script src="../../assets/js/utils/validators.js"></script>
+  <script src="../../assets/js/utils/formatters.js"></script>
+  <script src="../../assets/js/components/toast.js"></script>
+  <script src="../../assets/js/services/auth-service.js"></script>
+  <script src="../../assets/js/services/pharmacy-service.js"></script>
+  <script src="../../assets/js/pages/pharmacy-dashboard.js"></script>
+
+</body>
+</html>

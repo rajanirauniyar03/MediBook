@@ -71,7 +71,7 @@ function initAuthPage() {
   // Check URL query parameters for pre-selected role (e.g. ?role=doctor)
   const urlParams = new URLSearchParams(window.location.search);
   const paramRole = urlParams.get('role');
-  if (paramRole && ['patient', 'doctor', 'admin'].includes(paramRole.toLowerCase())) {
+  if (paramRole && ['patient', 'doctor', 'admin', 'pharmacist', 'pharmacy'].includes(paramRole.toLowerCase())) {
     updateRoleUI(paramRole.toLowerCase());
   }
 

@@ -236,6 +236,11 @@ class AuthService {
   async register(userData) {
     const { email, password, confirmPassword, displayName, phone, role } = userData;
 
+    // Disallow public registration of administrator accounts
+    if (role === 'admin') {
+      return { success: false, error: "Administrator accounts cannot be created via public registration. Contact Hospital IT." };
+    }
+
     // Validate confirmation
     if (confirmPassword && password !== confirmPassword) {
       return { success: false, error: "Passwords do not match. Please re-enter your confirmation password." };
@@ -454,6 +459,9 @@ class AuthService {
         return `${prefix}doctor/dashboard.html`;
       case 'admin':
         return `${prefix}admin/dashboard.html`;
+      case 'pharmacist':
+      case 'pharmacy':
+        return `${prefix}pharmacy/dashboard.html`;
       case 'patient':
       default:
         return `${prefix}patient/dashboard.html`;
