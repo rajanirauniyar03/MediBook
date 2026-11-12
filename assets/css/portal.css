@@ -1,0 +1,639 @@
+/**
+ * MediBook Patient & Provider Portal Layout and Component Styles
+ * Commercial Healthcare SaaS Design
+ */
+
+/* ==========================================================================
+   Portal Layout Structure
+   ========================================================================== */
+.portal-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--slate-50);
+}
+
+/* Sidebar */
+.portal-sidebar {
+  width: var(--sidebar-width);
+  background: #ffffff;
+  border-right: 1px solid var(--slate-200);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  transition: transform var(--transition-normal);
+}
+
+.portal-sidebar-header {
+  height: var(--header-height);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--slate-100);
+}
+
+.portal-sidebar-user {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--slate-100);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.portal-sidebar-user img {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 2px solid var(--primary-100);
+}
+
+.portal-user-meta {
+  flex: 1;
+  overflow: hidden;
+}
+
+.portal-user-name {
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: var(--slate-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.portal-user-role {
+  font-size: 0.75rem;
+  color: var(--slate-500);
+  text-transform: capitalize;
+}
+
+/* Navigation Links */
+.portal-nav-list {
+  list-style: none;
+  padding: 1rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.portal-nav-item a {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.portal-nav-item a i {
+  width: 20px;
+  height: 20px;
+  color: var(--slate-400);
+  transition: color var(--transition-fast);
+}
+
+.portal-nav-item a:hover {
+  background-color: var(--slate-100);
+  color: var(--slate-900);
+}
+
+.portal-nav-item a:hover i {
+  color: var(--primary-600);
+}
+
+.portal-nav-item.active a {
+  background-color: var(--primary-50);
+  color: var(--primary-700);
+  font-weight: 700;
+}
+
+.portal-nav-item.active a i {
+  color: var(--primary-600);
+}
+
+.portal-sidebar-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--slate-100);
+}
+
+/* Portal Main Content Container */
+.portal-main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 0;
+}
+
+/* Portal Top Header */
+.portal-topbar {
+  height: var(--header-height);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--slate-200);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.portal-mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  color: var(--slate-700);
+  cursor: pointer;
+}
+
+.portal-page-content {
+  padding: 2.25rem 2rem 4rem;
+  flex: 1;
+}
+
+/* ==========================================================================
+   Dashboard Metric Widgets
+   ========================================================================== */
+.portal-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.portal-stat-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.portal-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.portal-stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.portal-stat-icon i {
+  width: 26px;
+  height: 26px;
+}
+
+.portal-stat-info {
+  flex: 1;
+}
+
+.portal-stat-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--slate-500);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+}
+
+.portal-stat-number {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--slate-900);
+  line-height: 1.1;
+}
+
+/* ==========================================================================
+   Featured Next Appointment Card
+   ========================================================================== */
+.next-appointment-card {
+  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+  border: 1px solid var(--primary-200);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.next-appointment-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: var(--primary-600);
+}
+
+.next-appointment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.next-appointment-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1.75rem;
+  align-items: center;
+}
+
+.next-doc-avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  border: 2px solid var(--primary-200);
+}
+
+.next-appointment-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.next-doc-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.next-appointment-time-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.next-time-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: #ffffff;
+  border: 1px solid var(--primary-200);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-800);
+}
+
+/* ==========================================================================
+   Multi-Step Booking Wizard
+   ========================================================================== */
+.booking-wizard-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-2xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-sm);
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Step Progress Indicator Bar */
+.wizard-steps-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+}
+
+.wizard-steps-nav::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 2rem;
+  right: 2rem;
+  height: 3px;
+  background: var(--slate-200);
+  z-index: 1;
+}
+
+.wizard-step-item {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  padding: 0 0.5rem;
+}
+
+.step-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  background: var(--slate-100);
+  border: 2px solid var(--slate-300);
+  color: var(--slate-500);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.step-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--slate-500);
+  white-space: nowrap;
+}
+
+.wizard-step-item.active .step-circle {
+  background: var(--primary-600);
+  border-color: var(--primary-600);
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.wizard-step-item.active .step-label {
+  color: var(--primary-700);
+  font-weight: 700;
+}
+
+.wizard-step-item.completed .step-circle {
+  background: var(--success-500);
+  border-color: var(--success-500);
+  color: #ffffff;
+}
+
+.wizard-step-item.completed .step-label {
+  color: var(--slate-700);
+}
+
+/* Wizard Step Containers */
+.wizard-step-pane {
+  display: none;
+}
+
+.wizard-step-pane.active {
+  display: block;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Selectable Cards in Wizard */
+.wizard-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.selectable-card {
+  border: 2px solid var(--slate-200);
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.selectable-card:hover {
+  border-color: var(--primary-300);
+  background: var(--primary-50);
+}
+
+.selectable-card.selected {
+  border-color: var(--primary-600);
+  background: var(--primary-50);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.selectable-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary-600);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Slot button in wizard */
+.wizard-slot-btn {
+  padding: 0.75rem 0.5rem;
+  border: 1px solid var(--slate-200);
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--slate-800);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.wizard-slot-btn:hover:not(:disabled) {
+  border-color: var(--primary-500);
+  background: var(--primary-50);
+  color: var(--primary-700);
+}
+
+.wizard-slot-btn.selected {
+  background: var(--primary-600);
+  border-color: var(--primary-600);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.wizard-slot-btn:disabled, .wizard-slot-btn.booked {
+  background: var(--slate-100);
+  color: var(--slate-400);
+  border-color: var(--slate-200);
+  cursor: not-allowed;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* Confirmation Summary Box (Step 6) */
+.booking-confirmed-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.booking-ref-badge {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  background: var(--primary-50);
+  color: var(--primary-800);
+  border: 1px dashed var(--primary-300);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 1rem 0 1.5rem;
+}
+
+/* ==========================================================================
+   Appointments Management Table & Cards
+   ========================================================================== */
+.appointments-table-card {
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.table-filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--slate-200);
+  background: #ffffff;
+  overflow-x: auto;
+}
+
+.filter-tab-btn {
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  background: var(--slate-100);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.filter-tab-btn:hover {
+  background: var(--slate-200);
+  color: var(--slate-900);
+}
+
+.filter-tab-btn.active {
+  background: var(--primary-600);
+  color: #ffffff;
+}
+
+.medibook-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.medibook-table th {
+  padding: 0.95rem 1.5rem;
+  background: var(--slate-50);
+  font-size: 0.775rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--slate-500);
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--slate-200);
+}
+
+.medibook-table td {
+  padding: 1.15rem 1.5rem;
+  border-bottom: 1px solid var(--slate-100);
+  font-size: 0.9rem;
+  color: var(--slate-700);
+  vertical-align: middle;
+}
+
+.medibook-table tr:hover td {
+  background-color: #fafbfc;
+}
+
+/* Responsive Portal Layout */
+@media (max-width: 1024px) {
+  .portal-sidebar {
+    transform: translateX(-100%);
+  }
+  .portal-sidebar.open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-xl);
+  }
+  .portal-main {
+    margin-left: 0;
+  }
+  .portal-mobile-toggle {
+    display: block;
+  }
+  .portal-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .wizard-selection-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .portal-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .wizard-selection-grid {
+    grid-template-columns: 1fr;
+  }
+  .next-appointment-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .next-doc-avatar {
+    margin: 0 auto;
+  }
+  .next-appointment-time-row {
+    justify-content: center;
+  }
+  .portal-topbar {
+    padding: 0 1rem;
+  }
+  .portal-page-content {
+    padding: 1.5rem 1rem 3rem;
+  }
+}

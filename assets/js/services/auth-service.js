@@ -1,6 +1,6 @@
 /**
  * MediBook Authentication & Role Management Service
- * Provides seamless bridge between Firebase Auth and Demo Simulation
+ * Provides seamless bridge between Firebase Auth, Firestore, and Demo Simulation
  */
 
 class AuthService {
@@ -53,10 +53,12 @@ class AuthService {
             const profile = doc.exists ? doc.data() : {};
             const userObj = {
               uid: firebaseUser.uid,
+              id: firebaseUser.uid,
               email: firebaseUser.email,
               displayName: profile.displayName || firebaseUser.displayName || 'User',
+              phone: profile.phone || '',
               role: profile.role || 'patient',
-              avatar: profile.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+              avatar: profile.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.displayName || 'User')}&background=2563eb&color=fff`,
               ...profile
             };
             this.saveSession(userObj);
@@ -122,8 +124,15 @@ class AuthService {
           throw new Error(`This account is registered as a ${profileData.role.toUpperCase()}, not a ${role.toUpperCase()}.`);
         }
 
+        // Doctor account approval guard
+        if (profileData.role === 'doctor' && profileData.status === 'pending_approval') {
+          await fb.auth.signOut();
+          throw new Error('This doctor account is currently pending Hospital Administrator approval. Please contact hospital administration for credential activation.');
+        }
+
         const user = {
           uid,
+          id: uid,
           email: userCredential.user.email,
           ...profileData
         };
@@ -135,7 +144,7 @@ class AuthService {
     }
 
     // 2. Fallback Demo & Local Simulation Mode
-    await new Promise(r => setTimeout(r, 600)); // Realistic network latency simulation
+    await new Promise(r => setTimeout(r, 450));
 
     // Check predefined demo accounts
     const demoAccounts = window.MEDIBOOK_DATA ? window.MEDIBOOK_DATA.users : {};
@@ -152,6 +161,40 @@ class AuthService {
       }
     }
 
+    // Check all assigned hospital doctors roster
+    if (role === 'doctor' && window.MEDIBOOK_DATA && window.MEDIBOOK_DATA.doctors) {
+      const matchedDoctor = window.MEDIBOOK_DATA.doctors.find(d => {
+        const generatedEmail = d.name.toLowerCase().replace(/[^a-z]/g, '.') + '@medibook.com';
+        return d.id.toLowerCase() === email.toLowerCase() ||
+               (d.email && d.email.toLowerCase() === email.toLowerCase()) ||
+               generatedEmail.includes(email.toLowerCase().replace('@medibook.com', ''));
+      });
+
+      if (matchedDoctor) {
+        if (password !== 'password123') {
+          return { success: false, error: 'Invalid doctor password. (Use assigned hospital password: password123)' };
+        }
+
+        const doctorUser = {
+          id: matchedDoctor.id,
+          uid: matchedDoctor.id,
+          doctorId: matchedDoctor.id,
+          email: matchedDoctor.email || (matchedDoctor.name.toLowerCase().replace(/[^a-z]/g, '.') + '@medibook.com'),
+          displayName: matchedDoctor.name,
+          role: 'doctor',
+          status: 'approved',
+          department: matchedDoctor.department,
+          specialization: matchedDoctor.specialization,
+          hospital: matchedDoctor.hospital,
+          avatar: matchedDoctor.avatar,
+          consultationFee: matchedDoctor.consultationFee || matchedDoctor.fee
+        };
+
+        this.saveSession(doctorUser);
+        return { success: true, user: doctorUser };
+      }
+    }
+
     // Check custom registered users in localStorage
     try {
       const stored = localStorage.getItem(this.CUSTOM_USERS_KEY);
@@ -165,6 +208,15 @@ class AuthService {
         if (role && found.role !== role) {
           return { success: false, error: `Account is registered as ${found.role}.` };
         }
+
+        // Enforce doctor administrator approval check
+        if (found.role === 'doctor' && found.status === 'pending_approval') {
+          return {
+            success: false,
+            error: 'This doctor account is currently pending Hospital Administrator approval. Please contact medical administration at admin@medibook.com for credential verification.'
+          };
+        }
+
         this.saveSession(found);
         return { success: true, user: found };
       }
@@ -179,31 +231,53 @@ class AuthService {
   }
 
   /**
-   * Register a new user
+   * Register a new user with validation
    */
   async register(userData) {
+    const { email, password, confirmPassword, displayName, phone, role } = userData;
+
+    // Validate confirmation
+    if (confirmPassword && password !== confirmPassword) {
+      return { success: false, error: "Passwords do not match. Please re-enter your confirmation password." };
+    }
+
     const fb = window.MediBookFirebase;
 
     // 1. Live Firebase Registration
     if (fb && fb.isConfigured && fb.auth) {
       try {
-        const cred = await fb.auth.createUserWithEmailAndPassword(userData.email, userData.password);
+        const cred = await fb.auth.createUserWithEmailAndPassword(email, password);
         const uid = cred.user.uid;
         
+        const isDoctor = (role === 'doctor');
+        const initialStatus = isDoctor ? 'pending_approval' : 'active';
+
         const profile = {
           uid,
-          email: userData.email,
-          displayName: userData.displayName,
-          phone: userData.phone || '',
-          role: userData.role || 'patient',
+          id: uid,
+          email,
+          displayName,
+          phone: phone || '',
+          role: role || 'patient',
+          status: initialStatus,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           department: userData.department || null,
           licenseNumber: userData.licenseNumber || null,
           hospital: userData.hospital || 'MediBook Central Hospital',
-          avatar: userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.displayName)}&background=2563eb&color=fff`
+          avatar: userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=2563eb&color=fff`
         };
 
         await fb.db.collection('users').doc(uid).set(profile);
+
+        if (isDoctor) {
+          // Do NOT save session for unapproved doctor account
+          return {
+            success: true,
+            pendingApproval: true,
+            message: "Doctor registration request submitted to Hospital Administration! Your account will be activated once credentials are verified and approved by an administrator."
+          };
+        }
+
         this.saveSession(profile);
         return { success: true, user: profile };
       } catch (err) {
@@ -212,37 +286,125 @@ class AuthService {
     }
 
     // 2. Demo Simulation Registration
-    await new Promise(r => setTimeout(r, 600));
+    await new Promise(r => setTimeout(r, 450));
 
     try {
       const stored = localStorage.getItem(this.CUSTOM_USERS_KEY);
       const customUsers = stored ? JSON.parse(stored) : [];
 
-      if (customUsers.some(u => u.email.toLowerCase() === userData.email.toLowerCase())) {
+      if (customUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
         return { success: false, error: 'An account with this email address already exists.' };
       }
 
+      const isDoctor = (role === 'doctor');
+      const initialStatus = isDoctor ? 'pending_approval' : 'active';
+
       const newUser = {
         id: 'usr_' + Date.now(),
-        email: userData.email,
-        password: userData.password,
-        displayName: userData.displayName,
-        phone: userData.phone || '',
-        role: userData.role || 'patient',
+        email,
+        password,
+        displayName,
+        phone: phone || '',
+        role: role || 'patient',
+        status: initialStatus,
         department: userData.department || null,
         licenseNumber: userData.licenseNumber || null,
         hospital: userData.hospital || 'Metropolitan Health Network',
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.displayName)}&background=2563eb&color=fff`,
+        avatar: userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=2563eb&color=fff`,
         createdAt: new Date().toISOString()
       };
 
       customUsers.push(newUser);
       localStorage.setItem(this.CUSTOM_USERS_KEY, JSON.stringify(customUsers));
+
+      if (isDoctor) {
+        // Do NOT log in immediately; requires administrator approval
+        return {
+          success: true,
+          pendingApproval: true,
+          message: "Doctor registration request submitted to Hospital Administration! In accordance with hospital policy, physician accounts require Administrator Verification before login access is granted."
+        };
+      }
+
       this.saveSession(newUser);
       return { success: true, user: newUser };
     } catch (e) {
       return { success: false, error: 'Failed to save local registration.' };
     }
+  }
+
+  /**
+   * Password Reset Flow
+   */
+  async forgotPassword(email) {
+    if (!email || !window.FormValidator.validateEmail(email)) {
+      return { success: false, error: "Please enter a valid registered email address." };
+    }
+
+    const fb = window.MediBookFirebase;
+    if (fb && fb.isConfigured && fb.auth) {
+      try {
+        await fb.auth.sendPasswordResetEmail(email);
+        return { 
+          success: true, 
+          message: `A password reset link has been dispatched to ${email}. Check your inbox.` 
+        };
+      } catch (err) {
+        return { success: false, error: err.message };
+      }
+    }
+
+    // Demo Simulation
+    await new Promise(r => setTimeout(r, 500));
+    return { 
+      success: true, 
+      message: `[Demo Mode] A password reset link has been simulated for ${email}.` 
+    };
+  }
+
+  /**
+   * Update Profile Details
+   */
+  async updateProfile(updates) {
+    if (!this.currentUser) {
+      return { success: false, error: "No active session." };
+    }
+
+    const fb = window.MediBookFirebase;
+    const uid = this.currentUser.uid || this.currentUser.id;
+
+    if (fb && fb.isConfigured && fb.db && uid) {
+      try {
+        await fb.db.collection('users').doc(uid).update({
+          ...updates,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (e) {
+        console.warn('Firestore profile update error:', e);
+      }
+    }
+
+    // Update active session
+    const updatedUser = {
+      ...this.currentUser,
+      ...updates
+    };
+    this.saveSession(updatedUser);
+
+    // Also update custom users list in localStorage if present
+    try {
+      const stored = localStorage.getItem(this.CUSTOM_USERS_KEY);
+      if (stored) {
+        const users = JSON.parse(stored);
+        const idx = users.findIndex(u => u.id === uid || u.email === updatedUser.email);
+        if (idx !== -1) {
+          users[idx] = { ...users[idx], ...updates };
+          localStorage.setItem(this.CUSTOM_USERS_KEY, JSON.stringify(users));
+        }
+      }
+    } catch (e) {}
+
+    return { success: true, user: updatedUser };
   }
 
   /**
@@ -275,7 +437,6 @@ class AuthService {
    * Route helper according to user's assigned role
    */
   getPortalUrl(role) {
-    // Calculate path relative to current URL
     const isInsideAuth = window.location.pathname.includes('/auth/');
     const isInsidePortal = window.location.pathname.includes('/portal/');
     

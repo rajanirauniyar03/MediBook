@@ -1,6 +1,6 @@
 /**
  * MediBook Authentication Controller
- * Drives Login and Register Workflows
+ * Drives Login, Register, Role Switching, and Password Reset Workflows
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -39,6 +39,24 @@ function initAuthPage() {
     }
     if (adminFields) {
       adminFields.style.display = (role === 'admin') ? 'block' : 'none';
+    }
+
+    // Role specific notice on Login page
+    const doctorLoginNotice = document.getElementById('doctor-login-notice');
+    if (doctorLoginNotice) {
+      doctorLoginNotice.style.display = (role === 'doctor') ? 'block' : 'none';
+    }
+
+    const regSubmitBtn = document.getElementById('register-submit-btn');
+    if (regSubmitBtn) {
+      if (role === 'doctor') {
+        regSubmitBtn.innerHTML = '<span>Submit for Administrator Approval</span> <i data-lucide="shield-check"></i>';
+      } else if (role === 'admin') {
+        regSubmitBtn.innerHTML = '<span>Register Admin Account</span> <i data-lucide="arrow-right"></i>';
+      } else {
+        regSubmitBtn.innerHTML = '<span>Create Patient Account</span> <i data-lucide="arrow-right"></i>';
+      }
+      if (window.lucide) window.lucide.createIcons();
     }
   };
 
@@ -108,7 +126,56 @@ function initAuthPage() {
     });
   }
 
-  // 5. Login Form Submission
+  // 5. Forgot Password Modal Logic
+  const forgotTrigger = document.getElementById('trigger-forgot-password-btn');
+  const forgotModal = document.getElementById('forgot-password-modal');
+  const closeForgotModal = document.getElementById('close-forgot-modal');
+  const forgotForm = document.getElementById('forgot-password-form');
+
+  if (forgotTrigger && forgotModal) {
+    forgotTrigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      forgotModal.classList.add('show');
+    });
+
+    const hideForgot = () => forgotModal.classList.remove('show');
+    if (closeForgotModal) closeForgotModal.addEventListener('click', hideForgot);
+
+    forgotModal.addEventListener('click', (e) => {
+      if (e.target === forgotModal) hideForgot();
+    });
+
+    if (forgotForm) {
+      forgotForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById('forgot-email');
+        const submitBtn = document.getElementById('forgot-submit-btn');
+
+        if (!emailInput || !window.FormValidator.validateEmail(emailInput.value)) {
+          if (window.Toast) window.Toast.error('Please enter a valid email address.', 'Email Required');
+          return;
+        }
+
+        const origText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending reset instructions...';
+
+        const result = await window.AuthService.forgotPassword(emailInput.value.trim());
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origText;
+
+        if (result.success) {
+          if (window.Toast) window.Toast.success(result.message, 'Instructions Dispatched');
+          hideForgot();
+          forgotForm.reset();
+        } else {
+          if (window.Toast) window.Toast.error(result.error, 'Reset Failed');
+        }
+      });
+    }
+  }
+
+  // 6. Login Form Submission
   const loginForm = document.getElementById('medibook-login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
@@ -135,7 +202,6 @@ function initAuthPage() {
 
       if (!isValid) return;
 
-      // Loading state
       const originalText = submitBtn.innerHTML;
       submitBtn.disabled = true;
       submitBtn.innerHTML = `<span class="spinner" style="display:inline-block; width:16px; height:16px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:spin 0.6s linear infinite; margin-right:8px;"></span> Authenticating...`;
@@ -155,7 +221,7 @@ function initAuthPage() {
             } else {
               window.location.href = window.AuthService.getPortalUrl(result.user.role);
             }
-          }, 800);
+          }, 700);
         } else {
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalText;
@@ -174,7 +240,7 @@ function initAuthPage() {
     });
   }
 
-  // 6. Registration Form Submission
+  // 7. Registration Form Submission (With confirm password validation)
   const registerForm = document.getElementById('medibook-register-form');
   if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
@@ -185,24 +251,45 @@ function initAuthPage() {
       const emailInput = document.getElementById('reg-email');
       const phoneInput = document.getElementById('reg-phone');
       const passInput = document.getElementById('reg-password');
+      const confirmPassInput = document.getElementById('reg-confirm-password');
       const termsCheck = document.getElementById('reg-terms');
       const submitBtn = document.getElementById('register-submit-btn');
 
       let isValid = true;
 
+      // Validate Name
       if (!window.FormValidator.validateRequired(nameInput.value)) {
         window.FormValidator.showError(nameInput, 'Full legal name is required.');
         isValid = false;
       }
 
+      // Validate Email
       if (!window.FormValidator.validateEmail(emailInput.value)) {
         window.FormValidator.showError(emailInput, 'A valid email address is required.');
         isValid = false;
       }
 
+      // Validate Phone
+      if (phoneInput && !window.FormValidator.validateRequired(phoneInput.value)) {
+        window.FormValidator.showError(phoneInput, 'Phone number is required for SMS visit alerts.');
+        isValid = false;
+      }
+
+      // Validate Password
       if (!window.FormValidator.validatePassword(passInput.value, 6)) {
         window.FormValidator.showError(passInput, 'Password must be at least 6 characters.');
         isValid = false;
+      }
+
+      // Validate Confirm Password
+      if (confirmPassInput) {
+        if (!window.FormValidator.validateRequired(confirmPassInput.value)) {
+          window.FormValidator.showError(confirmPassInput, 'Please confirm your password.');
+          isValid = false;
+        } else if (confirmPassInput.value !== passInput.value) {
+          window.FormValidator.showError(confirmPassInput, 'Passwords do not match. Please verify.');
+          isValid = false;
+        }
       }
 
       if (termsCheck && !termsCheck.checked) {
@@ -236,6 +323,7 @@ function initAuthPage() {
           displayName: nameInput.value.trim(),
           email: emailInput.value.trim(),
           password: passInput.value,
+          confirmPassword: confirmPassInput ? confirmPassInput.value : passInput.value,
           phone: phoneInput ? phoneInput.value.trim() : '',
           role: selectedRole,
           licenseNumber: licenseNum,
@@ -245,12 +333,23 @@ function initAuthPage() {
         const result = await window.AuthService.register(userData);
 
         if (result.success) {
+          if (result.pendingApproval) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+            if (window.Toast) {
+              window.Toast.info(result.message, 'Submitted for Admin Approval');
+            }
+            alert("STAFF CREDENTIALING SUBMITTED:\n\nDoctor accounts cannot be activated automatically via public registration.\nYour credentials have been submitted for Hospital Administrator Review.\n\nOnce approved by the hospital administrator, you can log in with your assigned credentials.");
+            window.location.href = "login.html?role=doctor";
+            return;
+          }
+
           if (window.Toast) {
             window.Toast.success(`Welcome to MediBook, ${result.user.displayName}!`, 'Account Created');
           }
           setTimeout(() => {
             window.location.href = window.AuthService.getPortalUrl(result.user.role);
-          }, 900);
+          }, 800);
         } else {
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalText;

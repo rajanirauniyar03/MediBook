@@ -127,15 +127,25 @@
 
           <!-- Phone Number -->
           <div class="form-group">
-            <label for="reg-phone" class="form-label">Phone Number (for SMS appointment alerts)</label>
+            <label for="reg-phone" class="form-label">Phone Number <span class="required">*</span></label>
             <div class="input-icon-wrapper">
               <span class="input-icon-left"><i data-lucide="phone"></i></span>
-              <input type="tel" id="reg-phone" class="form-control" placeholder="+1 (555) 000-0000" autocomplete="tel">
+              <input type="tel" id="reg-phone" class="form-control" placeholder="+1 (555) 000-0000" required autocomplete="tel">
             </div>
           </div>
 
           <!-- Doctor Specific Fields -->
-          <div id="doctor-specific-fields" style="display: none; background: var(--slate-50); padding: 1.15rem; border-radius: var(--radius-md); border: 1px solid var(--slate-200); margin-bottom: 1.25rem;">
+          <div id="doctor-specific-fields" style="display: none; background: #f0fdfa; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--accent-200); margin-bottom: 1.25rem;">
+            <div style="display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 1rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--accent-200);">
+              <i data-lucide="shield-alert" style="color: var(--accent-700); width: 22px; height: 22px; flex-shrink: 0; margin-top: 2px;"></i>
+              <div>
+                <strong style="color: var(--accent-800); font-size: 0.9rem; display: block; margin-bottom: 0.25rem;">Physician Credential Verification Notice</strong>
+                <p style="font-size: 0.825rem; color: var(--slate-600); margin: 0; line-height: 1.45;">
+                  Doctor accounts cannot be publicly registered. All physician accounts must be created or approved by the <strong>Hospital Administrator</strong>. Submitting this form sends your credentialing application for review.
+                </p>
+              </div>
+            </div>
+
             <div class="form-group">
               <label for="doc-license" class="form-label">Medical License Number <span class="required">*</span></label>
               <div class="input-icon-wrapper">
@@ -147,13 +157,14 @@
             <div class="form-group" style="margin-bottom: 0;">
               <label for="doc-department" class="form-label">Primary Medical Department <span class="required">*</span></label>
               <select id="doc-department" class="form-control">
-                <option value="Cardiology">Cardiology & Vascular</option>
-                <option value="Neurology">Neurology & Brain Care</option>
-                <option value="Pediatrics">Pediatrics & Child Care</option>
-                <option value="Orthopedics">Orthopedics & Joint Care</option>
-                <option value="Dermatology">Dermatology & Skin</option>
-                <option value="Gynecology">Obstetrics & Gynecology</option>
-                <option value="General">Internal & General Medicine</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Dermatology">Dermatology</option>
+                <option value="Neurology">Neurology</option>
+                <option value="Orthopedics">Orthopedics</option>
+                <option value="Pediatrics">Pediatrics</option>
+                <option value="Dentistry">Dentistry</option>
+                <option value="General Medicine">General Medicine</option>
+                <option value="Gynecology">Gynecology</option>
               </select>
             </div>
           </div>
@@ -181,6 +192,18 @@
             </div>
             <div class="password-strength-bar" id="password-strength-bar">
               <div class="password-strength-fill" id="password-strength-fill"></div>
+            </div>
+          </div>
+
+          <!-- Confirm Password (Mandatory requirement) -->
+          <div class="form-group">
+            <label for="reg-confirm-password" class="form-label">Confirm Password <span class="required">*</span></label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="lock-check"></i></span>
+              <input type="password" id="reg-confirm-password" class="form-control" placeholder="Re-enter your password" required autocomplete="new-password">
+              <button type="button" class="input-icon-right toggle-password-btn" aria-label="Toggle password visibility">
+                <i data-lucide="eye"></i>
+              </button>
             </div>
           </div>
 

@@ -114,12 +114,25 @@
             <button type="button" class="demo-account-chip" data-demo-role="patient" title="Load Patient: Sarah Jenkins">
               👤 Demo Patient
             </button>
-            <button type="button" class="demo-account-chip" data-demo-role="doctor" title="Load Doctor: Dr. Wright">
-              🩺 Demo Doctor
+            <button type="button" class="demo-account-chip" data-demo-role="doctor" title="Load Doctor: Dr. Alexander Wright">
+              🩺 Demo Doctor (Dr. Wright)
             </button>
             <button type="button" class="demo-account-chip" data-demo-role="admin" title="Load Admin: Central Hospital">
               🛡️ Demo Admin
             </button>
+          </div>
+        </div>
+
+        <!-- Assigned Doctor Login Notice -->
+        <div id="doctor-login-notice" style="display: none; background: #f0fdfa; border: 1px solid var(--accent-200); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; color: var(--accent-800);">
+          <div style="display: flex; gap: 0.6rem; align-items: flex-start;">
+            <i data-lucide="shield-check" style="color: var(--accent-600); width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px;"></i>
+            <div>
+              <strong>Assigned Physician Accounts Only:</strong>
+              <div style="font-size: 0.8rem; color: var(--slate-600); margin-top: 0.2rem;">
+                Physicians must sign in with credentials assigned or approved by Hospital Administration. Public self-created doctor accounts without admin approval are not granted access.
+              </div>
+            </div>
           </div>
         </div>
 
@@ -140,7 +153,7 @@
           <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
               <label for="password" class="form-label" style="margin-bottom: 0;">Password <span class="required">*</span></label>
-              <a href="#" class="forgot-password-link" onclick="alert('Password reset link will be dispatched to your registered email.'); return false;">Forgot password?</a>
+              <a href="#" class="forgot-password-link" id="trigger-forgot-password-btn">Forgot password?</a>
             </div>
             <div class="input-icon-wrapper">
               <span class="input-icon-left"><i data-lucide="lock"></i></span>
@@ -170,6 +183,36 @@
           Don't have an account yet? 
           <a href="register.html">Create a free account</a>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal-backdrop" id="forgot-password-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--slate-900); margin: 0;">Reset Your Password</h3>
+          <button type="button" class="btn btn-ghost btn-icon-only" id="close-forgot-modal" aria-label="Close dialog">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <p class="text-muted" style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.25rem;">
+          Enter your registered email address below. We'll send you secure instructions to reset your account password.
+        </p>
+
+        <form id="forgot-password-form" novalidate>
+          <div class="form-group">
+            <label for="forgot-email" class="form-label">Account Email <span class="required">*</span></label>
+            <div class="input-icon-wrapper">
+              <span class="input-icon-left"><i data-lucide="mail"></i></span>
+              <input type="email" id="forgot-email" class="form-control" placeholder="name@example.com" required>
+            </div>
+          </div>
+          <button type="submit" id="forgot-submit-btn" class="btn btn-primary btn-block">
+            <span>Send Password Reset Email</span>
+          </button>
+        </form>
       </div>
     </div>
   </div>
