@@ -1,0 +1,52 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.role == 'admin' ||
+        request.auth.token.admin == true
+      );
+    }
+
+    function isPharmacist() {
+      return isAuthenticated() && (
+        request.auth.token.role == 'pharmacist' ||
+        request.auth.token.role == 'pharmacy' ||
+        isAdmin()
+      );
+    }
+
+    // Prescription Uploads
+    match /prescriptions/{fileName} {
+      // Allow upload if size is under 10MB and file is image/PDF
+      allow create: if request.resource.size < 10 * 1024 * 1024 &&
+        (request.resource.contentType.matches('image/.*') || request.resource.contentType == 'application/pdf');
+      
+      // Only authorized pharmacy staff or administrators can inspect prescription uploads
+      allow read: if isPharmacist() || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // User Profile Avatars
+    match /avatars/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin()) &&
+        request.resource.size < 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/.*');
+    }
+
+    // Department & Hospital Assets
+    match /facility/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin() &&
+        request.resource.size < 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/.*');
+    }
+  }
+}
