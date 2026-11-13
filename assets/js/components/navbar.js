@@ -1,5 +1,5 @@
 /**
- * MediBook Header & Navigation Controller
+ * Veyora Header & Navigation Controller
  */
 
 document.addEventListener('DOMContentLoaded', () => {

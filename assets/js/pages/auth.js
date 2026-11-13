@@ -1,5 +1,5 @@
 /**
- * MediBook Authentication Controller
+ * Veyora Authentication Controller
  * Drives Login, Register, Role Switching, and Password Reset Workflows
  */
 
@@ -176,7 +176,7 @@ function initAuthPage() {
   }
 
   // 6. Login Form Submission
-  const loginForm = document.getElementById('medibook-login-form');
+  const loginForm = document.getElementById('veyora-login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -241,7 +241,7 @@ function initAuthPage() {
   }
 
   // 7. Registration Form Submission (With confirm password validation)
-  const registerForm = document.getElementById('medibook-register-form');
+  const registerForm = document.getElementById('veyora-register-form');
   if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -345,7 +345,7 @@ function initAuthPage() {
           }
 
           if (window.Toast) {
-            window.Toast.success(`Welcome to MediBook, ${result.user.displayName}!`, 'Account Created');
+            window.Toast.success(`Welcome to Veyora, ${result.user.displayName}!`, 'Account Created');
           }
           setTimeout(() => {
             window.location.href = window.AuthService.getPortalUrl(result.user.role);

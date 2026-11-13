@@ -1,5 +1,5 @@
 /**
- * MediBook Toast Notification System
+ * Veyora Toast Notification System
  */
 
 class ToastService {

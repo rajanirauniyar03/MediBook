@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doctor Profile – MediBook</title>
+  <title>Doctor Profile – Veyora</title>
   <meta name="description" content="View verified doctor qualifications, clinical experience, available appointment days and time slots.">
 
   <!-- Google Fonts: Plus Jakarta Sans & Inter -->
@@ -216,7 +216,7 @@
     <div class="container header-container">
       <a href="index.html" class="brand-logo">
         <span class="brand-icon-wrap"><i data-lucide="cross"></i></span>
-        <span>Medi<span class="brand-highlight">Book</span></span>
+        <span>Vey<span class="brand-highlight">ora</span></span>
       </a>
 
       <nav aria-label="Primary Navigation">
@@ -250,7 +250,7 @@
       <div class="mobile-drawer-header">
         <a href="index.html" class="brand-logo">
           <span class="brand-icon-wrap"><i data-lucide="cross"></i></span>
-          <span>Medi<span class="brand-highlight">Book</span></span>
+          <span>Vey<span class="brand-highlight">ora</span></span>
         </a>
         <button class="btn btn-ghost btn-icon-only" id="close-mobile-drawer"><i data-lucide="x"></i></button>
       </div>
@@ -538,7 +538,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom">
-        <div>&copy; 2026 MediBook Healthcare Systems Inc.</div>
+        <div>&copy; 2026 Veyora Healthcare Systems Inc.</div>
         <div class="footer-legal-links">
           <a href="#">Privacy Policy</a>
           <a href="#">Terms and Conditions</a>
@@ -592,7 +592,7 @@
       }
 
       // 2. Populate Doctor Metadata
-      document.title = `${doctor.name} – ${doctor.specialization} | MediBook`;
+      document.title = `${doctor.name} – ${doctor.specialization} | Veyora`;
       document.getElementById('breadcrumb-doctor-name').textContent = doctor.name;
       document.getElementById('doc-name').textContent = doctor.name;
       document.getElementById('doc-avatar').src = doctor.avatar;
@@ -691,7 +691,7 @@
           mode: consultMode,
           patientId: currentUser ? currentUser.id || currentUser.uid : "patient_001",
           patientName: currentUser ? currentUser.displayName : "Sarah Jenkins",
-          patientEmail: currentUser ? currentUser.email : "patient@medibook.com",
+          patientEmail: currentUser ? currentUser.email : "patient@veyora.com",
           patientPhone: currentUser ? currentUser.phone || "+1 (555) 234-5678" : "+1 (555) 234-5678",
           reason: reason || "General Medical Consultation",
           notes: "Scheduled via Doctor Profile booking widget."

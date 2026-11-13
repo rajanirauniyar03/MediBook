@@ -1,5 +1,5 @@
 /**
- * MediBook Part 9 AI Healthcare Assistant Chatbot Comprehensive Test Suite
+ * Veyora Part 9 AI Healthcare Assistant Chatbot Comprehensive Test Suite
  * Tests all requirements:
  * 1. UI initialization & welcome message with suggested prompts
  * 2. Emergency triage detection & high-priority warning banner
@@ -120,7 +120,7 @@ mockWindow.window = mockWindow;
 const context = vm.createContext(mockWindow);
 
 function loadScript(relPath) {
-  const fullPath = path.join('d:/Rajani/MediBook', relPath);
+  const fullPath = path.join(__dirname, '..', relPath);
   const code = fs.readFileSync(fullPath, 'utf8');
   vm.runInContext(code, context, { filename: relPath });
 }
@@ -158,8 +158,8 @@ async function runTests() {
   }
 
   // Instantiate Chatbot
-  const bot = new context.MediBookChatbot();
-  context.MediBookChat = bot;
+  const bot = new context.VeyoraChatbot();
+  context.VeyoraChat = bot;
 
   // =========================================================================
   // 1. CHATBOT UI & INITIALIZATION TESTS
@@ -169,7 +169,7 @@ async function runTests() {
   assert(bot.messages.length >= 1, "Initial welcome message is generated on startup");
   
   const initialMsg = bot.messages[0];
-  assert(initialMsg.text.includes("Hello! I'm **MediBook Assistant**"), "Welcome message matches specification");
+  assert(initialMsg.text.includes("Hello! I'm **Veyora Assistant**"), "Welcome message matches specification");
   assert(Array.isArray(initialMsg.suggestions) && initialMsg.suggestions.length >= 5, "Suggested prompt buttons are provided");
   assert(initialMsg.suggestions.includes("Find a doctor"), "Includes 'Find a doctor' suggested prompt");
   assert(initialMsg.suggestions.includes("Book an appointment"), "Includes 'Book an appointment' suggested prompt");
@@ -348,7 +348,7 @@ async function runTests() {
   assert(confMsg.bookingConfirmation.timeSlot === chosenSlot, "Confirmation reflects chosen slot");
 
   // Step 6: Confirmation Execution (Authenticate Demo Patient)
-  await context.AuthService.login("patient@medibook.com", "password123", "patient");
+  await context.AuthService.login("patient@veyora.com", "password123", "patient");
   const currentUser = context.AuthService.getCurrentUser();
   assert(currentUser && currentUser.role === 'patient', "Authenticated as patient for booking confirmation");
 
@@ -412,7 +412,7 @@ async function runTests() {
   console.log("\n[7. BACKEND SERVER /api/chat ENDPOINT TESTS]");
 
   const EventEmitter = require('events');
-  const serverModule = require('d:/Rajani/MediBook/server.js');
+  const serverModule = require('../server.js');
 
   function invokeChatAPI(payload) {
     return new Promise((resolve) => {

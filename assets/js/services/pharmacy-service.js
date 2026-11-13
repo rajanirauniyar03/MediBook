@@ -1,17 +1,17 @@
 /**
- * MediBook Pharmacy & Dispensary Management Service
+ * Veyora Pharmacy & Dispensary Management Service
  * Provides comprehensive medicine inventory management, patient availability enquiries,
  * prescription request verification workflows, stock audit ledger, and pharmacy settings.
  */
 
 class PharmacyService {
   constructor() {
-    this.MEDICINES_KEY = 'medibook_pharmacy_medicines';
-    this.ENQUIRIES_KEY = 'medibook_pharmacy_enquiries';
-    this.PRESCRIPTIONS_KEY = 'medibook_pharmacy_prescriptions';
-    this.SETTINGS_KEY = 'medibook_pharmacy_settings';
-    this.STOCK_HISTORY_KEY = 'medibook_pharmacy_stock_history';
-    this.VERSION_KEY = 'medibook_pharmacy_v1_initialized';
+    this.MEDICINES_KEY = 'veyora_pharmacy_medicines';
+    this.ENQUIRIES_KEY = 'veyora_pharmacy_enquiries';
+    this.PRESCRIPTIONS_KEY = 'veyora_pharmacy_prescriptions';
+    this.SETTINGS_KEY = 'veyora_pharmacy_settings';
+    this.STOCK_HISTORY_KEY = 'veyora_pharmacy_stock_history';
+    this.VERSION_KEY = 'veyora_pharmacy_v1_initialized';
 
     this.initStorage();
   }
@@ -306,7 +306,7 @@ class PharmacyService {
           id: "rx_1001",
           reference: "RX-2026-8842",
           patientName: "Sarah Jenkins",
-          patientEmail: "patient@medibook.com",
+          patientEmail: "patient@veyora.com",
           patientPhone: "+1 (555) 234-5678",
           doctorName: "Dr. Alexander Wright",
           doctorDepartment: "Cardiology",
@@ -431,7 +431,7 @@ class PharmacyService {
         {
           id: "enq_201",
           patientName: "Sarah Jenkins",
-          patientEmail: "patient@medibook.com",
+          patientEmail: "patient@veyora.com",
           patientPhone: "+1 (555) 234-5678",
           medicineName: "Azithromycin 250mg Z-Pak",
           quantityRequested: "1 pack (6 tablets)",
@@ -525,16 +525,16 @@ class PharmacyService {
 
       // 5. Initial Pharmacy Settings
       const initialSettings = {
-        name: "MediBook Central Outpatient Pharmacy",
+        name: "Veyora Central Outpatient Pharmacy",
         brandTagline: "Licensed Clinical Pharmacy & Dispensary Services",
         logoIcon: "pill",
         address: "Building C, Ground Floor Outpatient Pavilion, 500 Healthcare Blvd, San Francisco, CA",
         contactNumber: "+1 (555) 345-6789",
-        email: "pharmacy@medibook.com",
+        email: "pharmacy@veyora.com",
         operatingHours: "Monday – Saturday: 08:00 AM – 09:00 PM | Sunday: 09:00 AM – 05:00 PM",
         collectionAvailability: "Counter Pickup Window • Drive-Thru Collection • 30-Minute Priority Prescription Dispense",
         pharmacistInCharge: "James Carter, RPh (License #RPH-CA-409182)",
-        disclaimerNotice: "Stock availability listed online is updated periodically by dispensary staff and must be confirmed upon physical presentation. Prescription-required medications mandate a verified, authentic medical prescription prior to dispensing. MediBook does not provide automated drug substitution or patient self-prescription.",
+        disclaimerNotice: "Stock availability listed online is updated periodically by dispensary staff and must be confirmed upon physical presentation. Prescription-required medications mandate a verified, authentic medical prescription prior to dispensing. Veyora does not provide automated drug substitution or patient self-prescription.",
         updatedAt: new Date().toISOString()
       };
 
@@ -565,7 +565,7 @@ class PharmacyService {
    * Retrieve medicine products with optional filtering
    */
   async getMedicines(filter = {}) {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     let medicines = [];
 
     if (fb && fb.isConfigured && fb.db) {
@@ -672,7 +672,7 @@ class PharmacyService {
     };
 
     // Live Firestore save
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('pharmacy_medicines').doc(medId).set(newMed);
@@ -731,7 +731,7 @@ class PharmacyService {
     this.saveMedicinesToStorage(list);
 
     // Firestore update
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('pharmacy_medicines').doc(medicineId).set(updatedMed, { merge: true });
@@ -793,7 +793,7 @@ class PharmacyService {
 
     this.saveMedicinesToStorage(filtered);
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('pharmacy_medicines').doc(medicineId).delete();
@@ -856,7 +856,7 @@ class PharmacyService {
       respondedAt: null
     };
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('pharmacy_enquiries').doc(enqId).set(newEnquiry);
@@ -878,7 +878,7 @@ class PharmacyService {
    * Pharmacy staff fetches patient enquiries
    */
   async getEnquiries(statusFilter = null) {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     let enquiries = [];
 
     if (fb && fb.isConfigured && fb.db) {
@@ -926,7 +926,7 @@ class PharmacyService {
     list[index] = item;
     this.saveEnquiriesToStorage(list);
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('pharmacy_enquiries').doc(enquiryId).set(item, { merge: true });
@@ -1005,7 +1005,7 @@ class PharmacyService {
       updatedAt: new Date().toISOString()
     };
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('pharmacy_prescriptions').doc(reqId).set(newRequest);
@@ -1028,7 +1028,7 @@ class PharmacyService {
    * Retrieve prescription requests (restricted to authorized pharmacy staff or patient by email)
    */
   async getPrescriptionRequests(statusFilter = null, patientEmail = null) {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     let prescriptions = [];
 
     if (fb && fb.isConfigured && fb.db) {
@@ -1107,7 +1107,7 @@ class PharmacyService {
     list[index] = item;
     this.savePrescriptionsToStorage(list);
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('pharmacy_prescriptions').doc(requestId).set(item, { merge: true });
@@ -1155,7 +1155,7 @@ class PharmacyService {
     if (history.length > 200) history.length = 200; // retain 200 logs
     this.saveStockHistoryToStorage(history);
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         fb.db.collection('pharmacy_stock_history').doc(logItem.id).set(logItem);
@@ -1267,7 +1267,7 @@ class PharmacyService {
   }
 
   async getPharmacySettings() {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         const doc = await fb.db.collection('pharmacy_settings').doc('general').get();
@@ -1283,16 +1283,16 @@ class PharmacyService {
     }
 
     return {
-      name: "MediBook Central Outpatient Pharmacy",
+      name: "Veyora Central Outpatient Pharmacy",
       brandTagline: "Licensed Clinical Pharmacy & Dispensary Services",
       logoIcon: "pill",
       address: "Building C, Ground Floor Outpatient Pavilion, 500 Healthcare Blvd, San Francisco, CA",
       contactNumber: "+1 (555) 345-6789",
-      email: "pharmacy@medibook.com",
+      email: "pharmacy@veyora.com",
       operatingHours: "Monday – Saturday: 08:00 AM – 09:00 PM | Sunday: 09:00 AM – 05:00 PM",
       collectionAvailability: "Counter Pickup Window • Drive-Thru Collection • 30-Minute Priority Prescription Dispense",
       pharmacistInCharge: "James Carter, RPh (License #RPH-CA-409182)",
-      disclaimerNotice: "Stock availability listed online is updated periodically by dispensary staff and must be confirmed upon physical presentation. Prescription-required medications mandate a verified, authentic medical prescription prior to dispensing. MediBook does not provide automated drug substitution or patient self-prescription.",
+      disclaimerNotice: "Stock availability listed online is updated periodically by dispensary staff and must be confirmed upon physical presentation. Prescription-required medications mandate a verified, authentic medical prescription prior to dispensing. Veyora does not provide automated drug substitution or patient self-prescription.",
       updatedAt: new Date().toISOString()
     };
   }
@@ -1307,7 +1307,7 @@ class PharmacyService {
 
     localStorage.setItem(this.SETTINGS_KEY, JSON.stringify(updated));
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('pharmacy_settings').doc('general').set(updated, { merge: true });

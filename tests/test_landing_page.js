@@ -1,5 +1,5 @@
 /**
- * MediBook+ Homepage Test Suite
+ * Veyora+ Homepage Test Suite
  * Validates DOM elements, branding, symptom matcher, specialty links,
  * featured doctor loading, value pillars, 3-step workflow, and chatbot bridge.
  */
@@ -29,15 +29,15 @@ function test(description, assertion) {
 }
 
 console.log('\n[1. BRANDING & METADATA TESTS]');
-test('Page title contains MediBook+', () => {
-  assert(html.includes('<title>MediBook+ – Online Doctor Appointment & Healthcare Management Platform</title>'));
+test('Page title contains Veyora+', () => {
+  assert(html.includes('<title>Veyora+ – Online Doctor Appointment & Healthcare Management Platform</title>'));
 });
 
-test('Header logo displays MediBook+ with brand-plus badge', () => {
-  assert(html.includes('<span>Medi<span class="brand-highlight">Book</span><span class="brand-plus">+</span></span>'));
+test('Header logo displays Veyora+ with brand-plus badge', () => {
+  assert(html.includes('<span>Vey<span class="brand-highlight">ora</span><span class="brand-plus">+</span></span>'));
 });
 
-test('Footer logo displays MediBook+ with brand-plus badge', () => {
+test('Footer logo displays Veyora+ with brand-plus badge', () => {
   assert(html.includes('<span>Medi<span class="brand-highlight" style="color: var(--primary-400);">Book</span><span class="brand-plus">+</span></span>'));
 });
 
@@ -86,7 +86,7 @@ test('Hero main headline matches specification', () => {
 });
 
 test('Hero supporting text matches specification', () => {
-  assert(html.includes('Finding the right doctor shouldn\'t be complicated. Describe what you\'re experiencing or search for a specialist, and let MediBook+ guide you.'));
+  assert(html.includes('Finding the right doctor shouldn\'t be complicated. Describe what you\'re experiencing or search for a specialist, and let Veyora+ guide you.'));
 });
 
 test('Smart Symptom Matcher search input exists with requested placeholder', () => {
@@ -147,7 +147,7 @@ test('Contains 3 horizontal numbered steps matching specification', () => {
 console.log('\n[7. CALL TO ACTION & FOOTER TESTS]');
 test('CTA banner headline and supporting text match specification', () => {
   assert(html.includes('<h2 class="cta-title">Your health deserves the right care.</h2>'));
-  assert(html.includes('Start your healthcare journey with MediBook+ today.'));
+  assert(html.includes('Start your healthcare journey with Veyora+ today.'));
   assert(html.includes('<span>Find a Doctor</span>'));
   assert(html.includes('<span>Get Started</span>'));
 });
@@ -158,9 +158,9 @@ test('Footer contains multi-column sections with requested categories', () => {
   assert(html.includes('<h4 class="footer-heading">Support</h4>'));
   assert(html.includes('Doctor Login'));
   assert(html.includes('Hospital Login'));
-  assert(html.includes('Join MediBook+'));
+  assert(html.includes('Join Veyora+'));
   assert(html.includes('Contact Us'));
-  assert(html.includes('&copy; 2026 MediBook+ Healthcare Systems Inc. All rights reserved.'));
+  assert(html.includes('&copy; 2026 Veyora+ Healthcare Systems Inc. All rights reserved.'));
 });
 
 console.log('\n[8. DIRECT DOCTOR MATCHING & CONSULTATION FEE TESTS]');
@@ -256,7 +256,7 @@ test('Header logo and actions scale gracefully on small screens (<480px)', () =>
 });
 
 test('Chatbot launcher collapses to compact touch icon on mobile (<640px)', () => {
-  assert(chatbotCss.includes('.medibook-chat-launcher .launcher-label {\n    display: none;\n  }'));
+  assert(chatbotCss.includes('.veyora-chat-launcher .launcher-label {\n    display: none;\n  }'));
 });
 
 console.log('\n' + '='.repeat(80));

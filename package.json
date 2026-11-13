@@ -1,0 +1,23 @@
+{
+  "name": "veyora",
+  "version": "1.0.0",
+  "description": "Veyora - Full-featured Healthcare & Hospital Management Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node tests/test_all_scenarios.js"
+  },
+  "keywords": [
+    "healthcare",
+    "hospital-management",
+    "telemedicine",
+    "pharmacy",
+    "doctor-portal"
+  ],
+  "author": "Veyora Alliance",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

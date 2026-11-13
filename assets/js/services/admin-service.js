@@ -1,15 +1,15 @@
 /**
- * MediBook Hospital Administration Service
+ * Veyora Hospital Administration Service
  * Provides central governance for Doctors, Patients, Departments, Appointments,
  * Analytics, CSV Report Export, and Hospital System Settings.
  */
 
 class AdminService {
   constructor() {
-    this.SETTINGS_KEY = 'medibook_hospital_settings';
-    this.DOCTORS_KEY = 'medibook_admin_doctors';
-    this.DEPTS_KEY = 'medibook_admin_departments';
-    this.PATIENTS_KEY = 'medibook_admin_patients';
+    this.SETTINGS_KEY = 'veyora_hospital_settings';
+    this.DOCTORS_KEY = 'veyora_admin_doctors';
+    this.DEPTS_KEY = 'veyora_admin_departments';
+    this.PATIENTS_KEY = 'veyora_admin_patients';
     this.initData();
   }
 
@@ -25,7 +25,7 @@ class AdminService {
         address: "500 Healthcare Boulevard, Suite 400, San Francisco, CA 94107",
         phone: "+1 (800) 432-6334",
         emergencyHotline: "+1 (800) 432-9911",
-        email: "admin@medibook.health",
+        email: "admin@veyora.health",
         workingHours: "Monday – Saturday: 08:00 AM – 08:00 PM",
         cancellationPolicyHours: 24,
         defaultAppointmentDuration: 30, // in minutes
@@ -43,7 +43,7 @@ class AdminService {
           ...d,
           status: 'Active', // 'Active' or 'Inactive'
           approvalStatus: 'Approved', // 'Approved' or 'Pending'
-          email: `${d.name.toLowerCase().replace(/[^a-z]/g, '')}@medibook.com`,
+          email: `${d.name.toLowerCase().replace(/[^a-z]/g, '')}@veyora.com`,
           phone: "+1 (555) 432-" + Math.floor(1000 + Math.random() * 9000),
           createdAt: "2026-01-15T08:00:00.000Z"
         })) : [];
@@ -68,7 +68,7 @@ class AdminService {
         {
           id: "patient_001",
           displayName: "Sarah Jenkins",
-          email: "patient@medibook.com",
+          email: "patient@veyora.com",
           phone: "+1 (555) 234-5678",
           bloodGroup: "O+",
           gender: "Female",
@@ -144,7 +144,7 @@ class AdminService {
     localStorage.setItem(this.SETTINGS_KEY, JSON.stringify(updated));
 
     // Live Firestore update if configured
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('hospital_settings').doc('general').set(updated, { merge: true });
@@ -199,7 +199,7 @@ class AdminService {
       avatar: doctorData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(doctorData.name)}&background=2563eb&color=fff`,
       languages: doctorData.languages || ["English"],
       about: doctorData.about || "Board-certified medical practitioner committed to clinical care excellence.",
-      email: doctorData.email || `${doctorData.name.toLowerCase().replace(/[^a-z]/g, '')}@medibook.com`,
+      email: doctorData.email || `${doctorData.name.toLowerCase().replace(/[^a-z]/g, '')}@veyora.com`,
       phone: doctorData.phone || "+1 (555) 000-0000",
       status: doctorData.status || "Active",
       approvalStatus: doctorData.approvalStatus || "Approved",
@@ -210,7 +210,7 @@ class AdminService {
     this.saveDoctors(doctors);
 
     // Save to Firestore if available
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('doctors').doc(newDoc.id).set(newDoc);
@@ -236,7 +236,7 @@ class AdminService {
 
     this.saveDoctors(doctors);
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('doctors').doc(docId).set(doctors[idx], { merge: true });
@@ -266,7 +266,7 @@ class AdminService {
     try {
       // Gather both pre-seeded patients and any registered users in auth session
       const basePatients = JSON.parse(localStorage.getItem(this.PATIENTS_KEY) || '[]');
-      const registered = JSON.parse(localStorage.getItem('medibook_registered_users') || '[]');
+      const registered = JSON.parse(localStorage.getItem('veyora_registered_users') || '[]');
 
       // Merge avoiding duplicates
       const map = new Map();
@@ -376,7 +376,7 @@ class AdminService {
   // =========================================================================
   getAllAppointments() {
     try {
-      const data = localStorage.getItem('medibook_appointments');
+      const data = localStorage.getItem('veyora_appointments');
       return data ? JSON.parse(data) : [];
     } catch (e) {
       return [];
@@ -598,7 +598,7 @@ class AdminService {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', `MediBook_Appointments_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `Veyora_Appointments_Report_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

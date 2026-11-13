@@ -1,12 +1,12 @@
 /**
- * MediBook Authentication & Role Management Service
+ * Veyora Authentication & Role Management Service
  * Provides seamless bridge between Firebase Auth, Firestore, and Demo Simulation
  */
 
 class AuthService {
   constructor() {
-    this.SESSION_KEY = 'medibook_active_session';
-    this.CUSTOM_USERS_KEY = 'medibook_registered_users';
+    this.SESSION_KEY = 'veyora_active_session';
+    this.CUSTOM_USERS_KEY = 'veyora_registered_users';
     this.currentUser = this.loadStoredSession();
     this.authListeners = [];
 
@@ -43,7 +43,7 @@ class AuthService {
   }
 
   initFirebaseAuthListener() {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.auth) {
       fb.auth.onAuthStateChanged(async (firebaseUser) => {
         if (firebaseUser) {
@@ -104,7 +104,7 @@ class AuthService {
    * Login with email, password, and expected role
    */
   async login(email, password, role = 'patient') {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
 
     // 1. Live Firebase Auth if configured
     if (fb && fb.isConfigured && fb.auth) {
@@ -147,9 +147,10 @@ class AuthService {
     await new Promise(r => setTimeout(r, 450));
 
     // Check predefined demo accounts
-    const demoAccounts = window.MEDIBOOK_DATA ? window.MEDIBOOK_DATA.users : {};
+    const normalizedEmail = email.toLowerCase().replace('@medibook.com', '@veyora.com');
+    const demoAccounts = (window.VEYORA_DATA || window.MEDIBOOK_DATA) ? (window.VEYORA_DATA || window.MEDIBOOK_DATA).users : {};
     for (const [key, demoUser] of Object.entries(demoAccounts)) {
-      if (demoUser.email.toLowerCase() === email.toLowerCase()) {
+      if (demoUser.email.toLowerCase() === normalizedEmail || demoUser.email.toLowerCase() === email.toLowerCase()) {
         if (password !== demoUser.password && password !== 'password123') {
           return { success: false, error: 'Invalid password. (For demo accounts, use password123)' };
         }
@@ -162,12 +163,13 @@ class AuthService {
     }
 
     // Check all assigned hospital doctors roster
-    if (role === 'doctor' && window.MEDIBOOK_DATA && window.MEDIBOOK_DATA.doctors) {
-      const matchedDoctor = window.MEDIBOOK_DATA.doctors.find(d => {
-        const generatedEmail = d.name.toLowerCase().replace(/[^a-z]/g, '.') + '@medibook.com';
-        return d.id.toLowerCase() === email.toLowerCase() ||
-               (d.email && d.email.toLowerCase() === email.toLowerCase()) ||
-               generatedEmail.includes(email.toLowerCase().replace('@medibook.com', ''));
+    const doctorsList = (window.VEYORA_DATA || window.MEDIBOOK_DATA) ? (window.VEYORA_DATA || window.MEDIBOOK_DATA).doctors : [];
+    if (role === 'doctor' && doctorsList.length) {
+      const matchedDoctor = doctorsList.find(d => {
+        const generatedEmail = d.name.toLowerCase().replace(/[^a-z]/g, '.') + '@veyora.com';
+        return d.id.toLowerCase() === normalizedEmail ||
+               (d.email && (d.email.toLowerCase() === normalizedEmail || d.email.toLowerCase() === email.toLowerCase())) ||
+               generatedEmail.includes(normalizedEmail.replace('@veyora.com', ''));
       });
 
       if (matchedDoctor) {
@@ -179,7 +181,7 @@ class AuthService {
           id: matchedDoctor.id,
           uid: matchedDoctor.id,
           doctorId: matchedDoctor.id,
-          email: matchedDoctor.email || (matchedDoctor.name.toLowerCase().replace(/[^a-z]/g, '.') + '@medibook.com'),
+          email: matchedDoctor.email || (matchedDoctor.name.toLowerCase().replace(/[^a-z]/g, '.') + '@veyora.com'),
           displayName: matchedDoctor.name,
           role: 'doctor',
           status: 'approved',
@@ -213,7 +215,7 @@ class AuthService {
         if (found.role === 'doctor' && found.status === 'pending_approval') {
           return {
             success: false,
-            error: 'This doctor account is currently pending Hospital Administrator approval. Please contact medical administration at admin@medibook.com for credential verification.'
+            error: 'This doctor account is currently pending Hospital Administrator approval. Please contact medical administration at admin@veyora.com for credential verification.'
           };
         }
 
@@ -246,7 +248,7 @@ class AuthService {
       return { success: false, error: "Passwords do not match. Please re-enter your confirmation password." };
     }
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
 
     // 1. Live Firebase Registration
     if (fb && fb.isConfigured && fb.auth) {
@@ -268,7 +270,7 @@ class AuthService {
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           department: userData.department || null,
           licenseNumber: userData.licenseNumber || null,
-          hospital: userData.hospital || 'MediBook Central Hospital',
+          hospital: userData.hospital || 'Veyora Central Hospital',
           avatar: userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=2563eb&color=fff`
         };
 
@@ -346,7 +348,7 @@ class AuthService {
       return { success: false, error: "Please enter a valid registered email address." };
     }
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.auth) {
       try {
         await fb.auth.sendPasswordResetEmail(email);
@@ -375,7 +377,7 @@ class AuthService {
       return { success: false, error: "No active session." };
     }
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     const uid = this.currentUser.uid || this.currentUser.id;
 
     if (fb && fb.isConfigured && fb.db && uid) {
@@ -427,7 +429,7 @@ class AuthService {
    * Sign out
    */
   async logout() {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.auth) {
       try {
         await fb.auth.signOut();

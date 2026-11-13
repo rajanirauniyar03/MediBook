@@ -1,5 +1,5 @@
 /**
- * MediBook Patient & Provider Portal Layout and Component Styles
+ * Veyora Patient & Provider Portal Layout and Component Styles
  * Commercial Healthcare SaaS Design
  */
 
@@ -561,13 +561,13 @@
   color: #ffffff;
 }
 
-.medibook-table {
+.veyora-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
-.medibook-table th {
+.veyora-table th {
   padding: 0.95rem 1.5rem;
   background: var(--slate-50);
   font-size: 0.775rem;
@@ -578,7 +578,7 @@
   border-bottom: 1px solid var(--slate-200);
 }
 
-.medibook-table td {
+.veyora-table td {
   padding: 1.15rem 1.5rem;
   border-bottom: 1px solid var(--slate-100);
   font-size: 0.9rem;
@@ -586,7 +586,7 @@
   vertical-align: middle;
 }
 
-.medibook-table tr:hover td {
+.veyora-table tr:hover td {
   background-color: #fafbfc;
 }
 

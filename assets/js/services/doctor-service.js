@@ -1,16 +1,16 @@
 /**
- * MediBook Doctor Practice & Schedule Management Service
+ * Veyora Doctor Practice & Schedule Management Service
  * Manages doctor profiles, weekly schedules, break times, unavailable dates,
  * leave requests, automatic slot generation, conflict detection, and admin approval workflows.
  */
 
 class DoctorService {
   constructor() {
-    this.SCHEDULES_KEY = 'medibook_doctor_schedules';
-    this.PROFILES_OVERRIDE_KEY = 'medibook_doctor_profiles_override';
-    this.APPROVALS_KEY = 'medibook_doctor_profile_approvals';
-    this.CONFLICTS_KEY = 'medibook_schedule_conflicts';
-    this.ACTIVITY_KEY = 'medibook_doctor_activity';
+    this.SCHEDULES_KEY = 'veyora_doctor_schedules';
+    this.PROFILES_OVERRIDE_KEY = 'veyora_doctor_profiles_override';
+    this.APPROVALS_KEY = 'veyora_doctor_profile_approvals';
+    this.CONFLICTS_KEY = 'veyora_schedule_conflicts';
+    this.ACTIVITY_KEY = 'veyora_doctor_activity';
 
     this.initStorage();
   }
@@ -99,7 +99,7 @@ class DoctorService {
    * Retrieve doctor profile from Firestore or local data
    */
   async getDoctorProfile(doctorId) {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
 
     // 1. Live Firestore query if configured
     if (fb && fb.isConfigured && fb.db) {
@@ -192,7 +192,7 @@ class DoctorService {
       }
     });
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
 
     // Apply immediate non-critical updates if any
     if (Object.keys(directUpdates).length > 0) {
@@ -270,7 +270,7 @@ class DoctorService {
   }
 
   async getPendingApprovalRequest(doctorId) {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         const snap = await fb.db.collection('profile_approval_requests')
@@ -296,7 +296,7 @@ class DoctorService {
    * Get doctor schedule settings
    */
   async getDoctorSchedule(doctorId) {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
 
     if (fb && fb.isConfigured && fb.db) {
       try {
@@ -376,7 +376,7 @@ class DoctorService {
     const conflicts = await this.detectScheduleConflicts(doctorId, fullSchedule);
 
     // 2. Persist to Firestore if configured
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('schedules').doc(doctorId).set(fullSchedule);
@@ -769,7 +769,7 @@ class DoctorService {
       if (logs.length > 50) logs.length = 50;
       localStorage.setItem(this.ACTIVITY_KEY, JSON.stringify(logs));
 
-      const fb = window.MediBookFirebase;
+      const fb = window.VeyoraFirebase;
       if (fb && fb.isConfigured && fb.db) {
         fb.db.collection('doctor_activity').add(newEntry).catch(() => {});
       }

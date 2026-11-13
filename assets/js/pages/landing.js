@@ -1,5 +1,5 @@
 /**
- * MediBook+ Landing Page Controller
+ * Veyora+ Landing Page Controller
  * Powers Direct Symptom-to-Doctor Matching with Consultation Fees,
  * Medical Specialties, Featured Doctors with Skeletons, and Platform Statistics.
  */
@@ -79,11 +79,11 @@ function setupSymptomMatcher() {
   if (aiGuideLink) {
     aiGuideLink.addEventListener('click', (e) => {
       e.preventDefault();
-      if (window.MediBookChat) {
-        window.MediBookChat.toggleChat(true);
+      if (window.VeyoraChat) {
+        window.VeyoraChat.toggleChat(true);
       } else {
         setTimeout(() => {
-          if (window.MediBookChat) window.MediBookChat.toggleChat(true);
+          if (window.VeyoraChat) window.VeyoraChat.toggleChat(true);
         }, 200);
       }
     });

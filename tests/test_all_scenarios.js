@@ -1,5 +1,5 @@
 /**
- * MediBook Comprehensive End-to-End Functional Test Suite
+ * Veyora Comprehensive End-to-End Functional Test Suite
  * Tests all 4 roles and end-to-end workflows:
  * - Patient: Auth, Doctor Search, Slot Reservation, Double-booking lock, Cancellation, Profile Update
  * - Doctor: Auth, Schedule View, Confirm/Reject, Complete Visit, Availability Update
@@ -51,7 +51,7 @@ mockWindow.window = mockWindow;
 const context = vm.createContext(mockWindow);
 
 function loadScript(relPath) {
-  const fullPath = path.join('d:/Rajani/MediBook', relPath);
+  const fullPath = path.join(__dirname, '..', relPath);
   const code = fs.readFileSync(fullPath, 'utf8');
   vm.runInContext(code, context, { filename: relPath });
 }
@@ -71,7 +71,7 @@ loadScript('assets/js/services/doctor-service.js');
 loadScript('assets/js/services/admin-service.js');
 loadScript('assets/js/services/pharmacy-service.js');
 
-console.log("✓ All MediBook core scripts & services loaded into testing context.\n");
+console.log("✓ All Veyora core scripts & services loaded into testing context.\n");
 
 async function runTests() {
   let passedTests = 0;
@@ -118,7 +118,7 @@ async function runTests() {
   // 1.3 Patient Login with Demo Account
   await authService.logout();
   assert(authService.getCurrentUser() === null, "Logout clears session");
-  const loginRes = await authService.login("patient@medibook.com", "password123", "patient");
+  const loginRes = await authService.login("patient@veyora.com", "password123", "patient");
   assert(loginRes.success === true, "Patient demo login succeeds");
   assert(loginRes.user.role === "patient", "Patient has role 'patient'");
 
@@ -159,7 +159,7 @@ async function runTests() {
     timeSlot: "09:00 AM",
     mode: "in-person",
     patientName: "Sarah Jenkins",
-    patientEmail: "patient@medibook.com",
+    patientEmail: "patient@veyora.com",
     patientPhone: "+1 (555) 234-5678",
     reason: "Annual cardiac checkup"
   });
@@ -205,7 +205,7 @@ async function runTests() {
 
   // 2.1 Doctor Login
   await authService.logout();
-  const docLogin = await authService.login("doctor@medibook.com", "password123", "doctor");
+  const docLogin = await authService.login("doctor@veyora.com", "password123", "doctor");
   assert(docLogin.success === true, "Doctor login succeeds with demo credentials");
   assert(docLogin.user.role === "doctor", "Doctor session verified");
 
@@ -226,7 +226,7 @@ async function runTests() {
     timeSlot: "10:30 AM",
     mode: "video",
     patientName: "Patient for Doctor",
-    patientEmail: "patient@medibook.com",
+    patientEmail: "patient@veyora.com",
     reason: "Prescription consultation"
   });
   if (!pendingApt.success) console.error("DEBUG pendingApt error:", pendingApt.error);
@@ -256,7 +256,7 @@ async function runTests() {
 
   // 3.1 Admin Login
   await authService.logout();
-  const adminLogin = await authService.login("admin@medibook.com", "password123", "admin");
+  const adminLogin = await authService.login("admin@veyora.com", "password123", "admin");
   assert(adminLogin.success === true, "Hospital administrator authenticated");
   assert(adminLogin.user.role === "admin", "Admin role confirmed");
 
@@ -269,7 +269,7 @@ async function runTests() {
     department: "Neurology",
     consultationFee: 175,
     experienceYears: 12,
-    email: "j.davis@medibook.com",
+    email: "j.davis@veyora.com",
     phone: "+1 (555) 444-1234",
     availableDays: ["Tuesday", "Thursday"]
   });
@@ -278,7 +278,7 @@ async function runTests() {
   // 3.3 Manage Patients & Appointment History
   const patientRoster = adminService.getPatients();
   assert(patientRoster.length >= 2, `Admin retrieved ${patientRoster.length} registered patient accounts`);
-  const patientHistory = adminService.getPatientAppointments("patient@medibook.com");
+  const patientHistory = adminService.getPatientAppointments("patient@veyora.com");
   assert(Array.isArray(patientHistory), "Admin retrieved patient consultation history");
 
   // 3.4 Manage Departments
@@ -305,7 +305,7 @@ async function runTests() {
     timeSlot: "02:00 PM",
     mode: "in-person",
     patientName: "Audit Patient",
-    patientEmail: "audit@medibook.com",
+    patientEmail: "audit@veyora.com",
     reason: "Admin override test"
   });
   const adminCancelRes = await adminService.adminCancelAppointment(overrideApt.appointment.id, "Hospital unit renovation");
@@ -329,7 +329,7 @@ async function runTests() {
 
   // 4.1 Pharmacy Login
   await authService.logout();
-  const pharmLogin = await authService.login("pharmacist@medibook.com", "password123", "pharmacist");
+  const pharmLogin = await authService.login("pharmacist@veyora.com", "password123", "pharmacist");
   assert(pharmLogin.success === true, "Pharmacist authenticated");
   assert(pharmLogin.user.role === "pharmacy" || pharmLogin.user.role === "pharmacist", "Pharmacy staff verified");
 

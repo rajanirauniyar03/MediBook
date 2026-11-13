@@ -1,5 +1,5 @@
 /**
- * MediBook Pharmacy Staff Dashboard Controller
+ * Veyora Pharmacy Staff Dashboard Controller
  * Implements medicine catalog CRUD, stock adjustments, prescription review workflows (6 statuses),
  * enquiry handling, inventory audit history, and pharmacy settings management.
  */

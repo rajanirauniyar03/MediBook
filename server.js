@@ -1,5 +1,5 @@
 /**
- * MediBook Production Node.js Server & Secure AI Proxy
+ * Veyora Production Node.js Server & Secure AI Proxy
  * Zero-dependency native HTTP server serving static files and protected /api/chat endpoint.
  */
 
@@ -48,7 +48,7 @@ const MIME_TYPES = {
 };
 
 const SYSTEM_HEALTHCARE_PROMPT = `
-You are the MediBook AI Healthcare Assistant for Metropolitan Central Hospital & Health Alliance.
+You are the Veyora AI Healthcare Assistant for Metropolitan Central Hospital & Health Alliance.
 Your mission is to help patients discover doctors, guide them through appointment booking, check existing appointments, provide accurate hospital facility information, and answer pharmacy stock enquiries.
 
 CRITICAL HEALTHCARE SAFETY RULES:
@@ -150,7 +150,7 @@ async function handleChatAPI(req, res) {
             }
           }
         } catch (apiErr) {
-          console.warn('[MediBook Server] Gemini API error, engaging fallback NLP engine:', apiErr.message);
+          console.warn('[Veyora Server] Gemini API error, engaging fallback NLP engine:', apiErr.message);
         }
       }
 
@@ -293,7 +293,7 @@ function processNLPFallback(msg, history, context, user) {
       lower.includes('my bookings') || (lower.includes('status') && (lower.includes('appointment') || lower.includes('booking')))) {
     if (!user) {
       return {
-        reply: "To review or track your personal consultations, please sign in to your MediBook account. You can log in securely here: [Patient Login](auth/login.html).",
+        reply: "To review or track your personal consultations, please sign in to your Veyora account. You can log in securely here: [Patient Login](auth/login.html).",
         intent: 'auth_required',
         action: 'prompt_login'
       };
@@ -448,7 +448,7 @@ function processNLPFallback(msg, history, context, user) {
   // 7. General Greetings & Help
   if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey') || lower.includes('help')) {
     return {
-      reply: "Hello! I'm **MediBook Assistant**, your AI clinical and scheduling navigator. I can help you find specialists, guide you through booking appointments, check your visit status, or provide hospital and pharmacy information. How can I assist you today?",
+      reply: "Hello! I'm **Veyora Assistant**, your AI clinical and scheduling navigator. I can help you find specialists, guide you through booking appointments, check your visit status, or provide hospital and pharmacy information. How can I assist you today?",
       intent: 'greeting',
       action: 'show_suggestions'
     };
@@ -519,7 +519,7 @@ const server = http.createServer((req, res) => {
 if (require.main === module) {
   server.listen(PORT, () => {
     console.log(`================================================================`);
-    console.log(`MediBook Healthcare Platform running at http://localhost:${PORT}`);
+    console.log(`Veyora Healthcare Platform running at http://localhost:${PORT}`);
     console.log(`AI Chat API active at /api/chat (Gemini/NLP Engine)`);
     console.log(`================================================================`);
   });

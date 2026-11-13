@@ -1,13 +1,13 @@
 /**
- * MediBook AI Healthcare Assistant Chatbot Controller
+ * Veyora AI Healthcare Assistant Chatbot Controller
  * Provides floating interactive conversational assistant with rich clinical widgets,
  * doctor discovery, multi-step booking, appointment tracking, hospital FAQ,
  * and medical safety guardrails.
  */
 
-class MediBookChatbot {
+class VeyoraChatbot {
   constructor() {
-    this.STORAGE_KEY = 'medibook_chat_history';
+    this.STORAGE_KEY = 'veyora_chat_history';
     this.bookingState = {
       active: false,
       step: null,
@@ -42,9 +42,9 @@ class MediBookChatbot {
 
   init() {
     // Inject CSS if not already present
-    if (!document.getElementById('medibook-chatbot-css')) {
+    if (!document.getElementById('veyora-chatbot-css')) {
       const link = document.createElement('link');
-      link.id = 'medibook-chatbot-css';
+      link.id = 'veyora-chatbot-css';
       link.rel = 'stylesheet';
       // Compute relative path to assets/css/chatbot.css
       const isPortal = window.location.pathname.includes('/portal/');
@@ -60,7 +60,7 @@ class MediBookChatbot {
 
     // Render Initial Welcome if chat is empty
     if (this.messages.length === 0) {
-      this.addMessage('bot', "Hello! I'm **MediBook Assistant**. How can I help you today?", {
+      this.addMessage('bot', "Hello! I'm **Veyora Assistant**. How can I help you today?", {
         suggestions: [
           "Find a doctor",
           "Book an appointment",
@@ -77,23 +77,23 @@ class MediBookChatbot {
 
   createDOM() {
     // Remove any existing instance
-    const oldLauncher = document.getElementById('medibook-chat-launcher');
-    const oldWindow = document.getElementById('medibook-chat-window');
+    const oldLauncher = document.getElementById('veyora-chat-launcher');
+    const oldWindow = document.getElementById('veyora-chat-window');
     if (oldLauncher) oldLauncher.remove();
     if (oldWindow) oldWindow.remove();
 
     // 1. Floating Launcher Button
     const launcher = document.createElement('button');
-    launcher.id = 'medibook-chat-launcher';
-    launcher.className = 'medibook-chat-launcher';
-    launcher.setAttribute('aria-label', 'Open MediBook Healthcare Assistant');
+    launcher.id = 'veyora-chat-launcher';
+    launcher.className = 'veyora-chat-launcher';
+    launcher.setAttribute('aria-label', 'Open Veyora Healthcare Assistant');
     launcher.innerHTML = `
       <div class="launcher-icon-wrap" id="launcher-icon">
         <i data-lucide="bot"></i>
         <span class="launcher-pulse-dot"></span>
       </div>
       <div class="launcher-label">
-        <span>MediBook AI</span>
+        <span>Veyora AI</span>
         <span class="launcher-sublabel">Healthcare Guide</span>
       </div>
     `;
@@ -101,8 +101,8 @@ class MediBookChatbot {
 
     // 2. Chat Window Container
     const win = document.createElement('div');
-    win.id = 'medibook-chat-window';
-    win.className = 'medibook-chat-window';
+    win.id = 'veyora-chat-window';
+    win.className = 'veyora-chat-window';
     win.setAttribute('role', 'dialog');
     win.setAttribute('aria-label', 'Healthcare AI Assistant Window');
     win.innerHTML = `
@@ -114,7 +114,7 @@ class MediBookChatbot {
             <span class="chat-bot-online-indicator"></span>
           </div>
           <div>
-            <h3 class="chat-header-title">MediBook Assistant</h3>
+            <h3 class="chat-header-title">Veyora Assistant</h3>
             <div class="chat-header-status">
               <i data-lucide="sparkles" style="width: 11px; height: 11px;"></i>
               <span>AI Clinical Navigator</span>
@@ -149,7 +149,7 @@ class MediBookChatbot {
           </button>
         </form>
         <div class="chat-disclaimer">
-          MediBook AI provides scheduling & administrative guidance, not medical diagnosis. Call 911 in emergencies.
+          Veyora AI provides scheduling & administrative guidance, not medical diagnosis. Call 911 in emergencies.
         </div>
       </div>
     `;
@@ -159,8 +159,8 @@ class MediBookChatbot {
   }
 
   bindEvents() {
-    const launcher = document.getElementById('medibook-chat-launcher');
-    const win = document.getElementById('medibook-chat-window');
+    const launcher = document.getElementById('veyora-chat-launcher');
+    const win = document.getElementById('veyora-chat-window');
     const closeBtn = document.getElementById('btn-chat-close');
     const minBtn = document.getElementById('btn-chat-minimize');
     const clearBtn = document.getElementById('btn-chat-clear');
@@ -180,7 +180,7 @@ class MediBookChatbot {
         sessionStorage.removeItem(this.STORAGE_KEY);
         const body = document.getElementById('chat-messages-body');
         if (body) body.innerHTML = '';
-        this.addMessage('bot', "Conversation cleared. Hello! I'm **MediBook Assistant**. How can I help you today?", {
+        this.addMessage('bot', "Conversation cleared. Hello! I'm **Veyora Assistant**. How can I help you today?", {
           suggestions: ["Find a doctor", "Book an appointment", "Check my appointment", "Hospital information", "Pharmacy enquiries"]
         });
       });
@@ -199,8 +199,8 @@ class MediBookChatbot {
   }
 
   toggleChat(forceState = null) {
-    const win = document.getElementById('medibook-chat-window');
-    const launcher = document.getElementById('medibook-chat-launcher');
+    const win = document.getElementById('veyora-chat-window');
+    const launcher = document.getElementById('veyora-chat-launcher');
     const icon = document.getElementById('launcher-icon');
 
     this.isOpen = (forceState !== null) ? forceState : !this.isOpen;
@@ -299,7 +299,7 @@ class MediBookChatbot {
       contentHtml += `
         <div class="chat-suggestions-container">
           ${msg.suggestions.map(s => `
-            <button class="chat-suggestion-chip" onclick="window.MediBookChat.sendSuggestion('${s.replace(/'/g, "\\'")}')">
+            <button class="chat-suggestion-chip" onclick="window.VeyoraChat.sendSuggestion('${s.replace(/'/g, "\\'")}')">
               <i data-lucide="corner-down-right" style="width: 12px; height: 12px;"></i>
               <span>${s}</span>
             </button>
@@ -329,7 +329,7 @@ class MediBookChatbot {
             <span style="color: #f59e0b; font-weight: 700;">★ ${doc.rating || 4.9}</span>
           </div>
           <div class="chat-doctor-actions">
-            <button class="btn btn-primary btn-sm" onclick="window.MediBookChat.startDoctorBooking('${doc.id}', '${encodeURIComponent(doc.name)}', '${doc.department || 'General'}', ${doc.consultationFee || doc.fee || 100})">
+            <button class="btn btn-primary btn-sm" onclick="window.VeyoraChat.startDoctorBooking('${doc.id}', '${encodeURIComponent(doc.name)}', '${doc.department || 'General'}', ${doc.consultationFee || doc.fee || 100})">
               <i data-lucide="calendar-plus"></i> Book
             </button>
             <a href="doctor-profile.html?id=${doc.id}" target="_blank" class="btn btn-outline btn-sm">
@@ -345,7 +345,7 @@ class MediBookChatbot {
       contentHtml += `
         <div class="chat-options-grid">
           ${msg.departmentOptions.map(dept => `
-            <button class="chat-option-btn" onclick="window.MediBookChat.selectDepartment('${dept.replace(/'/g, "\\'")}')">
+            <button class="chat-option-btn" onclick="window.VeyoraChat.selectDepartment('${dept.replace(/'/g, "\\'")}')">
               <i data-lucide="check" style="width: 12px; height: 12px;"></i>
               <span>${dept}</span>
             </button>
@@ -359,7 +359,7 @@ class MediBookChatbot {
       contentHtml += `
         <div class="chat-options-grid">
           ${msg.dateOptions.map(d => `
-            <button class="chat-option-btn" onclick="window.MediBookChat.selectDate('${d.dateStr}', '${d.displayLabel}')">
+            <button class="chat-option-btn" onclick="window.VeyoraChat.selectDate('${d.dateStr}', '${d.displayLabel}')">
               <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
               <span>${d.displayLabel}</span>
             </button>
@@ -373,7 +373,7 @@ class MediBookChatbot {
       contentHtml += `
         <div class="chat-options-grid slots">
           ${msg.slotOptions.map(slot => `
-            <button class="chat-option-btn" onclick="window.MediBookChat.selectSlot('${slot}')">
+            <button class="chat-option-btn" onclick="window.VeyoraChat.selectSlot('${slot}')">
               <i data-lucide="clock" style="width: 11px; height: 11px;"></i>
               <span>${slot}</span>
             </button>
@@ -408,10 +408,10 @@ class MediBookChatbot {
             <strong style="color: var(--primary-700); font-size: 0.95rem;">$${conf.consultationFee}</strong>
           </div>
           <div class="chat-conf-actions">
-            <button class="btn btn-primary btn-sm" id="chat-btn-confirm-booking" onclick="window.MediBookChat.confirmAppointmentBooking()">
+            <button class="btn btn-primary btn-sm" id="chat-btn-confirm-booking" onclick="window.VeyoraChat.confirmAppointmentBooking()">
               <i data-lucide="check-circle-2"></i> Confirm Booking
             </button>
-            <button class="btn btn-outline btn-sm" onclick="window.MediBookChat.cancelBookingFlow()">
+            <button class="btn btn-outline btn-sm" onclick="window.VeyoraChat.cancelBookingFlow()">
               Cancel
             </button>
           </div>
@@ -441,7 +441,7 @@ class MediBookChatbot {
           </div>
           ${apt.status === 'Confirmed' || apt.status === 'Pending' ? `
             <div style="margin-top: 0.65rem; border-top: 1px solid var(--slate-100); padding-top: 0.5rem;">
-              <button class="btn btn-outline btn-xs text-danger" onclick="window.MediBookChat.promptCancelAppointment('${apt.id}', '${apt.reference || apt.id}')">
+              <button class="btn btn-outline btn-xs text-danger" onclick="window.VeyoraChat.promptCancelAppointment('${apt.id}', '${apt.reference || apt.id}')">
                 <i data-lucide="x-circle"></i> Cancel Appointment
               </button>
             </div>
@@ -468,7 +468,7 @@ class MediBookChatbot {
             </a>
           </div>
           <div style="margin-top: 0.65rem; border-top: 1px solid #fecaca; padding-top: 0.5rem;">
-            <button class="btn btn-sm" style="width: 100%; background: #991b1b; color: #fff; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.45rem; border-radius: var(--radius-md);" onclick="window.MediBookChat.locateEmergencyHospitals()">
+            <button class="btn btn-sm" style="width: 100%; background: #991b1b; color: #fff; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.45rem; border-radius: var(--radius-md);" onclick="window.VeyoraChat.locateEmergencyHospitals()">
               <i data-lucide="navigation" style="width: 14px; height: 14px;"></i> Locate Nearby Emergency Hospitals (< 30 min)
             </button>
           </div>
@@ -777,7 +777,7 @@ class MediBookChatbot {
         (lower.includes('status') && (lower.includes('appointment') || lower.includes('booking')))) {
       if (!user) {
         return {
-          reply: "To inspect your appointment history or check a booking's status, please sign in to your MediBook account: [Patient Login](auth/login.html).",
+          reply: "To inspect your appointment history or check a booking's status, please sign in to your Veyora account: [Patient Login](auth/login.html).",
           intent: 'auth_required'
         };
       }
@@ -871,7 +871,7 @@ class MediBookChatbot {
     // 5. Pharmacy enquiries
     if (lower.includes('pharmacy') || lower.includes('medicine') || lower.includes('stock') || lower.includes('prescription')) {
       return {
-        reply: `**MediBook Central Outpatient Pharmacy**\n\n• **Hours:** Monday – Saturday: 08:00 AM – 08:00 PM\n• **Prescriptions:** Upload orders directly via the [Pharmacy Portal](pharmacy.html) for rapid preparation.\n• **Safety:** I cannot recommend prescription dosages or advise altering medication. Would you like to check current medicine stock?`,
+        reply: `**Veyora Central Outpatient Pharmacy**\n\n• **Hours:** Monday – Saturday: 08:00 AM – 08:00 PM\n• **Prescriptions:** Upload orders directly via the [Pharmacy Portal](pharmacy.html) for rapid preparation.\n• **Safety:** I cannot recommend prescription dosages or advise altering medication. Would you like to check current medicine stock?`,
         intent: 'pharmacy_enquiry',
         suggestions: ["Find a doctor", "Hospital information", "Book an appointment"]
       };
@@ -880,7 +880,7 @@ class MediBookChatbot {
     // 6. Greetings
     if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
       return {
-        reply: "Hello! I'm **MediBook Assistant**, your AI clinical and scheduling navigator. How may I assist you today?",
+        reply: "Hello! I'm **Veyora Assistant**, your AI clinical and scheduling navigator. How may I assist you today?",
         suggestions: ["Find a doctor", "Book an appointment", "Check my appointment", "Hospital information", "Pharmacy enquiries"]
       };
     }
@@ -995,7 +995,7 @@ class MediBookChatbot {
         patientName: currentUser.displayName || 'Patient',
         patientEmail: currentUser.email,
         patientPhone: currentUser.phone || '+1 (555) 000-0000',
-        reason: 'Consultation requested via MediBook AI Assistant'
+        reason: 'Consultation requested via Veyora AI Assistant'
       });
 
       this.hideTyping();
@@ -1032,7 +1032,7 @@ class MediBookChatbot {
 
   async executeCancellation(aptId, ref) {
     this.showTyping();
-    const res = await window.AppointmentService.cancelAppointment(aptId, "Cancelled via MediBook AI Assistant");
+    const res = await window.AppointmentService.cancelAppointment(aptId, "Cancelled via Veyora AI Assistant");
     this.hideTyping();
 
     if (res.success) {
@@ -1198,9 +1198,9 @@ class MediBookChatbot {
 }
 
 // Export globally
-window.MediBookChatbot = MediBookChatbot;
+window.VeyoraChatbot = VeyoraChatbot;
 
 // Auto-instantiate when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  window.MediBookChat = new MediBookChatbot();
+  window.VeyoraChat = new VeyoraChatbot();
 });

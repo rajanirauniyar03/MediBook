@@ -1,12 +1,12 @@
 /**
- * MediBook AI Healthcare Assistant Chatbot Stylesheet
+ * Veyora AI Healthcare Assistant Chatbot Stylesheet
  * Premium Healthcare SaaS Design System
  */
 
 /* ==========================================================================
    1. Floating Chatbot Launcher Button
    ========================================================================== */
-.medibook-chat-launcher {
+.veyora-chat-launcher {
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -25,12 +25,12 @@
   outline: none;
 }
 
-.medibook-chat-launcher:hover {
+.veyora-chat-launcher:hover {
   transform: translateY(-3px) scale(1.02);
   box-shadow: 0 14px 28px -4px rgba(37, 99, 235, 0.55), 0 6px 10px -2px rgba(13, 148, 136, 0.35);
 }
 
-.medibook-chat-launcher:active {
+.veyora-chat-launcher:active {
   transform: translateY(0) scale(0.98);
 }
 
@@ -85,7 +85,7 @@
 /* ==========================================================================
    2. Chat Container Window
    ========================================================================== */
-.medibook-chat-window {
+.veyora-chat-window {
   position: fixed;
   bottom: 96px;
   right: 24px;
@@ -107,7 +107,7 @@
   transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.medibook-chat-window.open {
+.veyora-chat-window.open {
   opacity: 1;
   visibility: visible;
   transform: translateY(0) scale(1);
@@ -780,7 +780,7 @@
    8. Mobile Responsive Constraints
    ========================================================================== */
 @media (max-width: 640px) {
-  .medibook-chat-window {
+  .veyora-chat-window {
     top: 0;
     bottom: 0;
     left: 0;
@@ -793,14 +793,14 @@
     transform-origin: center center;
   }
 
-  .medibook-chat-launcher {
+  .veyora-chat-launcher {
     bottom: 16px;
     right: 16px;
     padding: 0.65rem;
     border-radius: var(--radius-full);
   }
 
-  .medibook-chat-launcher .launcher-label {
+  .veyora-chat-launcher .launcher-label {
     display: none;
   }
 }

@@ -1,5 +1,5 @@
 /**
- * MediBook+ Public Website & Landing Page Styles
+ * Veyora+ Public Website & Landing Page Styles
  */
 
 /* ==========================================================================
@@ -13,7 +13,7 @@
 }
 
 /* ==========================================================================
-   Hero Section (MediBook+ Specification)
+   Hero Section (Veyora+ Specification)
    Clean subtle light-blue radial gradient background
    ========================================================================== */
 .hero-section {
@@ -1004,7 +1004,7 @@
 }
 
 /* ==========================================================================
-   Why Choose MediBook+ (4 Specific Pillars)
+   Why Choose Veyora+ (4 Specific Pillars)
    ========================================================================== */
 .why-grid-4 {
   display: grid;
@@ -1140,7 +1140,7 @@
 }
 
 /* ==========================================================================
-   Why Choose MediBook (5 Pillars)
+   Why Choose Veyora (5 Pillars)
    ========================================================================== */
 .why-choose-grid {
   display: grid;

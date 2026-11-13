@@ -1,5 +1,5 @@
 /**
- * MediBook Form Validation Utilities
+ * Veyora Form Validation Utilities
  */
 
 const FormValidator = {

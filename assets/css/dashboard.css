@@ -1,5 +1,5 @@
 /**
- * MediBook Doctor Practice Dashboard & Portal Stylesheet
+ * Veyora Doctor Practice Dashboard & Portal Stylesheet
  * Enterprise Healthcare Dashboard Design System
  */
 
@@ -887,13 +887,13 @@
   box-shadow: var(--shadow-xs);
 }
 
-.medibook-table {
+.veyora-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
-.medibook-table th {
+.veyora-table th {
   background: var(--slate-50);
   color: var(--slate-600);
   font-size: 0.78rem;
@@ -904,7 +904,7 @@
   border-bottom: 1px solid var(--slate-200);
 }
 
-.medibook-table td {
+.veyora-table td {
   padding: 1.1rem 1.25rem;
   border-bottom: 1px solid var(--slate-100);
   font-size: 0.875rem;
@@ -912,7 +912,7 @@
   vertical-align: middle;
 }
 
-.medibook-table tr:hover td {
+.veyora-table tr:hover td {
   background-color: var(--slate-50);
 }
 

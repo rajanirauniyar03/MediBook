@@ -1,5 +1,5 @@
 /**
- * MediBook Data Formatters & UI Presentation Helpers
+ * Veyora Data Formatters & UI Presentation Helpers
  */
 
 const Formatters = {

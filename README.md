@@ -1,11 +1,11 @@
-# MediBook – Enterprise Healthcare Management & Online Doctor Appointment Platform
+# Veyora – Enterprise Healthcare Management & Online Doctor Appointment Platform
 
-[![Healthcare SaaS](https://img.shields.io/badge/Platform-MediBook_Healthcare_SaaS-2563eb?style=for-the-badge&logo=hospital)](https://github.com)
+[![Healthcare SaaS](https://img.shields.io/badge/Platform-Veyora_Healthcare_SaaS-2563eb?style=for-the-badge&logo=hospital)](https://github.com)
 [![Architecture](https://img.shields.io/badge/Architecture-Vanilla_ES6+_Modular-0d9488?style=for-the-badge)](https://github.com)
 [![Firebase](https://img.shields.io/badge/Backend-Firebase_Auth_+_Firestore-f59e0b?style=for-the-badge&logo=firebase)](https://firebase.google.com)
 [![Security](https://img.shields.io/badge/Security-HIPAA_&_RBAC_Compliant-10b981?style=for-the-badge)](https://github.com)
 
-**MediBook** is a commercial-grade, multi-tenant digital healthcare management and online physician scheduling platform. Designed to meet the clinical governance standards of hospitals, multi-specialty medical centers, private clinics, and outpatient pharmacies, MediBook unifies patient discovery, appointment booking, physician scheduling, administrative oversight, and pharmaceutical fulfillment into an integrated, zero-framework vanilla web application.
+**Veyora** is a commercial-grade, multi-tenant digital healthcare management and online physician scheduling platform. Designed to meet the clinical governance standards of hospitals, multi-specialty medical centers, private clinics, and outpatient pharmacies, Veyora unifies patient discovery, appointment booking, physician scheduling, administrative oversight, and pharmaceutical fulfillment into an integrated, zero-framework vanilla web application.
 
 ---
 
@@ -59,7 +59,7 @@
 - **Stock Adjustment Auditing**: Complete audit log recording timestamp, staff name, quantity change, and adjustment reason.
 - **Medicine Availability Inquiries**: Patient questions routed directly to pharmacy dispensary staff for fast response.
 
-### 6. MediBook AI Healthcare Assistant Chatbot
+### 6. Veyora AI Healthcare Assistant Chatbot
 - **Omnipresent Floating Widget**: Available on all public website pages and the patient portal with smooth opening animations and unread pulse badges.
 - **Conversational Multi-Step Booking**: End-to-end appointment scheduling inside chat (Department → Doctor selection → Available dates → Time slot picker → Summary review → Direct booking in Firestore).
 - **Intelligent Doctor Discovery**: Search doctors using natural language (e.g. *"Find a dermatologist under $120"* or *"Show me pediatricians"*); renders interactive doctor cards with avatars, ratings, experience, and 1-click booking.
@@ -89,23 +89,23 @@
 
 ## 👥 Multi-Role Architecture & Demo Credentials
 
-MediBook includes pre-configured, instantly evaluable demo accounts for all 4 roles. On the login page ([auth/login.html](file:///d:/Rajani/MediBook/auth/login.html)), clicking any role tab provides **1-Click Quick Demo Evaluation** buttons:
+Veyora includes pre-configured, instantly evaluable demo accounts for all 4 roles. On the login page ([auth/login.html](file:///d:/Rajani/Veyora/auth/login.html)), clicking any role tab provides **1-Click Quick Demo Evaluation** buttons:
 
 | Role | Demo Email | Demo Password | Default Destination | Primary Responsibilities |
 | :--- | :--- | :--- | :--- | :--- |
-| **Patient** | `patient@medibook.com` | `password123` | `portal/patient/dashboard.html` | Search doctors, book slots, cancel visits, update health profile |
-| **Doctor** | `doctor@medibook.com` | `password123` | `portal/doctor/dashboard.html` | Review schedule, confirm/reject visits, complete consultations with notes |
-| **Admin** | `admin@medibook.com` | `password123` | `portal/admin/dashboard.html` | Hospital governance, doctor credentialing, department CRUD, analytics & CSV export |
-| **Pharmacist**| `pharmacist@medibook.com` | `password123` | `portal/pharmacy/dashboard.html` | Medicine inventory, stock auditing, digital prescription validation |
+| **Patient** | `patient@veyora.com` | `password123` | `portal/patient/dashboard.html` | Search doctors, book slots, cancel visits, update health profile |
+| **Doctor** | `doctor@veyora.com` | `password123` | `portal/doctor/dashboard.html` | Review schedule, confirm/reject visits, complete consultations with notes |
+| **Admin** | `admin@veyora.com` | `password123` | `portal/admin/dashboard.html` | Hospital governance, doctor credentialing, department CRUD, analytics & CSV export |
+| **Pharmacist**| `pharmacist@veyora.com` | `password123` | `portal/pharmacy/dashboard.html` | Medicine inventory, stock auditing, digital prescription validation |
 
 > [!NOTE]
-> All sample doctor accounts (e.g. `alexander.wright@medibook.com`, `elena.rostova@medibook.com`) can also be logged into using the default password `password123`.
+> All sample doctor accounts (e.g. `alexander.wright@veyora.com`, `elena.rostova@veyora.com`) can also be logged into using the default password `password123`.
 
 ---
 
 ## 🤖 AI Healthcare Assistant Chatbot
 
-MediBook features an omnipresent, intelligent healthcare assistant widget (**MediBook Assistant**) available across all public website pages and the patient portal:
+Veyora features an omnipresent, intelligent healthcare assistant widget (**Veyora Assistant**) available across all public website pages and the patient portal:
 
 ### Core Capabilities:
 1. **Interactive Doctor Discovery**:
@@ -148,7 +148,7 @@ MediBook features an omnipresent, intelligent healthcare assistant widget (**Med
 ## 📁 Complete Project Folder Structure
 
 ```
-MediBook/
+Veyora/
 ├── index.html                           # Public Website Landing Page
 ├── find-doctors.html                    # Public Doctor Discovery & Multi-Filter Directory
 ├── departments.html                     # Clinical Department & Faculty Showcase
@@ -232,7 +232,7 @@ MediBook/
 
 ## 🗄️ Database Architecture & Firestore Collection Schemas
 
-MediBook organizes clinical and administrative entities into standardized Cloud Firestore collections:
+Veyora organizes clinical and administrative entities into standardized Cloud Firestore collections:
 
 ```mermaid
 erDiagram
@@ -327,7 +327,7 @@ erDiagram
 
 ## 🔒 Security Architecture & Cloud Rules
 
-MediBook employs defense-in-depth across frontend guards, service validation, and backend security rules:
+Veyora employs defense-in-depth across frontend guards, service validation, and backend security rules:
 
 1. **Client-Side Route Guards**:
    - `window.AuthService.requireAuth(['admin'])` verifies session identity and role prior to DOM rendering.
@@ -347,11 +347,11 @@ MediBook employs defense-in-depth across frontend guards, service validation, an
        transaction.set(appointmentRef, newAppointment);
      });
      ```
-4. **Cloud Firestore Rules ([firestore.rules](file:///d:/Rajani/MediBook/firestore.rules))**:
+4. **Cloud Firestore Rules ([firestore.rules](file:///d:/Rajani/Veyora/firestore.rules))**:
    - `users/{userId}`: Users can only modify their own profile data. They cannot alter their own `role` or `status`.
    - `appointments/{appointmentId}`: Patients can only read their own appointments; Doctors can only view appointments assigned to their doctor ID; Administrators have global audit access.
    - `pharmacy_prescriptions`: Patients can only read their own prescription uploads; Pharmacists and Admins manage fulfillment statuses.
-5. **Firebase Storage Rules ([storage.rules](file:///d:/Rajani/MediBook/storage.rules))**:
+5. **Firebase Storage Rules ([storage.rules](file:///d:/Rajani/Veyora/storage.rules))**:
    - Prescription uploads are restricted to authentic PDF and image MIME types under 10MB.
    - Document inspection is locked to authorized pharmacists and administrators.
 
@@ -359,12 +359,12 @@ MediBook employs defense-in-depth across frontend guards, service validation, an
 
 ## 🚀 Installation & Local Deployment Guide
 
-MediBook has **zero compilation steps** and requires **no Node build tools, bundlers, or web-framework CLI tools**.
+Veyora has **zero compilation steps** and requires **no Node build tools, bundlers, or web-framework CLI tools**.
 
 ### Step 1: Clone or Open the Workspace
 ```bash
-git clone https://github.com/your-organization/MediBook.git
-cd MediBook
+git clone https://github.com/your-organization/Veyora.git
+cd Veyora
 ```
 
 ### Step 2: Launch Local Web Server
@@ -388,7 +388,7 @@ npx serve . -p 3000
 ```
 
 #### Option D: Using VS Code Live Server
-1. Open the `MediBook` folder in VS Code.
+1. Open the `Veyora` folder in VS Code.
 2. Right-click on `index.html` and select **"Open with Live Server"**.
 2. Right-click on `index.html` and select **"Open with Live Server"**.
 
@@ -396,11 +396,11 @@ npx serve . -p 3000
 
 ## ☁️ Firebase Production Deployment Guide
 
-MediBook operates in **Demo Simulation Mode** out-of-the-box (using isolated `localStorage` with identical schema and atomic locking). To connect live Firebase Cloud infrastructure:
+Veyora operates in **Demo Simulation Mode** out-of-the-box (using isolated `localStorage` with identical schema and atomic locking). To connect live Firebase Cloud infrastructure:
 
 ### 1. Create a Firebase Project
 1. Navigate to the [Firebase Console](https://console.firebase.google.com/).
-2. Click **Add Project** and name it (e.g. `medibook-production`).
+2. Click **Add Project** and name it (e.g. `veyora-production`).
 3. Enable **Google Analytics** (optional).
 
 ### 2. Enable Authentication Providers
@@ -421,9 +421,9 @@ Open `assets/js/config/firebase-config.js` and paste your web app credentials:
 ```javascript
 const firebaseConfig = {
   apiKey: "AIzaSyYourActualApiKeyHere",
-  authDomain: "medibook-production.firebaseapp.com",
-  projectId: "medibook-production",
-  storageBucket: "medibook-production.appspot.com",
+  authDomain: "veyora-production.firebaseapp.com",
+  projectId: "veyora-production",
+  storageBucket: "veyora-production.appspot.com",
   messagingSenderId: "123456789012",
   appId: "1:123456789012:web:abcdef1234567890"
 };
@@ -436,19 +436,19 @@ Install the Firebase CLI and deploy hosting, firestore rules, and storage rules:
 firebase login
 
 # 2. Initialize project linkage
-firebase use --add medibook-production
+firebase use --add veyora-production
 
 # 3. Deploy all rules and hosting
 firebase deploy
 ```
 
-Your platform is now live at `https://medibook-production.web.app`!
+Your platform is now live at `https://veyora-production.web.app`!
 
 ---
 
 ## ✅ Automated Testing & Verification Checklist
 
-MediBook includes an automated end-to-end headless test suite (`test_all_scenarios.js`) and asset linkage verifier (`audit_links.py`).
+Veyora includes an automated end-to-end headless test suite (`test_all_scenarios.js`) and asset linkage verifier (`audit_links.py`).
 
 Run the automated test suite anytime:
 ```bash
@@ -477,5 +477,5 @@ node C:\Users\nisha\.gemini\antigravity\brain\4280fc44-bdaf-40d0-b4f7-6b4202dd43
 
 ## 📄 License & Attribution
 
-&copy; 2026 MediBook Healthcare Systems Inc. All rights reserved.  
+&copy; 2026 Veyora Healthcare Systems Inc. All rights reserved.  
 Built with HTML5, CSS3, Vanilla ES6+ JavaScript, Firebase, Chart.js, and Lucide Icons.

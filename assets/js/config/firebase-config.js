@@ -1,5 +1,5 @@
 /**
- * MediBook Firebase Configuration & Initialization
+ * Veyora Firebase Configuration & Initialization
  * 
  * Instructions:
  * 1. Create a Firebase project at https://console.firebase.google.com/
@@ -7,15 +7,15 @@
  * 3. Enable Cloud Firestore
  * 4. Replace the placeholder values below with your web app credentials.
  * 
- * If credentials are not configured, MediBook automatically activates
+ * If credentials are not configured, Veyora automatically activates
  * Demo Mode so you can still test full role authentication and workflows.
  */
 
 const firebaseConfig = {
   apiKey: "REPLACE_WITH_YOUR_FIREBASE_API_KEY",
-  authDomain: "medibook-health.firebaseapp.com",
-  projectId: "medibook-health",
-  storageBucket: "medibook-health.appspot.com",
+  authDomain: "veyora-health.firebaseapp.com",
+  projectId: "veyora-health",
+  storageBucket: "veyora-health.appspot.com",
   messagingSenderId: "123456789012",
   appId: "1:123456789012:web:abcdef1234567890abcdef"
 };
@@ -47,14 +47,14 @@ class FirebaseManager {
         this.db = firebase.firestore();
         this.storage = firebase.storage();
         this.isConfigured = true;
-        console.info("%c[MediBook]%c Firebase connected successfully.", "color: #2563eb; font-weight: bold;", "color: inherit;");
+        console.info("%c[Veyora]%c Firebase connected successfully.", "color: #2563eb; font-weight: bold;", "color: inherit;");
       } catch (err) {
-        console.warn("[MediBook] Firebase initialization error. Falling back to Demo Mode:", err);
+        console.warn("[Veyora] Firebase initialization error. Falling back to Demo Mode:", err);
         this.isConfigured = false;
       }
     } else {
       this.isConfigured = false;
-      console.info("%c[MediBook]%c Running in Demo Simulation Mode (Firebase keys unconfigured). Instant 1-click test accounts are active.", "color: #0d9488; font-weight: bold;", "color: inherit;");
+      console.info("%c[Veyora]%c Running in Demo Simulation Mode (Firebase keys unconfigured). Instant 1-click test accounts are active.", "color: #0d9488; font-weight: bold;", "color: inherit;");
     }
   }
 
@@ -67,4 +67,5 @@ class FirebaseManager {
 }
 
 // Global instance for browser compatibility
-window.MediBookFirebase = new FirebaseManager();
+window.VeyoraFirebase = new FirebaseManager();
+window.MediBookFirebase = window.VeyoraFirebase;

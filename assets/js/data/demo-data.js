@@ -1,5 +1,5 @@
 /**
- * MediBook Realistic Healthcare Demo Dataset
+ * Veyora Realistic Healthcare Demo Dataset
  * Used for public discovery, doctor profiles, filtering, testing, and fallback presentation
  */
 
@@ -18,7 +18,7 @@ const MEDIBOOK_DATA = {
   users: {
     patient: {
       id: "patient_001",
-      email: "patient@medibook.com",
+      email: "patient@veyora.com",
       password: "password123",
       role: "patient",
       displayName: "Sarah Jenkins",
@@ -32,7 +32,7 @@ const MEDIBOOK_DATA = {
     },
     doctor: {
       id: "doc_001",
-      email: "doctor@medibook.com",
+      email: "doctor@veyora.com",
       password: "password123",
       role: "doctor",
       displayName: "Dr. Alexander Wright",
@@ -49,7 +49,7 @@ const MEDIBOOK_DATA = {
     },
     admin: {
       id: "admin_001",
-      email: "admin@medibook.com",
+      email: "admin@veyora.com",
       password: "password123",
       role: "admin",
       displayName: "Hospital Administrator (Central)",
@@ -60,12 +60,12 @@ const MEDIBOOK_DATA = {
     },
     pharmacist: {
       id: "pharm_001",
-      email: "pharmacist@medibook.com",
+      email: "pharmacist@veyora.com",
       password: "password123",
       role: "pharmacist",
       displayName: "James Carter, RPh",
       title: "Head Clinical Pharmacist & Dispensary Lead",
-      pharmacyName: "MediBook Central Outpatient Pharmacy",
+      pharmacyName: "Veyora Central Outpatient Pharmacy",
       licenseNumber: "RPH-CA-409182",
       phone: "+1 (555) 345-6789",
       avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&auto=format&fit=crop&q=80"
@@ -426,7 +426,7 @@ const MEDIBOOK_DATA = {
   testimonials: [
     {
       id: "test_001",
-      quote: "Booking an urgent cardiology consultation took literally 45 seconds on MediBook. The automated calendar sync and SMS reminders made our experience completely stress-free.",
+      quote: "Booking an urgent cardiology consultation took literally 45 seconds on Veyora. The automated calendar sync and SMS reminders made our experience completely stress-free.",
       name: "Robert M. Davenport",
       role: "Cardiology Patient (Demo Review)",
       department: "Cardiology",
@@ -446,7 +446,7 @@ const MEDIBOOK_DATA = {
     },
     {
       id: "test_003",
-      quote: "From our hospital network perspective, MediBook reduced patient no-shows by 42%. Doctor schedule updates are immediate and patient intake is remarkably streamlined.",
+      quote: "From our hospital network perspective, Veyora reduced patient no-shows by 42%. Doctor schedule updates are immediate and patient intake is remarkably streamlined.",
       name: "Dr. Evelyn Reed",
       role: "Clinical Operations Director (Demo Review)",
       department: "Metropolitan Healthcare",
@@ -506,4 +506,6 @@ const MEDIBOOK_DATA = {
   ]
 };
 
+const VEYORA_DATA = MEDIBOOK_DATA;
+window.VEYORA_DATA = MEDIBOOK_DATA;
 window.MEDIBOOK_DATA = MEDIBOOK_DATA;

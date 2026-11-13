@@ -1,5 +1,5 @@
 /**
- * MediBook Doctor Practice Dashboard Controller
+ * Veyora Doctor Practice Dashboard Controller
  * Implements dashboard metrics, today's schedule timeline, weekly stats,
  * appointment management (confirm, reject, complete), availability & schedule builder,
  * slot generation, conflict detection, patient records, and profile editing with admin approval.

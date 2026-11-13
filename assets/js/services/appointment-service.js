@@ -1,14 +1,14 @@
 /**
- * MediBook Appointment Booking & Management Service
+ * Veyora Appointment Booking & Management Service
  * Implements atomic slot reservation, cancellation rules, doctor schedule validation,
  * doctor-specific queries, status transitions (confirm, reject, complete), and Firestore / LocalStore bridge.
  */
 
 class AppointmentService {
   constructor() {
-    this.STORAGE_KEY = 'medibook_appointments';
-    this.LOCK_KEY = 'medibook_slot_locks';
-    this.VERSION_KEY = 'medibook_appointments_v4_doctor_ready';
+    this.STORAGE_KEY = 'veyora_appointments';
+    this.LOCK_KEY = 'veyora_slot_locks';
+    this.VERSION_KEY = 'veyora_appointments_v4_doctor_ready';
     this.initStorage();
   }
 
@@ -36,7 +36,7 @@ class AppointmentService {
           reference: "MB-2026-9011",
           patientId: "patient_001",
           patientName: "Sarah Jenkins",
-          patientEmail: "patient@medibook.com",
+          patientEmail: "patient@veyora.com",
           patientPhone: "+1 (555) 234-5678",
           doctorId: "doc_001",
           doctorName: "Dr. Alexander Wright",
@@ -130,7 +130,7 @@ class AppointmentService {
           reference: "MB-2026-8842",
           patientId: "patient_001",
           patientName: "Sarah Jenkins",
-          patientEmail: "patient@medibook.com",
+          patientEmail: "patient@veyora.com",
           patientPhone: "+1 (555) 234-5678",
           doctorId: "doc_001",
           doctorName: "Dr. Alexander Wright",
@@ -356,7 +356,7 @@ class AppointmentService {
           reference: "MB-2026-7219",
           patientId: "patient_001",
           patientName: "Sarah Jenkins",
-          patientEmail: "patient@medibook.com",
+          patientEmail: "patient@veyora.com",
           patientPhone: "+1 (555) 234-5678",
           doctorId: "doc_005",
           doctorName: "Dr. Sanjay Patel",
@@ -370,7 +370,7 @@ class AppointmentService {
           consultationFee: 110,
           mode: "video",
           reason: "Annual skin and mole examination follow-up",
-          notes: "Virtual consultation via MediBook Telehealth.",
+          notes: "Virtual consultation via Veyora Telehealth.",
           status: "Pending",
           createdAt: new Date().toISOString()
         },
@@ -445,7 +445,7 @@ class AppointmentService {
    * Check which time slots are already booked for a doctor on a specific date
    */
   async getBookedSlotsForDoctor(doctorId, dateString) {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
 
     if (fb && fb.isConfigured && fb.db) {
       try {
@@ -484,7 +484,7 @@ class AppointmentService {
   async getDoctorAppointments(doctorId, filterType = null) {
     if (!doctorId) return [];
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     let appointments = [];
 
     // 1. Live Firestore query if configured
@@ -580,7 +580,7 @@ class AppointmentService {
     this.saveAppointmentsToStorage(appointments);
 
     // Live Firebase update if configured
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('appointments').doc(appointmentId).update({
@@ -641,7 +641,7 @@ class AppointmentService {
     }
 
     // Live Firebase update if configured
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('appointments').doc(appointmentId).update({
@@ -692,7 +692,7 @@ class AppointmentService {
     this.saveAppointmentsToStorage(appointments);
 
     // Live Firebase update if configured
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         await fb.db.collection('appointments').doc(appointmentId).update({
@@ -935,7 +935,7 @@ class AppointmentService {
       createdAt: new Date().toISOString()
     };
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
 
     // A. Live Firebase Firestore Transaction
     if (fb && fb.isConfigured && fb.db) {
@@ -1022,7 +1022,7 @@ class AppointmentService {
       return { success: false, error: "Cannot cancel appointments that have already occurred." };
     }
 
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
     if (fb && fb.isConfigured && fb.db) {
       try {
         const lockKey = `${apt.doctorId}_${apt.date}_${apt.timeSlot}`;
@@ -1057,7 +1057,7 @@ class AppointmentService {
    * Retrieve appointments for the logged in patient
    */
   async getPatientAppointments(patientId, patientEmail) {
-    const fb = window.MediBookFirebase;
+    const fb = window.VeyoraFirebase;
 
     if (fb && fb.isConfigured && fb.db && (patientId || patientEmail)) {
       try {
@@ -1083,7 +1083,7 @@ class AppointmentService {
     const filtered = list.filter(a => {
       if (patientId && a.patientId === patientId) return true;
       if (patientEmail && a.patientEmail.toLowerCase() === patientEmail.toLowerCase()) return true;
-      return a.patientEmail === 'patient@medibook.com';
+      return a.patientEmail === 'patient@veyora.com';
     });
 
     filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
